@@ -1,5 +1,6 @@
 ﻿"use strict";
 
+var global;
 var mapr = function() {
     var mapMarkers = {};
     var mapZoom = panzoom(document.querySelector('#map'), {
@@ -8,24 +9,27 @@ var mapr = function() {
         minZoom: .1
     });
 
-    mapZoom.on('pan', resetMapMarkers);
-    mapZoom.on('zoom', resetMapMarkers);
+    mapZoom.on('transform', resetMapMarkers);
+    //mapZoom.on('zoom', resetMapMarkers);
 
-    function resetMapMarkers() {
+    function resetMapMarkers(e) {
+        global = e;
         for (var marker in mapMarkers) {
-            setMapMarker(mapMarkers[marker]);
+            setMapMarker(mapMarkers[marker], e);
         }
     }
 
     function setMapMarker(mapMarker) {
         mapMarkers[mapMarker.id] = mapMarker
+
         var mapTransform = mapZoom.getTransform();
         var element = $(mapMarker.id);
-        //Try a stepping for the scale rather than just the decimal number
+
         var mapMarkerX = mapMarker.x - element.width() / 2,
-            mapMarkerY = mapMarker.y - element.height() / 2;
-        var left = mapTransform.scale * mapMarkerX + mapTransform.x;
-        var top = mapTransform.scale * mapMarkerY + mapTransform.y;
+            mapMarkerY = mapMarker.y - element.height() / 2,
+        	left = mapTransform.scale * mapMarkerX + mapTransform.x,
+			top = mapTransform.scale * mapMarkerY + mapTransform.y;
+
         var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
         element.css('transform', transformValue);
     }
