@@ -4,7 +4,8 @@ var mapr = function() {
     var mapMarkers = {};
     var mapZoom = panzoom(document.querySelector('#map'), {
         maxZoom: 1,
-        smoothScroll: false
+        smoothScroll: false,
+        minZoom: .1
     });
 
     mapZoom.on('pan', resetMapMarkers);
