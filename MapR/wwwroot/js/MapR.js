@@ -10,7 +10,6 @@ var mapr = function() {
     });
 
     mapZoom.on('transform', resetMapMarkers);
-    //mapZoom.on('zoom', resetMapMarkers);
 
     function resetMapMarkers(e) {
         global = e;
@@ -47,6 +46,11 @@ var mapr = function() {
         connection.invoke('SendMapMarker', mapMarker);
     });
 
+    $('#center').on('click', function(e){
+        var partyMarker = mapMarkers['#party']; 
+        mapZoom.moveTo(partyMarker.x, partyMarker.y, 1);
+        e.preventDefault();
+    });
 
     connection.start()
         .then(function () { connection.invoke("SendAllMapMarkers") });

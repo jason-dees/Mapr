@@ -1,4 +1,7 @@
-﻿#party {
+﻿body{
+	overflow: hidden;
+}
+#party {
     position: absolute;
     width: 25px;
     height: 25px;
