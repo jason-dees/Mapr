@@ -36,7 +36,7 @@ namespace MapR
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();
 
-			services.AddIdentity<ApplicationUser, IdentityRole>()
+			services.AddIdentity<ApplicationUser, ApplicationRole>()
 				.AddDefaultTokenProviders();
 
 			services.AddAuthentication()
@@ -51,6 +51,7 @@ namespace MapR
 			});
 
 			services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
+			services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

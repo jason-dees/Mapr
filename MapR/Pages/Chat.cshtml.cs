@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MapR.Pages
 {
-    public class IndexModel : PageModel
+    public class ChatModel : PageModel
     {
         public void OnGet()
         {

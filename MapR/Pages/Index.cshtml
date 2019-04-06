@@ -1,10 +1,17 @@
 ﻿@page
+@model IndexModel
 @{
-    ViewData["Title"] = "Map";
+	ViewData["Title"] = "Map";
 }
 <div id="MapR">
 	<nav>
 		<button class="nav-link pull-right btn btn-warning" id="center" href="#">center</button>
+		<form asp-action="ExternalLogin" asp-route-returnurl="" method="post" class="form-horizontal">
+			@foreach (var provider in Model.AuthenticationSchemes)
+			{
+				<button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
+			}
+		</form>
 	</nav>
 	<img id="map" src="~/images/maps/SKT/Campaign.jpg" />
 	@*<div id="party"></div>*@
@@ -14,16 +21,16 @@
 	</div>
 </div>
 <ul>
-    <li>Need to change maps</li>
-    <li>Need to save map state</li>
-    <li>When updating a map, need some way to trigger the update</li>
-    <li>Need some way to obfuscate stuff</li>
+	<li>Need to change maps</li>
+	<li>Need to save map state</li>
+	<li>When updating a map, need some way to trigger the update</li>
+	<li>Need some way to obfuscate stuff</li>
 </ul>
 
 @section Scripts {
-    <script asp-append-version="true" src="~/lib/signalr/dist/browser/signalr.js"></script>
-    <script asp-append-version="true" src="~/js/MapR.js"></script>
-    <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
+	<script asp-append-version="true" src="~/lib/signalr/dist/browser/signalr.js"></script>
+	<script asp-append-version="true" src="~/js/MapR.js"></script>
+	<script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 }
 <link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />

@@ -48,8 +48,8 @@ namespace MapR.Identity {
 			return user.Email;
 		}
 
-		public Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken) {
-			throw new NotImplementedException();
+		public async Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken) {
+			return user.UserName;
 		}
 
 		public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken) {
@@ -60,8 +60,12 @@ namespace MapR.Identity {
 			throw new NotImplementedException();
 		}
 
-		public Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken) {
-			throw new NotImplementedException();
+		public async Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken) {
+			TableOperation operation = TableOperation.Replace(user);
+
+			await _userTable.ExecuteAsync(operation);
+
+			return new MapRIdentityResult();
 		}
 	}
 }
