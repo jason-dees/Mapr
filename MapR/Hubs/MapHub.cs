@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MapR.Hubs {
@@ -17,7 +16,8 @@ namespace MapR.Hubs {
         }
 
         public async Task SendAllMapMarkers() {
-            await Clients.All.SendAsync("SetAllMapMarkers", _mapMarkers);
+
+			await Clients.All.SendAsync("SetAllMapMarkers", _mapMarkers);
         }
     }
 

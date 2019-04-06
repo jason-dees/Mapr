@@ -1,10 +1,15 @@
+using System;
 using MapR.Hubs;
+using MapR.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR
 {
@@ -30,7 +35,23 @@ namespace MapR
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();
-        }
+
+			services.AddIdentity<ApplicationUser, IdentityRole>()
+				.AddDefaultTokenProviders();
+
+			services.AddAuthentication()
+				.AddGoogle(googleOptions => { 
+					googleOptions.ClientId = Configuration["Google:ClientId"];
+					googleOptions.ClientId = Configuration["Google:ClientSecret"];
+				});
+
+			services.AddTransient<CloudTableClient>((serviceProvider) => {
+				var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
+				return account.CreateCloudTableClient();
+			});
+
+			services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
