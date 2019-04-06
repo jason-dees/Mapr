@@ -1,8 +1,19 @@
 ﻿"use strict";
 
-var global;
+var global, mapRApp;
 var mapr = function() {
-    var mapMarkers = {};
+    mapRApp = new Vue({
+        el: '#MapR',
+        data: {
+            mapImage: "~/images/maps/SKT/Campaign.jpg",
+            mapMarkers: {},
+        },
+        updated: function(){
+            this.$nextTick(function () {
+                resetMapMarkers();
+              })
+        }
+    });
     var mapZoom = panzoom(document.querySelector('#map'), {
         maxZoom: 1,
         smoothScroll: false,
@@ -11,18 +22,24 @@ var mapr = function() {
 
     mapZoom.on('transform', resetMapMarkers);
 
-    function resetMapMarkers(e) {
-        global = e;
-        for (var marker in mapMarkers) {
-            setMapMarker(mapMarkers[marker], e);
+    function resetMapMarkers() {
+        for (var marker in mapRApp.mapMarkers) {
+            setMapMarker(marker);
         }
+    }
+    function addMarker(marker){
+        mapRApp.$set(mapRApp.mapMarkers, marker.id, marker);
+    }
+
+    function getMarker(id){
+        return mapRApp.mapMarkers[id];
     }
 
     function setMapMarker(mapMarker) {
-        mapMarkers[mapMarker.id] = mapMarker
+        addMarker(mapMarker);
 
         var mapTransform = mapZoom.getTransform();
-        var element = $(mapMarker.id);
+        var element = document.querySelector('#' + mapMarker.id);
 
         var mapMarkerX = mapMarker.x - element.width() / 2,
             mapMarkerY = mapMarker.y - element.height() / 2,
@@ -38,16 +55,16 @@ var mapr = function() {
     connection.on("SetMapMarker", setMapMarker);
 
     connection.on("SetAllMapMarkers", function (mapMarkers) {
-        mapMarkers.forEach(setMapMarker);
+        mapMarkers.forEach(addMarker);
     });
 
     $('#party').on('click', function () {
-        var mapMarker = { id: '#party', x: 100, y: 100 };
+        var mapMarker = { id: 'party', x: 100, y: 100 };
         connection.invoke('SendMapMarker', mapMarker);
     });
 
     $('#center').on('click', function(e){
-        var partyMarker = mapMarkers['#party']; 
+        var partyMarker = getMarker('party'); 
         mapZoom.moveTo(partyMarker.x, partyMarker.y, 1);
         e.preventDefault();
     });
