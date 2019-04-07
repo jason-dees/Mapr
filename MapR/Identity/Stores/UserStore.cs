@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MapR.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Identity {
+namespace MapR.Identity.Stores {
 	public class UserStore : IUserStore<ApplicationUser> {
 		const string _partition = "MapR";
 		readonly CloudTable _userTable;

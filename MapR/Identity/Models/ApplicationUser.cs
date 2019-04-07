@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Identity {
+namespace MapR.Identity.Models {
 	public class ApplicationUser : IdentityUser, ITableEntity {
 		public string PartitionKey { get; set; }
 		public string RowKey { get; set; }

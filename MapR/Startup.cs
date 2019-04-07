@@ -1,11 +1,14 @@
 using System;
 using MapR.Hubs;
 using MapR.Identity;
+using MapR.Identity.Models;
+using MapR.Identity.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
@@ -45,14 +48,21 @@ namespace MapR
 					googleOptions.ClientId = Configuration["Google:ClientSecret"];
 				});
 
-			services.AddTransient<CloudTableClient>((serviceProvider) => {
+			services.AddTransient((serviceProvider) => {
 				var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
 				return account.CreateCloudTableClient();
 			});
 
 			services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
 			services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
-		}
+
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.ViewLocationFormats.Clear();
+                o.ViewLocationFormats.Add("/Features/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
+            });
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
