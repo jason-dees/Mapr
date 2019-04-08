@@ -61,6 +61,7 @@ namespace MapR
                 o.ViewLocationFormats.Clear();
                 o.ViewLocationFormats.Add("/Features/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.ViewLocationFormats.Add("/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Views/{0}" + RazorViewEngine.ViewExtension);
             });
         }
 
