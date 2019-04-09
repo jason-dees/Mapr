@@ -51,9 +51,6 @@ namespace MapR
                 return account.CreateCloudTableClient();
             });
 
-            services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
-            services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
-
             services.AddAuthentication()
 				.AddGoogle(googleOptions => { 
 					googleOptions.ClientId = Configuration["Google:ClientId"];
@@ -84,7 +81,6 @@ namespace MapR
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chatHub");

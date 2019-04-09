@@ -4,7 +4,7 @@
 }
 
 <form asp-controller="Account" asp-action="ExternalLogin" 
-    asp-route-returnurl="Account/ExternalLoginCallback" method="POST" 
+    method="POST" 
     class="form-horizontal">
 
     @foreach (var provider in Model.AuthenticationSchemes)
@@ -21,7 +21,7 @@
     </form>
 }else{
     <form asp-controller="Account" asp-action="ExternalLogin" 
-        asp-route-returnurl="Account/ExternalLoginCallback" method="POST" 
+        asp-route-returnurl="/" method="POST" 
         class="form-horizontal">
 
     @foreach (var provider in Model.AuthenticationSchemes)

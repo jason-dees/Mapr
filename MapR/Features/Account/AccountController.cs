@@ -28,7 +28,7 @@ namespace MapR.Features.Account {
         [ValidateAntiForgeryToken]
         public IActionResult ExternalLogin(string provider, string returnUrl = null) {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "", new { returnUrl });
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return Challenge(properties, provider);
         }
@@ -38,11 +38,11 @@ namespace MapR.Features.Account {
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null) {
             if (remoteError != null) {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToAction(nameof(Index));
+                return RedirectToLocal(returnUrl);
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null) {
-                return RedirectToAction(nameof(Index));
+                return RedirectToLocal(returnUrl);
             }
 
             // Sign in the user with this external login provider if the user already has a login.
@@ -51,7 +51,6 @@ namespace MapR.Features.Account {
                 return null;
             }
             if (result.Succeeded) {
-                //var user = await _userManager.GetUserAsync(info.Principal);
                 //var signInResult = await _userManager.AddLoginAsync(user, info);
                 //await _signInManager.SignInAsync(user, isPersistent: false);
             }
@@ -74,7 +73,7 @@ namespace MapR.Features.Account {
                     }
                 }
             }
-            return RedirectToLocal("/");
+            return View();
         }
 
         [HttpGet]

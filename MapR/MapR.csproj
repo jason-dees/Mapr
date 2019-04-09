@@ -18,7 +18,6 @@
     <Folder Include="Features\MapMaster\" />
     <Folder Include="wwwroot\lib\%40aspnet\" />
     <Folder Include="Features\Shared\" />
-    <Folder Include="Features\Account\" />
   </ItemGroup>
 
 </Project>
