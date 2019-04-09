@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MapR.Identity.Models;
@@ -37,9 +38,12 @@ namespace MapR.Identity.Stores {
 			return result.Result as ApplicationUser;
 		}
 
-		public Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken) {
-			throw new NotImplementedException();
-		}
+		public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken) {
+            var providerKeyQuery = TableQuery.GenerateFilterCondition("UserName", QueryComparisons.Equal, normalizedUserName);
+            var query = new TableQuery<ApplicationUser>()
+                .Where(providerKeyQuery); 
+            return (await _userTable.ExecuteQuerySegmentedAsync<ApplicationUser>(query, null)).Results.FirstOrDefault();
+        }
 
 		public async Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken) {
 			return user.Email;
@@ -53,12 +57,12 @@ namespace MapR.Identity.Stores {
 			return user.UserName;
 		}
 
-		public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken) {
-			throw new NotImplementedException();
+		public async Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken) {
+			
 		}
 
-		public Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken) {
-			throw new NotImplementedException();
+		public async Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken) {
+			
 		}
 
 		public async Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken) {

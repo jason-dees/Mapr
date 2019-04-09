@@ -65,17 +65,21 @@ namespace MapR.Features.Index {
                 return null;
             }
             else {
-                var loginInfo = await _signInManager.GetExternalLoginInfoAsync();
                 // If the user does not have an account, then ask the user to create an account.
-                //var user = new ApplicationUser { UserName = loginInfo., Email = model.Email };
-                //var result = await _userManager.CreateAsync(user);
-                //if (result.Succeeded) {
-                //    result = await _userManager.AddLoginAsync(user, info);
-                //    if (result.Succeeded) {
-                //        await _signInManager.SignInAsync(user, isPersistent: false);
-                //        return RedirectToLocal(returnUrl);
-                //    }
-                //}
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var user = new ApplicationUser { 
+                    UserName = email, 
+                    Email = email, 
+                    ProviderKey = info.ProviderKey, 
+                    LoginProvider = info.LoginProvider 
+                    };
+                var identityResult = await _userManager.CreateAsync(user);
+                if (identityResult.Succeeded) {
+                    var signInResult = await _userManager.AddLoginAsync(user, info);
+                    if (signInResult.Succeeded) {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                    }
+                }
             }
             return RedirectToAction(nameof(Index));
         }
