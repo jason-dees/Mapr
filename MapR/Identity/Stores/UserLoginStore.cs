@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MapR.Identity.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.Identity.Stores {
     public partial class UserStore : IUserLoginStore<ApplicationUser> {
@@ -12,8 +14,14 @@ namespace MapR.Identity.Stores {
             throw new NotImplementedException();
         }
 
-        public Task<ApplicationUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken) {
-            throw new NotImplementedException();
+        public async Task<ApplicationUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken) {
+            var providerKeyQuery = TableQuery.GenerateFilterCondition("ProviderKey", QueryComparisons.Equal, providerKey);
+            var loginProviderQuery = TableQuery.GenerateFilterCondition("LoginProvider", QueryComparisons.Equal, loginProvider);
+            var query = new TableQuery<ApplicationUser>()
+                .Where(TableQuery.CombineFilters(providerKeyQuery,
+                TableOperators.And,
+                loginProviderQuery));
+            return (await _userTable.ExecuteQuerySegmentedAsync<ApplicationUser>(query, null)).Results.FirstOrDefault();
         }
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user, CancellationToken cancellationToken) {

@@ -11,7 +11,8 @@ namespace MapR.Identity.Models {
 		public DateTimeOffset Timestamp { get; set; }
 		public string ETag { get; set; }
 
-		public string AuthenticationSource { get; set; }
+		public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
 
 		public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
 			ApplicationUser entity = TableEntity.ConvertBack<ApplicationUser>(properties, operationContext);
@@ -21,11 +22,11 @@ namespace MapR.Identity.Models {
 			this.RowKey = entity.RowKey;
 			this.Timestamp = entity.Timestamp;
 			this.ETag = entity.ETag;
-			this.AuthenticationSource = entity.AuthenticationSource;
+			this.LoginProvider = entity.LoginProvider;
+            this.ProviderKey = entity.ProviderKey;
 		}
 
 		public IDictionary<string, EntityProperty> WriteEntity(OperationContext operationContext) {
-			this.AuthenticationSource = "Google";
 			IDictionary<string, EntityProperty> flattenedProperties = TableEntity.Flatten(this, operationContext);
 			return flattenedProperties;
 		}

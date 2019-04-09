@@ -13,8 +13,10 @@ namespace MapR.Features.Index {
         public string ErrorMessage { get; set; }
 
         readonly SignInManager<ApplicationUser> _signInManager;
-        public IndexController(SignInManager<ApplicationUser> signInManager){
+        readonly UserManager<ApplicationUser> _userManager;
+        public IndexController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -63,12 +65,19 @@ namespace MapR.Features.Index {
                 return null;
             }
             else {
+                var loginInfo = await _signInManager.GetExternalLoginInfoAsync();
                 // If the user does not have an account, then ask the user to create an account.
-                ViewData["ReturnUrl"] = returnUrl;
-                ViewData["LoginProvider"] = info.LoginProvider;
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
+                //var user = new ApplicationUser { UserName = loginInfo., Email = model.Email };
+                //var result = await _userManager.CreateAsync(user);
+                //if (result.Succeeded) {
+                //    result = await _userManager.AddLoginAsync(user, info);
+                //    if (result.Succeeded) {
+                //        await _signInManager.SignInAsync(user, isPersistent: false);
+                //        return RedirectToLocal(returnUrl);
+                //    }
+                //}
             }
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
