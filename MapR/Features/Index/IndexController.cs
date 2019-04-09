@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -22,13 +23,13 @@ namespace MapR.Features.Index {
 
         [HttpGet]   
         [Route("")]
-        [AllowAnonymous]
         public async Task<IActionResult> Index() {
             var info = await _signInManager.GetExternalLoginInfoAsync();
-            var userName = info != null ? _userManager.GetUserName(info.Principal) : "";
+            var isSignedIn = User.Claims.Any();
+            var userName = isSignedIn ? _userManager.GetUserName(User) : "";
             var indexViewModel = new IndexViewModel {
                 AuthenticationSchemes = await _signInManager.GetExternalAuthenticationSchemesAsync(),
-                IsSignedIn = info != null,
+                IsSignedIn = isSignedIn,
                 UserName = userName
             };
             return View("Index", indexViewModel);

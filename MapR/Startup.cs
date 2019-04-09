@@ -3,6 +3,7 @@ using MapR.Hubs;
 using MapR.Identity;
 using MapR.Identity.Models;
 using MapR.Identity.Stores;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

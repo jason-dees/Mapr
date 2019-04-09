@@ -46,13 +46,11 @@ namespace MapR.Features.Account {
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
             if (result.IsLockedOut) {
                 return null;
             }
             if (result.Succeeded) {
-                //var signInResult = await _userManager.AddLoginAsync(user, info);
-                //await _signInManager.SignInAsync(user, isPersistent: false);
             }
             else { 
                 // If the user does not have an account, then ask the user to create an account.
@@ -73,7 +71,7 @@ namespace MapR.Features.Account {
                     }
                 }
             }
-            return View();
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpGet]
