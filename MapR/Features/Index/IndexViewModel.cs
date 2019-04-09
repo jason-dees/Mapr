@@ -8,5 +8,7 @@ namespace MapR.Features.Index {
         public IEnumerable<AuthenticationScheme> AuthenticationSchemes { get; set; }
 
         public bool IsSignedIn { get; set; }
+
+        public string UserName { get; set; }
     }
 }

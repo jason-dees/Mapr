@@ -13,8 +13,10 @@ namespace MapR.Identity.Models {
 
 		public string LoginProvider { get; set; }
         public string ProviderKey { get; set; }
+        public string NameIdentifier { get; set; }
 
-		public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
+
+        public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
 			ApplicationUser entity = TableEntity.ConvertBack<ApplicationUser>(properties, operationContext);
 			this.Email = entity.Email;
 			this.UserName = entity.UserName;
@@ -24,6 +26,7 @@ namespace MapR.Identity.Models {
 			this.ETag = entity.ETag;
 			this.LoginProvider = entity.LoginProvider;
             this.ProviderKey = entity.ProviderKey;
+            this.NameIdentifier = entity.NameIdentifier;
 		}
 
 		public IDictionary<string, EntityProperty> WriteEntity(OperationContext operationContext) {

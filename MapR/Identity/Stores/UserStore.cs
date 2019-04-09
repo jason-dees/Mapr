@@ -16,7 +16,7 @@ namespace MapR.Identity.Stores {
 
 		public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken) {
 			user.PartitionKey = _partition;
-			user.RowKey = user.Email;
+            user.RowKey = user.NameIdentifier;
 			TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(user);
 
 			await _userTable.ExecuteAsync(insertOrMergeOperation);
@@ -33,16 +33,17 @@ namespace MapR.Identity.Stores {
 		}
 
 		public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken) {
-			TableOperation operation = TableOperation.Retrieve<ApplicationUser>(_partition, userId);
-			var result = await _userTable.ExecuteAsync(operation);
-			return result.Result as ApplicationUser;
-		}
+            var idQuery = TableQuery.GenerateFilterCondition("NameIdentifier", QueryComparisons.Equal, userId);
+            var query = new TableQuery<ApplicationUser>()
+                .Where(idQuery);
+            return (await _userTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
+        }
 
 		public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken) {
             var providerKeyQuery = TableQuery.GenerateFilterCondition("UserName", QueryComparisons.Equal, normalizedUserName);
             var query = new TableQuery<ApplicationUser>()
                 .Where(providerKeyQuery); 
-            return (await _userTable.ExecuteQuerySegmentedAsync<ApplicationUser>(query, null)).Results.FirstOrDefault();
+            return (await _userTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
         }
 
 		public async Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken) {

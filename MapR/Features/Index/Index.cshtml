@@ -3,12 +3,30 @@
     Layout = "_Layout";
 }
 
-<form asp-action="ExternalLogin" asp-route-returnurl="" method="POST" class="form-horizontal">
+<form asp-controller="Account" asp-action="ExternalLogin" 
+    asp-route-returnurl="Account/ExternalLoginCallback" method="POST" 
+    class="form-horizontal">
+
+    @foreach (var provider in Model.AuthenticationSchemes)
+    {
+        <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">Test @provider.Name</button>
+    }
+</form>
+@if(Model.IsSignedIn){
+    <div>You are signed in!!! @Model.UserName</div>
+    <form asp-controller="Account" asp-action="Logout" 
+        asp-route-returnurl="/" method="POST" 
+        class="form-horizontal">
+        <button type="submit" title="Logout">Logout</button>
+    </form>
+}else{
+    <form asp-controller="Account" asp-action="ExternalLogin" 
+        asp-route-returnurl="Account/ExternalLoginCallback" method="POST" 
+        class="form-horizontal">
+
     @foreach (var provider in Model.AuthenticationSchemes)
     {
         <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
     }
 </form>
-@if(Model.IsSignedIn){
-    <div>You are signed in!!!</div>
 }
