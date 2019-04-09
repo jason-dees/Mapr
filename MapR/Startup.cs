@@ -36,32 +36,35 @@ namespace MapR
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .AddFeatureFolders()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddSignalR();
 
 			services.AddIdentity<ApplicationUser, ApplicationRole>()
-				.AddDefaultTokenProviders();
+                .AddUserStore<UserStore>()
+                .AddRoleStore<RoleStore>()
+                .AddDefaultTokenProviders();
+            services.AddTransient((serviceProvider) => {
+                var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
+                return account.CreateCloudTableClient();
+            });
 
-			services.AddAuthentication()
+            services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
+            services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
+
+            services.AddAuthentication()
 				.AddGoogle(googleOptions => { 
 					googleOptions.ClientId = Configuration["Google:ClientId"];
-					googleOptions.ClientId = Configuration["Google:ClientSecret"];
+					googleOptions.ClientSecret = Configuration["Google:ClientSecret"];
 				});
-
-			services.AddTransient((serviceProvider) => {
-				var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
-				return account.CreateCloudTableClient();
-			});
-
-			services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
-			services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
                 o.ViewLocationFormats.Clear();
                 o.ViewLocationFormats.Add("/Features/{1}/{0}" + RazorViewEngine.ViewExtension);
-                o.ViewLocationFormats.Add("/Views/Shared/{0}" + RazorViewEngine.ViewExtension);
-                o.ViewLocationFormats.Add("/Views/{0}" + RazorViewEngine.ViewExtension);
+                o.ViewLocationFormats.Add("/Features/Shared/{0}" + RazorViewEngine.ViewExtension);
             });
         }
 
@@ -79,6 +82,7 @@ namespace MapR
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSignalR(routes =>

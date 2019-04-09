@@ -6,5 +6,7 @@ namespace MapR.Features.Index {
     public class IndexViewModel : PageModel {
 
         public IEnumerable<AuthenticationScheme> AuthenticationSchemes { get; set; }
+
+        public bool IsSignedIn { get; set; }
     }
 }

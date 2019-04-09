@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.Identity.Stores {
-	public class UserStore : IUserStore<ApplicationUser> {
+	public partial class UserStore : IUserStore<ApplicationUser> {
 		const string _partition = "MapR";
 		readonly CloudTable _userTable;
 		public UserStore(CloudTableClient tableClient) {
