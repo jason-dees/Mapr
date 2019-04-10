@@ -35,23 +35,24 @@
                 <div class="modal-header">
                     <h5>Add New Game</h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
                     <div class="form-group">
                         <input type="text" name="name" class="form-control"
-                               placeholder="New Game Name" 
-                               v-model="gameName" 
+                               placeholder="New Game Name"
+                               v-model="gameName"
                                v-bind:class="{ 'is-invalid' : (nameErrorMessage.length > 0) }"
-                               v-on:keyup="submit" />
+                               v-on:keyup="checkIsEmpty" />
                     </div>
 
                     <div class="alert alert-warning" v-show="nameErrorMessage.length > 0">{{nameErrorMessage}}</div>
 
                     <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" 
-                            name="isPrivate" id="isPrivate" 
-                            v-model="isPrivate" value="true"/>
+                        <input type="checkbox" class="form-check-input"
+                               name="isPrivate" id="isPrivate"
+                               v-model="isPrivate" value="true" />
                         <label class="form-check-label" for="isPrivate">Is Private</label>
                     </div>
+                    <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
@@ -62,29 +63,42 @@
     </div>
     
 @section Scripts {
-    <script type="text/javascript">
-        window.addEventListener("load", function(){
+    <script type="text/javascript">var glogbal;
+        window.addEventListener("load", function () {
             var newForm = new Vue({
                 el: "#newGameModal",
-                data:{
+                data: {
                     gameName: "",
                     isPrivate: false,
-                    nameErrorMessage: ""
+                    nameErrorMessage: "",
+                    formErrorMessage: ""
                 },
                 methods: {
-                    submit: function(event){
-                        if(this.gameName.trim().length == 0){
+                    submit: function (event) {
+                        var self = this;
+                        if (this.checkIsEmpty()) return;
+                        axios.post('/games/addgame', {
+                            name: this.gameName,
+                            isPrivate: this.isPrivate
+                        }).then(function (response) {
+                            //console.log(response);
+                        }).catch(function (error) {
+                            self.formErrorMessage = error.message;
+                        });
+                    },
+                    checkIsEmpty: function () {
+                        if (this.gameName.trim().length == 0) {
                             this.nameErrorMessage = "Game needs a name!";
-                            return;
+                            return true;
                         }
-                        else{
+                        else {
                             this.nameErrorMessage = "";
+                            return false;
                         }
                     }
                 }
             });
-        });
-    </script>
+        });</script>
 }
 }
 else

@@ -15,10 +15,10 @@ namespace MapR.Features.AddGame {
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddGame(Models.AddGame game) {
+        public async Task<IActionResult> AddGame([FromBody]Models.AddGame game) {
             throw new NotImplementedException();
         }
 
     }
 }
+    
