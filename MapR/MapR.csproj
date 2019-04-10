@@ -20,6 +20,8 @@
     <Folder Include="Game\" />
     <Folder Include="Game\Models\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Features\AddGame\" />
+    <Folder Include="Features\AddGame\Models\" />
   </ItemGroup>
 
 </Project>

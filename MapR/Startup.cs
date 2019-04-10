@@ -1,6 +1,9 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using MapR.Game;
 using MapR.Hubs;
 using MapR.Identity;
 using MapR.Identity.Models;
@@ -50,11 +53,9 @@ namespace MapR
                 .AddRoleStore<RoleStore>()
                 .AddDefaultTokenProviders();
 
-            services.AddTransient((serviceProvider) => {
-                var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
+            var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
 
-                return account.CreateCloudTableClient();
-            });
+            services.AddSingleton<CloudTableClient>((sp) => account.CreateCloudTableClient());
 
             services.AddAuthentication()
 				.AddGoogle(googleOptions => { 
@@ -62,14 +63,18 @@ namespace MapR
 					googleOptions.ClientSecret = Configuration["Google:ClientSecret"];
 				});
 
-            services.Configure<RazorViewEngineOptions>(o =>
-            {
+            services.Configure<RazorViewEngineOptions>(o => {
                 o.ViewLocationFormats.Clear();
                 o.ViewLocationFormats.Add("/Features/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.ViewLocationFormats.Add("/Features/Shared/{0}" + RazorViewEngine.ViewExtension);
             });
-
+           
             services.AddStartupTask<CloudTableInitialize>();
+
+            services.AddSingleton<IStoreGames>((serviceProvider) => {
+                var cloudClient = serviceProvider.GetService(typeof(CloudTableClient)) as CloudTableClient;
+                return new GameStore(cloudClient.GetTableReference("games"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

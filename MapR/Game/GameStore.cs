@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.Table;
 using GameModel = MapR.Game.Models.Game;
 
 namespace MapR.Game {
@@ -11,7 +12,9 @@ namespace MapR.Game {
     }
 
     public class GameStore : IStoreGames{
-        public GameStore() {
+        readonly CloudTable _gameTable;
+        public GameStore(CloudTable gameTable) {
+            _gameTable = gameTable;
         }
 
         public Task<GameModel> GetGame(string owner, string gameId) {

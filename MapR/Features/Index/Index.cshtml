@@ -17,13 +17,36 @@
     <div class="d-flex flex-row">
         <div class="d-flex flex-column flex-fill">
             <nav class="navbar">
-                <h2>Games You Run </h2> <div class="ml-auto"><button class="btn btn-outline-success">+</button></div>
+                <h2>Games You Run </h2> <div class="ml-auto">
+                <button class="btn btn-outline-success" data-toggle="modal" data-target="#newGameModal">+</button></div>
             </nav>
         </div>
         <div class="d-flex flex-column flex-fill">
             <nav class="navbar">
                 <h2>Games You Play</h2>
             </nav>
+        </div>
+    </div>
+
+    <div class="modal" role="form" id="newGameModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Add New Game</h5>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="name" class="form-control" placeholder="New Game Name" />
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" name="isPublic" id="isPublic" />
+                        <label class="form-check-label" for="isPublic">Is Public</label>
+                        Time to see if this should be vue or just a form submit? I like vue
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary">Create</button>
+                </div>
+            </div>
         </div>
     </div>
 }

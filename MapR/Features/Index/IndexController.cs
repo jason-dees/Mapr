@@ -1,4 +1,5 @@
 ﻿using MapR.Extensions;
+using MapR.Game;
 using MapR.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,11 @@ namespace MapR.Features.Index {
         public string ErrorMessage { get; set; }
 
         readonly SignInManager<ApplicationUser> _signInManager;
-        readonly UserManager<ApplicationUser> _userManager;
+        readonly IStoreGames _gameStore;
         public IndexController(SignInManager<ApplicationUser> signInManager, 
-            UserManager<ApplicationUser> userManager) {
+            IStoreGames gameStore) {
             _signInManager = signInManager;
-            _userManager = userManager;
+            _gameStore = gameStore;
         }
 
         [HttpGet]   
