@@ -1,9 +1,7 @@
-﻿using MapR.Identity.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using MapR.Extensions;
+using MapR.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MapR.Features.Index {
@@ -24,9 +22,10 @@ namespace MapR.Features.Index {
         [HttpGet]   
         [Route("")]
         public async Task<IActionResult> Index() {
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            var isSignedIn = User.Claims.Any();
-            var userName = isSignedIn ? _userManager.GetUserName(User) : "";
+            var isSignedIn = User.CheckIsSignedIn();
+
+            var userName = User.GetUserName();
+
             var indexViewModel = new IndexViewModel {
                 AuthenticationSchemes = await _signInManager.GetExternalAuthenticationSchemesAsync(),
                 IsSignedIn = isSignedIn,

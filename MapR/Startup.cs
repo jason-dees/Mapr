@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using MapR.Hubs;
 using MapR.Identity;
 using MapR.Identity.Models;
@@ -24,6 +26,7 @@ namespace MapR
             Configuration = configuration;
         }
 
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -47,8 +50,10 @@ namespace MapR
                 .AddUserStore<UserStore>()
                 .AddRoleStore<RoleStore>()
                 .AddDefaultTokenProviders();
+
             services.AddTransient((serviceProvider) => {
                 var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
+
                 return account.CreateCloudTableClient();
             });
 
@@ -64,6 +69,8 @@ namespace MapR
                 o.ViewLocationFormats.Add("/Features/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.ViewLocationFormats.Add("/Features/Shared/{0}" + RazorViewEngine.ViewExtension);
             });
+
+            services.AddStartupTask<CloudTableInitialize>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +95,55 @@ namespace MapR
                 routes.MapHub<MapHub>("/mapHub");
             });
             app.UseMvc();
+        }
+    }
+    //Shamelessly stolen from https://andrewlock.net/running-async-tasks-on-app-startup-in-asp-net-core-part-2/
+    public interface IStartupTask {
+        Task ExecuteAsync(CancellationToken cancellationToken = default);
+    }
+    public static class ServiceCollectionExtensions {
+        public static IServiceCollection AddStartupTask<T>(this IServiceCollection services)
+            where T : class, IStartupTask
+            => services.AddTransient<IStartupTask, T>();
+    }
+
+    public static class StartupTaskWebHostExtensions {
+        public static async Task RunWithTasksAsync(this IWebHost webHost, CancellationToken cancellationToken = default) {
+            // Load all tasks from DI
+            var startupTasks = webHost.Services.GetServices<IStartupTask>();
+
+            // Execute all the tasks
+            foreach (var startupTask in startupTasks) {
+                await startupTask.ExecuteAsync(cancellationToken);
+            }
+
+            // Start the tasks as normal
+            await webHost.RunAsync(cancellationToken);
+        }
+    }
+
+    class CloudTableInitialize : IStartupTask {
+
+        readonly string[] _tables;
+        readonly CloudTableClient _tableClient;
+        public CloudTableInitialize(CloudTableClient tableClient) {
+            _tableClient = tableClient;
+            _tables = new string[] {
+                "users",
+                "roles",
+                "games",
+                "gameplayers",
+                "gamemasters",
+                "mapmarkers",
+                "gamemaps"
+            };
+        }
+
+        public async Task ExecuteAsync(CancellationToken cancellationToken = default) {
+            foreach(var table in _tables) {
+                CloudTable cloudTable = _tableClient.GetTableReference(table);
+                await cloudTable.CreateIfNotExistsAsync();
+            }
         }
     }
 }

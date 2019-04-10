@@ -1,32 +1,41 @@
 ﻿@model MapR.Features.Index.IndexViewModel
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Home";
 }
 
-<form asp-controller="Account" asp-action="ExternalLogin" 
-    method="POST" 
-    class="form-horizontal">
+@if (Model.IsSignedIn)
+{
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <form asp-controller="Account" asp-action="Logout"
+              asp-route-returnurl="/" method="POST"
+              class="form-horizontal ml-auto">
+            <span>You are signed in!!! @Model.UserName</span>
+            <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
+        </form>
+    </nav>
+    <div class="d-flex flex-row">
+        <div class="d-flex flex-column flex-fill">
+            <nav class="navbar">
+                <h2>Games You Run </h2> <div class="ml-auto"><button class="btn btn-outline-success">+</button></div>
+            </nav>
+        </div>
+        <div class="d-flex flex-column flex-fill">
+            <nav class="navbar">
+                <h2>Games You Play</h2>
+            </nav>
+        </div>
+    </div>
+}
+else
+{
+    <form asp-controller="Account" asp-action="ExternalLogin"
+          asp-route-returnurl="/" method="POST"
+          class="form-horizontal">
 
-    @foreach (var provider in Model.AuthenticationSchemes)
-    {
-        <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">Test @provider.Name</button>
-    }
-</form>
-@if(Model.IsSignedIn){
-    <div>You are signed in!!! @Model.UserName</div>
-    <form asp-controller="Account" asp-action="Logout" 
-        asp-route-returnurl="/" method="POST" 
-        class="form-horizontal">
-        <button type="submit" title="Logout">Logout</button>
+        @foreach (var provider in Model.AuthenticationSchemes)
+        {
+            <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
+        }
     </form>
-}else{
-    <form asp-controller="Account" asp-action="ExternalLogin" 
-        asp-route-returnurl="/" method="POST" 
-        class="form-horizontal">
-
-    @foreach (var provider in Model.AuthenticationSchemes)
-    {
-        <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
-    }
-</form>
 }
