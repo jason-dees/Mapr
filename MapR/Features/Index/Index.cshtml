@@ -18,7 +18,8 @@
         <div class="d-flex flex-column flex-fill">
             <nav class="navbar">
                 <h2>Games You Run </h2> <div class="ml-auto">
-                <button class="btn btn-outline-success" data-toggle="modal" data-target="#newGameModal">+</button></div>
+                    <button class="btn btn-outline-success" data-toggle="modal" data-target="#newGameModal">+</button>
+                </div>
             </nav>
         </div>
         <div class="d-flex flex-column flex-fill">
@@ -35,20 +36,56 @@
                     <h5>Add New Game</h5>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="name" class="form-control" placeholder="New Game Name" />
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control"
+                               placeholder="New Game Name" 
+                               v-model="gameName" 
+                               v-bind:class="{ 'is-invalid' : (nameErrorMessage.length > 0) }"
+                               v-on:keyup="submit" />
+                    </div>
+
+                    <div class="alert alert-warning" v-show="nameErrorMessage.length > 0">{{nameErrorMessage}}</div>
+
                     <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" name="isPublic" id="isPublic" />
-                        <label class="form-check-label" for="isPublic">Is Public</label>
-                        Time to see if this should be vue or just a form submit? I like vue
+                        <input type="checkbox" class="form-check-input" 
+                            name="isPrivate" id="isPrivate" 
+                            v-model="isPrivate" value="true"/>
+                        <label class="form-check-label" for="isPrivate">Is Private</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-outline-primary">Create</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="submit">Create</button>
                 </div>
             </div>
         </div>
     </div>
+    
+@section Scripts {
+    <script type="text/javascript">
+        window.addEventListener("load", function(){
+            var newForm = new Vue({
+                el: "#newGameModal",
+                data:{
+                    gameName: "",
+                    isPrivate: false,
+                    nameErrorMessage: ""
+                },
+                methods: {
+                    submit: function(event){
+                        if(this.gameName.trim().length == 0){
+                            this.nameErrorMessage = "Game needs a name!";
+                            return;
+                        }
+                        else{
+                            this.nameErrorMessage = "";
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
 }
 else
 {
