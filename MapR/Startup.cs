@@ -26,7 +26,6 @@ namespace MapR
             Configuration = configuration;
         }
 
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -97,6 +96,7 @@ namespace MapR
             app.UseMvc();
         }
     }
+
     //Shamelessly stolen from https://andrewlock.net/running-async-tasks-on-app-startup-in-asp-net-core-part-2/
     public interface IStartupTask {
         Task ExecuteAsync(CancellationToken cancellationToken = default);
