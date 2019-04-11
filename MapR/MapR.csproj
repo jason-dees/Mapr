@@ -22,6 +22,8 @@
     <Folder Include="Extensions\" />
     <Folder Include="Features\AddGame\" />
     <Folder Include="Features\AddGame\Models\" />
+    <Folder Include="Features\Index\Models\" />
+    <Folder Include="Features\PlayGame\" />
   </ItemGroup>
 
 </Project>

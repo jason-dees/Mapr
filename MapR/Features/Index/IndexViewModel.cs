@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MapR.Features.Index.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -10,5 +11,7 @@ namespace MapR.Features.Index {
         public bool IsSignedIn { get; set; }
 
         public string UserName { get; set; }
+
+        public List<YourGame> YourGames { get; set; }
     }
 }

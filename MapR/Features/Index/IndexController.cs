@@ -3,6 +3,7 @@ using MapR.Game;
 using MapR.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MapR.Features.Index {
@@ -30,7 +31,12 @@ namespace MapR.Features.Index {
             var indexViewModel = new IndexViewModel {
                 AuthenticationSchemes = await _signInManager.GetExternalAuthenticationSchemesAsync(),
                 IsSignedIn = isSignedIn,
-                UserName = userName
+                UserName = userName,
+                YourGames = (await _gameStore.GetGames(userName)).Select(gm => new Models.YourGame {
+                    Id = gm.Id,
+                    Name = gm.Name,
+                    LastPlayed = gm.Timestamp
+                }).OrderByDescending(g => g.LastPlayed).ToList()
             };
             return View("Index", indexViewModel);
         }

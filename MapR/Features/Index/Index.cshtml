@@ -21,6 +21,13 @@
                     <button class="btn btn-outline-success" data-toggle="modal" data-target="#newGameModal">+</button>
                 </div>
             </nav>
+            <ul>
+            @foreach (var yourGame in Model.YourGames){
+                <li>    
+                    <a href="/game/@yourGame.Id">@yourGame.Name - @yourGame.LastPlayed.Date.ToShortDateString()</a>
+                </li>
+            }
+            </ul>
         </div>
         <div class="d-flex flex-column flex-fill">
             <nav class="navbar">
@@ -61,45 +68,46 @@
             </div>
         </div>
     </div>
-    
-@section Scripts {
-    <script type="text/javascript">var glogbal;
-        window.addEventListener("load", function () {
-            var newForm = new Vue({
-                el: "#newGameModal",
-                data: {
-                    gameName: "",
-                    isPrivate: false,
-                    nameErrorMessage: "",
-                    formErrorMessage: ""
-                },
-                methods: {
-                    submit: function (event) {
-                        var self = this;
-                        if (this.checkIsEmpty()) return;
-                        axios.post('/games/addgame', {
-                            name: this.gameName,
-                            isPrivate: this.isPrivate
-                        }).then(function (response) {
-                            //console.log(response);
-                        }).catch(function (error) {
-                            self.formErrorMessage = error.message;
-                        });
+    @section Scripts {
+        <script type="text/javascript">
+            window.addEventListener("load", function () {
+                var newForm = new Vue({
+                    el: "#newGameModal",
+                    data: {
+                        gameName: "",
+                        isPrivate: false,
+                        nameErrorMessage: "",
+                        formErrorMessage: ""
                     },
-                    checkIsEmpty: function () {
-                        if (this.gameName.trim().length == 0) {
-                            this.nameErrorMessage = "Game needs a name!";
-                            return true;
-                        }
-                        else {
-                            this.nameErrorMessage = "";
-                            return false;
+                    methods: {
+                        submit: function (event) {
+                            var self = this;
+                            if (this.checkIsEmpty()) return;
+                            axios.post('/games/addgame', {
+                                name: this.gameName,
+                                isPrivate: this.isPrivate
+                            }).then(function (response) {
+                                console.log(response.data);
+                                window.location ='/game/' + response.data.id;
+                            }).catch(function (error) {
+                                self.formErrorMessage = error.message;
+                            });
+                        },
+                        checkIsEmpty: function () {
+                            if (this.gameName.trim().length == 0) {
+                                this.nameErrorMessage = "Game needs a name!";
+                                return true;
+                            }
+                            else {
+                                this.nameErrorMessage = "";
+                                return false;
+                            }
                         }
                     }
-                }
+                });
             });
-        });</script>
-}
+        </script>
+    }
 }
 else
 {

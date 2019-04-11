@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Table;
 using GameModel = MapR.Game.Models.Game;
@@ -7,8 +8,9 @@ using GameModel = MapR.Game.Models.Game;
 namespace MapR.Game {
     public interface IStoreGames {
         Task<GameModel> GetGame(string owner, string gameId);
+        Task<GameModel> GetGame(string gameId);
         Task<IList<GameModel>> GetGames(string owner);
-        Task<bool> IsUniqueId(string gameId);
+        Task<bool> AddGame(GameModel game);
     }
 
     public class GameStore : IStoreGames{
@@ -17,16 +19,55 @@ namespace MapR.Game {
             _gameTable = gameTable;
         }
 
-        public Task<GameModel> GetGame(string owner, string gameId) {
-            throw new NotImplementedException();
+        public async Task<GameModel> GetGame(string owner, string gameId) {
+            var ownerQuery = TableQuery.GenerateFilterCondition("Owner", QueryComparisons.Equal, owner);
+            var idQuery = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, gameId);
+
+            var query = new TableQuery<GameModel>()
+                .Where(TableQuery.CombineFilters(ownerQuery,
+                    TableOperators.And,
+                    idQuery));
+
+            return (await _gameTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
         }
 
-        public Task<IList<GameModel>> GetGames(string owner) {
-            throw new NotImplementedException();
+        public async Task<GameModel> GetGame(string gameId) {
+            var idQuery = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, gameId);
+
+            var query = new TableQuery<GameModel>()
+                .Where(idQuery);
+
+            return (await _gameTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
         }
 
-        public Task<bool> IsUniqueId(string gameId) {
-            throw new NotImplementedException();
+        public async Task<IList<GameModel>> GetGames(string owner) {
+            var ownerQuery = TableQuery.GenerateFilterCondition("Owner", QueryComparisons.Equal, owner);
+
+            var query = new TableQuery<GameModel>()
+                .Where(ownerQuery);
+
+            return (await _gameTable.ExecuteQuerySegmentedAsync(query, null)).Results;
         }
+
+        async Task<bool> IsUniqueId(string gameId) {
+            var idQuery = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, gameId);
+
+            var query = new TableQuery<GameModel>()
+                .Where(idQuery);
+
+            return !(await _gameTable.ExecuteQuerySegmentedAsync(query, null)).Results.Any();
+        }
+
+        public async Task<bool> AddGame(GameModel game) {
+
+            while(!await IsUniqueId(game.Id)) { //Let's hope and pray it never gets stuck
+                game.RegenerateId();
+            }
+
+            TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(game);
+
+            await _gameTable.ExecuteAsync(insertOrMergeOperation);
+            return true;
+        } 
     }
 }
