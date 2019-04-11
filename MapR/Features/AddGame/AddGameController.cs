@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MapR.Extensions;
-using MapR.Game;
+using MapR.Stores.Game;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,7 +16,7 @@ namespace MapR.Features.AddGame {
 
         [HttpPost]
         public async Task<IActionResult> AddGame([FromBody]Models.AddGame game) {
-            var newGame = new Game.Models.Game(User.GetUserName()) {
+            var newGame = new GameModel(User.GetUserName()) {
                 Name = game.Name,
                 IsPrivate = game.IsPrivate
             };

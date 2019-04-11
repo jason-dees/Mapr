@@ -4,22 +4,29 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Identity.Models {
-	public class ApplicationRole : IdentityRole, ITableEntity {
+namespace MapR.Stores.Identity.Models {
+	public class ApplicationUser : IdentityUser, ITableEntity {
 		public string PartitionKey { get; set; }
 		public string RowKey { get; set; }
 		public DateTimeOffset Timestamp { get; set; }
 		public string ETag { get; set; }
 
-		public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
-			ApplicationRole entity = TableEntity.ConvertBack<ApplicationRole>(properties, operationContext);
+		public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
+        public string NameIdentifier { get; set; }
 
-			this.Id = entity.Id;
-			this.Name = entity.Name;
+
+        public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
+			ApplicationUser entity = TableEntity.ConvertBack<ApplicationUser>(properties, operationContext);
+			this.Email = entity.Email;
+			this.UserName = entity.UserName;
 			this.PartitionKey = entity.PartitionKey;
 			this.RowKey = entity.RowKey;
 			this.Timestamp = entity.Timestamp;
 			this.ETag = entity.ETag;
+			this.LoginProvider = entity.LoginProvider;
+            this.ProviderKey = entity.ProviderKey;
+            this.NameIdentifier = entity.NameIdentifier;
 		}
 
 		public IDictionary<string, EntityProperty> WriteEntity(OperationContext operationContext) {

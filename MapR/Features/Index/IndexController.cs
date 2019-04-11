@@ -1,6 +1,6 @@
 ﻿using MapR.Extensions;
-using MapR.Game;
-using MapR.Identity.Models;
+using MapR.Stores.Game;
+using MapR.Stores.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;

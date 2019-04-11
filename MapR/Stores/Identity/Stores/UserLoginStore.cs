@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MapR.Identity.Models;
+using MapR.Stores.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Identity.Stores {
+namespace MapR.Stores.Identity.Stores {
     public partial class UserStore : IUserLoginStore<ApplicationUser> {
 
         public Task AddLoginAsync(ApplicationUser user, UserLoginInfo login, CancellationToken cancellationToken) {

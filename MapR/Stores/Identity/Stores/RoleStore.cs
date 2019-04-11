@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MapR.Identity.Models;
+using MapR.Stores.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Identity.Stores {
+namespace MapR.Stores.Identity.Stores {
 	public class RoleStore : IRoleStore<ApplicationRole> {
 		const string _partition = "MapR";
 		readonly CloudTable _roleTable;

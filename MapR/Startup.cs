@@ -1,14 +1,9 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using MapR.Game;
+using MapR.Stores.Game;
 using MapR.Hubs;
-using MapR.Identity;
-using MapR.Identity.Models;
-using MapR.Identity.Stores;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using MapR.Stores.Identity.Models;
+using MapR.Stores.Identity.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using MapR.Map;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace MapR
 {
@@ -53,10 +50,6 @@ namespace MapR
                 .AddRoleStore<RoleStore>()
                 .AddDefaultTokenProviders();
 
-            var account = CloudStorageAccount.Parse(Configuration["MapR:ConnectionString"]);
-
-            services.AddSingleton<CloudTableClient>((sp) => account.CreateCloudTableClient());
-
             services.AddAuthentication()
 				.AddGoogle(googleOptions => { 
 					googleOptions.ClientId = Configuration["Google:ClientId"];
@@ -68,13 +61,8 @@ namespace MapR
                 o.ViewLocationFormats.Add("/Features/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.ViewLocationFormats.Add("/Features/Shared/{0}" + RazorViewEngine.ViewExtension);
             });
-           
-            services.AddStartupTask<CloudTableInitialize>();
 
-            services.AddSingleton<IStoreGames>((serviceProvider) => {
-                var cloudClient = serviceProvider.GetService(typeof(CloudTableClient)) as CloudTableClient;
-                return new GameStore(cloudClient.GetTableReference("games"));
-            });
+            AddAzureCloudStuff(services, Configuration["MapR:ConnectionString"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +87,28 @@ namespace MapR
                 routes.MapHub<MapHub>("/mapHub");
             });
             app.UseMvc();
+        }
+    
+        static void AddAzureCloudStuff(IServiceCollection services, string connectionString) {
+            var account = CloudStorageAccount.Parse(connectionString);
+
+            services.AddSingleton((sp) => account);
+            services.AddSingleton<CloudTableClient>((sp) => account.CreateCloudTableClient());
+            services.AddSingleton<CloudBlobClient>((sp) => account.CreateCloudBlobClient());
+
+            services.AddStartupTask<CloudInitialize>();
+
+            services.AddSingleton<IStoreGames>((serviceProvider) => {
+                var cloudClient = serviceProvider.GetService(typeof(CloudTableClient)) as CloudTableClient;
+                return new GameStore(cloudClient.GetTableReference("games"));
+            });
+            services.AddSingleton<IStoreMaps>((serviceProvider) => {    
+                var cloudClient = serviceProvider.GetService(typeof(CloudTableClient)) as CloudTableClient;
+                var blobClient = serviceProvider.GetService(typeof(CloudBlobClient)) as CloudBlobClient; ;
+
+                return new MapStore(cloudClient.GetTableReference("gamemaps"),
+                    blobClient.GetContainerReference("mapimagestorage"));
+            });
         }
     }
 
@@ -127,12 +137,15 @@ namespace MapR
         }
     }
 
-    class CloudTableInitialize : IStartupTask {
+    class CloudInitialize : IStartupTask {
 
         readonly string[] _tables;
+        readonly string[] _blobContainers;
         readonly CloudTableClient _tableClient;
-        public CloudTableInitialize(CloudTableClient tableClient) {
-            _tableClient = tableClient;
+        readonly CloudBlobClient _blobClient;
+        public CloudInitialize(CloudStorageAccount account) {
+            _tableClient = account.CreateCloudTableClient();
+            _blobClient = account.CreateCloudBlobClient();
             _tables = new string[] {
                 "users",
                 "roles",
@@ -142,12 +155,19 @@ namespace MapR
                 "mapmarkers",
                 "gamemaps"
             };
+            _blobContainers = new string[] {
+                "mapimagestorage"
+            };
         }
 
         public async Task ExecuteAsync(CancellationToken cancellationToken = default) {
             foreach(var table in _tables) {
                 CloudTable cloudTable = _tableClient.GetTableReference(table);
                 await cloudTable.CreateIfNotExistsAsync();
+            }
+            foreach(var container in _blobContainers) {
+                var storage = _blobClient.GetContainerReference(container);
+                await storage.CreateIfNotExistsAsync();
             }
         }
     }

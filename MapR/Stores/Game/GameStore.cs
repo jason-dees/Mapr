@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MapR.Extensions;
 using Microsoft.WindowsAzure.Storage.Table;
-using GameModel = MapR.Game.Models.Game;
 
-namespace MapR.Game {
+namespace MapR.Stores.Game {
     public interface IStoreGames {
         Task<GameModel> GetGame(string owner, string gameId);
         Task<GameModel> GetGame(string gameId);
@@ -41,7 +41,7 @@ namespace MapR.Game {
         }
 
         public async Task<IList<GameModel>> GetGames(string owner) {
-            var ownerQuery = TableQuery.GenerateFilterCondition("Owner", QueryComparisons.Equal, owner);
+            var ownerQuery = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, owner);
 
             var query = new TableQuery<GameModel>()
                 .Where(ownerQuery);
@@ -61,7 +61,7 @@ namespace MapR.Game {
         public async Task<bool> AddGame(GameModel game) {
 
             while(!await IsUniqueId(game.Id)) { //Let's hope and pray it never gets stuck
-                game.RegenerateId();
+                game.GenerateRandomId();
             }
 
             TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(game);

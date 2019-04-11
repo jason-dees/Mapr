@@ -4,9 +4,19 @@
     ViewData["Title"] = "Game Admin";
 }
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a href="/">Home</a>
+    <a href="/" class="btn navbar-brand">Home</a>
     <div class="btn-group">
-        <button class="btn btn-default">Add Map</button>
+        <button class="btn btn-secondary">Add Map</button>
+        <div class="btn-group" role="group">
+            <button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle" 
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Change Map
+            </button>
+            <div class="dropdown-menu" aria-labelledby="mapGroupDropdown">
+                <a class="dropdown-item" href="#">Dropdown link</a>
+                <a class="dropdown-item" href="#">Dropdown link</a>
+            </div>
+        </div>
     </div>
     <form asp-controller="Account" asp-action="Logout"
           asp-route-returnurl="/" method="POST"
