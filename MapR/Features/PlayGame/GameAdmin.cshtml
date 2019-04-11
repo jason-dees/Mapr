@@ -60,6 +60,7 @@
 @section Scripts {
 <script type="text/javascript">
         window.addEventListener("load", function () {
+            var newMapUrl = '/games/@Model.GameId/maps/AddMap';
             var newMap = new Vue({
                 el: "#newMapModal",
                 data: {
@@ -72,15 +73,15 @@
                     submit: function (event) {
                         var self = this;
                         if (this.checkIsEmpty()) return;
-                        @*axios.post('/games/addgame', {
+                        axios.post(newMapUrl, {
                             name: this.gameName,
                             isPrivate: this.isPrivate
                         }).then(function (response) {
-                            console.log(response.data);
-                            window.location ='/game/' + response.data.id;
+                            //console.log(response.data);
+                            //window.location ='/game/' + response.data.id;
                         }).catch(function (error) {
                             self.formErrorMessage = error.message;
-                        });*@
+                        });
                     },
                     checkIsEmpty: function () {
                         if (this.mapName.trim().length == 0) {

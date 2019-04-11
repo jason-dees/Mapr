@@ -7,7 +7,7 @@ using MapR.Stores.Map;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MapR.Features.AddMap {
-    [Route("game/{gameId}/[action]")]
+    [Route("games/{gameId}/maps/[action]")]
     public class AddMapController : Controller{
 
         readonly IStoreGames _gameStore;
