@@ -6,10 +6,10 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a href="/" class="btn navbar-brand">Home</a>
     <div class="btn-group">
-        <button class="btn btn-secondary">Add Map</button>
+        <button class="btn btn-secondary" data-toggle="modal" data-target="#newMapModal">Add Map</button>
         <div class="btn-group" role="group">
-            <button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle" 
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Change Map
             </button>
             <div class="dropdown-menu" aria-labelledby="mapGroupDropdown">
@@ -24,3 +24,76 @@
         <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
     </form>
 </nav>
+
+<div class="modal" role="form" id="newMapModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Add New Game</h5>
+            </div>
+            <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
+                <div class="form-group">
+                    <input type="text" name="name" class="form-control"
+                           placeholder="New Map Name"
+                           v-model="mapName"
+                           v-bind:class="{ 'is-invalid' : (nameErrorMessage.length > 0) }"
+                           v-on:keyup="checkIsEmpty" />
+                </div>
+
+                <div class="alert alert-warning" v-show="nameErrorMessage.length > 0">{{nameErrorMessage}}</div>
+
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input"
+                           name="isPrivate" id="isPrivate"
+                           v-model="isPrivate" value="true" />
+                    <label class="form-check-label" for="isPrivate">Is Private</label>
+                </div>
+                <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-primary" v-on:click="submit">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script type="text/javascript">
+        window.addEventListener("load", function () {
+            var newMap = new Vue({
+                el: "#newMapModal",
+                data: {
+                    mapName: "",
+                    isPrivate: false,
+                    nameErrorMessage: "",
+                    formErrorMessage: ""
+                },
+                methods: {
+                    submit: function (event) {
+                        var self = this;
+                        if (this.checkIsEmpty()) return;
+                        @*axios.post('/games/addgame', {
+                            name: this.gameName,
+                            isPrivate: this.isPrivate
+                        }).then(function (response) {
+                            console.log(response.data);
+                            window.location ='/game/' + response.data.id;
+                        }).catch(function (error) {
+                            self.formErrorMessage = error.message;
+                        });*@
+                    },
+                    checkIsEmpty: function () {
+                        if (this.mapName.trim().length == 0) {
+                            this.nameErrorMessage = "Map needs a name!";
+                            return true;
+                        }
+                        else {
+                            this.nameErrorMessage = "";
+                            return false;
+                        }
+                    }
+                }
+            });
+        });
+</script>
+}
