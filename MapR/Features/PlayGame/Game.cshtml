@@ -1,0 +1,27 @@
+﻿@model MapR.Features.PlayGame.Models.GamePlayer
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Game";
+}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a href="/">Home</a>
+    <div class="btn-group">
+    </div>
+    @if (Model.IsSignedIn) {
+        <form asp-controller="Account" asp-action="Logout"
+              asp-route-returnurl="/" method="POST"
+              class="form-horizontal ml-auto">
+            <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
+        </form>
+    } else {
+    <form asp-controller="Account" asp-action="ExternalLogin"
+          asp-route-returnurl="/game/@Model.GameId" method="POST"
+          class="form-horizontal ml-auto">
+        Sign in with
+        @foreach (var provider in Model.AuthenticationSchemes) {
+            <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
+        }
+    </form>
+    }
+</nav>
+YOU ARE A PLAYER @Model.UserName
