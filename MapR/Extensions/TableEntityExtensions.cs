@@ -21,6 +21,8 @@ namespace MapR.Extensions {
         public static async Task LoadImageBytes(this MapModel map, CloudBlobContainer mapContainer) {
             var mapBlob = mapContainer.GetBlobReference(map.ImageUri);
 
+            map.ImageBytes = new byte[mapBlob.StreamMinimumReadSizeInBytes];
+
             await mapBlob.DownloadToByteArrayAsync(map.ImageBytes, 0);
         }
     }

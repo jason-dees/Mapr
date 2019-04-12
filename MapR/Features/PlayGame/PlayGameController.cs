@@ -28,6 +28,22 @@ namespace MapR.Features.PlayGame {
         }
 
         [HttpGet]
+        [Route("{gameId}/maps/{mapId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetImage(string gameId, string mapId, 
+            [FromQuery]int width, [FromQuery]int height) {
+
+            var game = await _gameStore.GetGame(gameId);
+            if (game.IsPrivate) { return NotFound(); }
+
+            var map = await _mapStore.GetMap(mapId);
+            if(width == 0 || height == 0) {
+                return File(map.ImageBytes, "image/jpeg");
+            }
+            return File(map.ImageBytes.Resize(width, height), "image/jpeg");
+        }
+
+        [HttpGet]
         [Route("{gameId}")]
         [AllowAnonymous]
         public async Task<IActionResult> Game(string gameId) {
@@ -50,8 +66,7 @@ namespace MapR.Features.PlayGame {
             var maps = (await _mapStore.GetMaps(game.Id)).Select(m => new GameMap { 
                 Id = m.Id,
                 Name = m.Name,
-                IsPrimary = m.IsPrimary,
-                ImageBytes = m.ImageBytes.Resize(100,100)
+                IsPrimary = m.IsPrimary
             }).ToList();
 
             var model = new GameAdmin {

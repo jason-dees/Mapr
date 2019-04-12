@@ -63,6 +63,8 @@ namespace MapR.Map {
 
             var map = (await _mapTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
 
+            await map.LoadImageBytes(_mapContainer);
+
             return map;
         }
 
@@ -73,11 +75,6 @@ namespace MapR.Map {
                 .Where(ownerQuery);
 
             var mapResult = await _mapTable.ExecuteQuerySegmentedAsync(query, null);
-            foreach(var map in mapResult) {
-                if (map.IsActive) {
-                    await map.LoadImageBytes(_mapContainer);
-                }
-            }
 
             return mapResult.ToList();
         }

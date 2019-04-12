@@ -87,7 +87,6 @@
                                 name: this.gameName,
                                 isPrivate: this.isPrivate
                             }).then(function (response) {
-                                console.log(response.data);
                                 window.location ='/game/' + response.data.id;
                             }).catch(function (error) {
                                 self.formErrorMessage = error.message;
