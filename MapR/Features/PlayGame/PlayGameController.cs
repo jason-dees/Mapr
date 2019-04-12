@@ -50,13 +50,15 @@ namespace MapR.Features.PlayGame {
             var game = await _gameStore.GetGame(gameId);
 
             if(game.Owner == User.GetUserName()) { return await GameAdmin(game); }
+            var primaryMap = (await _mapStore.GetMaps(game.Id)).FirstOrDefault(m => m.IsPrimary);
 
             var model = new GamePlayer {
                 AuthenticationSchemes = await _signInManager.GetExternalAuthenticationSchemesAsync(),
                 GameId = game.Id,
                 GameName = game.Name,
                 IsSignedIn = User.CheckIsSignedIn(),
-                UserName = User.GetUserName()
+                UserName = User.GetUserName(),
+                PrimaryMapId = primaryMap.Id
             };
 
             return View("Game", model);

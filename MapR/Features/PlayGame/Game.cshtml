@@ -7,21 +7,40 @@
     <a href="/">Home</a>
     <div class="btn-group">
     </div>
-    @if (Model.IsSignedIn) {
+    @if (Model.IsSignedIn)
+    {
         <form asp-controller="Account" asp-action="Logout"
               asp-route-returnurl="/" method="POST"
               class="form-horizontal ml-auto">
             <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
         </form>
-    } else {
-    <form asp-controller="Account" asp-action="ExternalLogin"
-          asp-route-returnurl="/game/@Model.GameId" method="POST"
-          class="form-horizontal ml-auto">
-        Sign in with
-        @foreach (var provider in Model.AuthenticationSchemes) {
-            <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
-        }
-    </form>
+    }
+    else
+    {
+        <form asp-controller="Account" asp-action="ExternalLogin"
+              asp-route-returnurl="/game/@Model.GameId" method="POST"
+              class="form-horizontal ml-auto">
+            Sign in with
+            @foreach (var provider in Model.AuthenticationSchemes)
+            {
+                <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
+            }
+        </form>
     }
 </nav>
 YOU ARE A PLAYER @Model.UserName
+
+<img id="map" src="/game/@Model.GameId/maps/@Model.PrimaryMapId" />
+
+@section Scripts {
+    <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
+    <script type="text/javascript">
+    window.addEventListener("load", function () {
+        var mapZoom = panzoom(document.querySelector('#map'), {
+            maxZoom: 1,
+            smoothScroll: false,
+            minZoom: .1
+        });
+    });
+    </script>
+}

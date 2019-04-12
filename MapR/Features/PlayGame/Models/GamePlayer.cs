@@ -9,5 +9,6 @@ namespace MapR.Features.PlayGame.Models {
         public bool IsSignedIn { get; set; }
         public string UserName { get; set; }
         public IEnumerable<AuthenticationScheme> AuthenticationSchemes { get; set; }
+        public string PrimaryMapId { get; set; }
     }
 }
