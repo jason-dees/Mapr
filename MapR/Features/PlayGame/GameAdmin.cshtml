@@ -3,32 +3,47 @@
     Layout = "_Layout";
     ViewData["Title"] = "Game Admin";
 }
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a href="/" class="btn navbar-brand">Home</a>
-    <div class="btn-group">
-        <button class="btn btn-secondary" data-toggle="modal" data-target="#newMapModal">Add Map</button>
-        <div class="btn-group" role="group">
-            <button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Change Map
-            </button>
-            <div class="dropdown-menu" aria-labelledby="mapGroupDropdown">
-                @foreach (var yourGame in Model.Maps)
-                {
-                    <span class="dropdown-item">@yourGame.Name</span>
-                }
+<div id="gameAdminVue">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a href="/" class="btn navbar-brand">Home</a>
+        <div class="btn-group">
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#newMapModal">Add Map</button>
+            <div class="btn-group" role="group">
+                <button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Change Map
+                </button>
+                <div class="dropdown-menu" aria-labelledby="mapGroupDropdown">
+                    @foreach (var yourGame in Model.Maps)
+                    {
+                        <span class="dropdown-item">@yourGame.Name</span>
+                    }
+                </div>
             </div>
         </div>
+        <div class="btn-group mr-sm-2">
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#newMapMarkerModal">Add Marker</button>
+            <div class="btn-group" role="group">
+                <button id="mapMarkerGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Change Map
+                </button>
+                <div class="dropdown-menu" aria-labelledby="mapMarkerGroupDropdown">
+                </div>
+            </div>
+        </div>
+        <form asp-controller="Account" asp-action="Logout"
+              asp-route-returnurl="/" method="POST"
+              class="form-horizontal ml-auto">
+            <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
+        </form>
+    </nav>
+    <div id="mapVue">
+        <img id="map" src="/game/@Model.GameId/maps/@Model.ActiveMap?.Id" />
     </div>
-    <form asp-controller="Account" asp-action="Logout"
-          asp-route-returnurl="/" method="POST"
-          class="form-horizontal ml-auto">
-        <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
-    </form>
-</nav>
-<div>
-    <img id="map" src="/game/@Model.GameId/maps/@Model.ActiveMap?.Id" />
 </div>
+
+
 <div class="modal" role="form" id="newMapModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

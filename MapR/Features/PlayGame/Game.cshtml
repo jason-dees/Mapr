@@ -4,7 +4,8 @@
     ViewData["Title"] = "Game";
 }
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a href="/">Home</a>
+    <a href="/" class="navbar-brand">Home</a>
+    <h3>@Model.GameName - @Model.PrimaryMapName</h3>
     <div class="btn-group">
     </div>
     @if (Model.IsSignedIn)
@@ -28,7 +29,6 @@
         </form>
     }
 </nav>
-YOU ARE A PLAYER @Model.UserName
 
 <img id="map" src="/game/@Model.GameId/maps/@Model.PrimaryMapId" />
 
@@ -44,3 +44,4 @@ YOU ARE A PLAYER @Model.UserName
     });
     </script>
 }
+<link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />

@@ -58,7 +58,8 @@ namespace MapR.Features.PlayGame {
                 GameName = game.Name,
                 IsSignedIn = User.CheckIsSignedIn(),
                 UserName = User.GetUserName(),
-                PrimaryMapId = primaryMap.Id
+                PrimaryMapId = primaryMap.Id,
+                PrimaryMapName = primaryMap.Name
             };
 
             return View("Game", model);

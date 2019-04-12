@@ -10,5 +10,6 @@ namespace MapR.Features.PlayGame.Models {
         public string UserName { get; set; }
         public IEnumerable<AuthenticationScheme> AuthenticationSchemes { get; set; }
         public string PrimaryMapId { get; set; }
+        public string PrimaryMapName { get; set; }
     }
 }
