@@ -123,10 +123,32 @@
     window.addEventListener("load", function () {
         var newMapUrl = '/games/@Model.GameId/maps/AddMap';
 
+		var gameId = '@Model.GameId';
+		var mapId = '@Model.ActiveMap.Id';
+
         let connection = new signalR.HubConnectionBuilder()
         	.withUrl("/mapHub", { accessTokenFactory: () => this.loginToken })
         	.build();
 
+	    connection.start()
+	        .then(function () { connection.invoke("AddToGame", "@Model.GameId") });
+
+		function setMapMarker(mapMarker) {
+	        addMarker(mapMarker);
+
+	        var mapTransform = mapZoom.getTransform();
+	        var element = document.querySelector('#' + mapMarker.id);
+
+	        var mapMarkerX = mapMarker.x - element.width() / 2,
+	            mapMarkerY = mapMarker.y - element.height() / 2,
+	        	left = mapTransform.scale * mapMarkerX + mapTransform.x,
+				top = mapTransform.scale * mapMarkerY + mapTransform.y;
+
+	        var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
+	        element.css('transform', transformValue);
+	    }
+
+	    connection.on("SetMapMarker", setMapMarker);
         setUpNewMapForm(newMapUrl);
 
         var mapZoom = panzoom(document.querySelector('#map'), {
@@ -161,18 +183,18 @@
             },
             methods:{
                 submit: function() {
+					var mapMarker = {
+						id: "STUFFISHERE",
+						gameId: gameId,
+						mapId: mapId
+					};
+					connection.invoke('CreateMapMarker', mapMarker);
                 },
                 checkIsEmpty: function(event) {
                     console.log(event);
                 }
             }
         });
-
-		var connection = new signalR.HubConnectionBuilder()
-			.withUrl("/mapHub", 
-				{ accessTokenFactory: () => this.loginToken })
-			.build();
-
     });
 	</script>
 }

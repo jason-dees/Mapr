@@ -19,6 +19,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System;
+using MapR.Stores.Marker;
 
 namespace MapR
 {
@@ -53,49 +54,10 @@ namespace MapR
                 .AddRoleStore<RoleStore>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthentication(options =>
-					{
-						// Identity made Cookie authentication the default.
-						// However, we want JWT Bearer Auth to be the default.
-						options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-						options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-					})
-				.AddGoogle(googleOptions => { 
+			services.AddAuthentication()
+				.AddGoogle(googleOptions => {
 					googleOptions.ClientId = Configuration["Google:ClientId"];
 					googleOptions.ClientSecret = Configuration["Google:ClientSecret"];
-				})
-				.AddJwtBearer(options => {
-					// Configure JWT Bearer Auth to expect our security key
-					options.TokenValidationParameters =
-						new TokenValidationParameters {
-							LifetimeValidator = (before, expires, token, param) => {
-								return expires > DateTime.UtcNow;
-							},
-							ValidateAudience = false,
-							ValidateIssuer = false,
-							ValidateActor = false,
-							ValidateLifetime = true,
-							IssuerSigningKey = "MYTHING"
-						};
-
-					// We have to hook the OnMessageReceived event in order to
-					// allow the JWT authentication handler to read the access
-					// token from the query string when a WebSocket or 
-					// Server-Sent Events request comes in.
-					options.Events = new JwtBearerEvents {
-						OnMessageReceived = context => {
-							var accessToken = context.Request.Query["access_token"];
-
-							// If the request is for our hub...
-							var path = context.HttpContext.Request.Path;
-							if (!string.IsNullOrEmpty(accessToken) &&
-								(path.StartsWithSegments("/hubs/chat"))) {
-								// Read the token out of the query string
-								context.Token = accessToken;
-							}
-							return Task.CompletedTask;
-						}
-					};
 				});
 
 			services.Configure<RazorViewEngineOptions>(o => {
@@ -151,6 +113,10 @@ namespace MapR
                 return new MapStore(cloudClient.GetTableReference("gamemaps"),
                     blobClient.GetContainerReference("mapimagestorage"));
             });
+
+			services.AddSingleton<IStoreMarkers>((sreviceProvider) => {
+				return new MarkerStore();
+			});
         }
     }
 
