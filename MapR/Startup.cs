@@ -53,15 +53,14 @@ namespace MapR
                 .AddRoleStore<RoleStore>()
                 .AddDefaultTokenProviders();
 
-
-			services.AddAuthentication(options =>
-			{
-				// Identity made Cookie authentication the default.
-				// However, we want JWT Bearer Auth to be the default.
-				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-			})
-				.AddGoogle(googleOptions => {
+            services.AddAuthentication(options =>
+					{
+						// Identity made Cookie authentication the default.
+						// However, we want JWT Bearer Auth to be the default.
+						options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+						options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+					})
+				.AddGoogle(googleOptions => { 
 					googleOptions.ClientId = Configuration["Google:ClientId"];
 					googleOptions.ClientSecret = Configuration["Google:ClientSecret"];
 				})

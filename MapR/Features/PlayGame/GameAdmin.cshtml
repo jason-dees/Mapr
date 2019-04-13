@@ -167,8 +167,12 @@
                 }
             }
         });
-        connection.start();
-            //.then(function () { connection.invoke("SendAllMapMarkers") });
+
+		var connection = new signalR.HubConnectionBuilder()
+			.withUrl("/mapHub", 
+				{ accessTokenFactory: () => this.loginToken })
+			.build();
+
     });
 	</script>
 }

@@ -30,6 +30,7 @@
     <Folder Include="Stores\Game\" />
     <Folder Include="Stores\Identity\" />
     <Folder Include="Stores\Map\" />
+    <Folder Include="Stores\Marker\" />
   </ItemGroup>
 
 </Project>
