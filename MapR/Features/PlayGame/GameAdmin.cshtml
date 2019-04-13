@@ -43,7 +43,6 @@
     </div>
 </div>
 
-
 <div class="modal" role="form" id="newMapModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -78,6 +77,45 @@
         </div>
     </div>
 </div>
+
+<div class="modal" role="form" id="newMapMarkerModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Add New Game</h5>
+            </div>
+            <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
+                <div class="form-group">
+                    <input type="text" name="name" class="form-control"
+                           placeholder="New Marker Name"
+                           v-model="markerName"
+                           v-bind:class="{ 'is-invalid' : (nameErrorMessage.length > 0) }"
+                           v-on:keyup="checkIsEmpty" />
+                </div>
+
+                <div class="alert alert-warning" v-show="nameErrorMessage.length > 0">{{nameErrorMessage}}</div>
+
+                <div class="form-group">
+                    <input type="text" 
+                           class="form-control"
+                           placeholder="Custom CSS"
+                           v-model="customCSS" />
+                </div>
+
+                <div class="form-group">
+                    <label for="">Description</label>
+                    <textarea class="form-control" rows="3" v-model="description"></textarea>
+                </div>
+
+                <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-primary" v-on:click="submit">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script asp-append-version="true" src="~/js/GameAdmin.js"></script>
     <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
@@ -90,6 +128,43 @@
             smoothScroll: false,
             minZoom: .1
         });
+
+        var gameAdminVue = new Vue({
+            el: '#gameAdminVue',
+            data:{
+                mapMarkers: [],
+                maps: [],
+                activeMap: ""
+            },
+            methods:{ },
+            updated: function(){
+                this.$nextTick(function () {
+                    //resetMapMarkers();
+                })
+            }
+        });
+
+        var newMarkerForm = new Vue({
+            el: '#newMapMarkerModal',
+            data:{
+                markerName: "",
+                customCSS: "",
+                description: "",
+                nameErrorMessage: "",
+                formErrorMessage: ""
+            },
+            methods:{
+                submit: function() {
+                },
+                checkIsEmpty: function(event) {
+                    console.log(event);
+                }
+            }
+        });
+
+        let connection = new signalR.HubConnectionBuilder().withUrl("/mapHub").build();
+        connection.start();
+            //.then(function () { connection.invoke("SendAllMapMarkers") });
     });
     </script>
 }
