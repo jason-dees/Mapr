@@ -119,10 +119,16 @@
 @section Scripts {
     <script asp-append-version="true" src="~/js/GameAdmin.js"></script>
     <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
-    <script type="text/javascript">
+	<script type="text/javascript">
     window.addEventListener("load", function () {
         var newMapUrl = '/games/@Model.GameId/maps/AddMap';
+
+        let connection = new signalR.HubConnectionBuilder()
+        	.withUrl("/mapHub", { accessTokenFactory: () => this.loginToken })
+        	.build();
+
         setUpNewMapForm(newMapUrl);
+
         var mapZoom = panzoom(document.querySelector('#map'), {
             maxZoom: 1,
             smoothScroll: false,
@@ -161,10 +167,8 @@
                 }
             }
         });
-
-        let connection = new signalR.HubConnectionBuilder().withUrl("/mapHub").build();
         connection.start();
             //.then(function () { connection.invoke("SendAllMapMarkers") });
     });
-    </script>
+	</script>
 }
