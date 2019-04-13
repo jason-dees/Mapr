@@ -22,13 +22,13 @@
             </div>
         </div>
         <div class="btn-group ml-sm-2">
-            <button class="btn btn-secondary" data-toggle="modal" data-target="#newMapMarkerModal">Add Marker</button>
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#newMarkerModal">Add Marker</button>
             <div class="btn-group" role="group">
-                <button id="mapMarkerGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+                <button id="markerGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Markers
                 </button>
-                <div class="dropdown-menu" aria-labelledby="mapMarkerGroupDropdown">
+                <div class="dropdown-menu" aria-labelledby="markerGroupDropdown">
                 </div>
             </div>
         </div>
@@ -40,6 +40,10 @@
     </nav>
     <div id="mapVue">
         <img id="map" src="/game/@Model.GameId/maps/@Model.ActiveMap?.Id" />
+		<div class="marker" 
+			 v-for="marker in markers" 
+			 v-bind:id="marker.id"
+			 v-bind:style="marker.customCSS"></div>
     </div>
 </div>
 
@@ -78,7 +82,7 @@
     </div>
 </div>
 
-<div class="modal" role="form" id="newMapMarkerModal">
+<div class="modal" role="form" id="newMarkerModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -116,10 +120,13 @@
         </div>
     </div>
 </div>
+<link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />
 @section Scripts {
     <script asp-append-version="true" src="~/js/GameAdmin.js"></script>
     <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
 	<script type="text/javascript">
+
+		var mapRApp;
     window.addEventListener("load", function () {
         var newMapUrl = '/games/@Model.GameId/maps/AddMap';
 
@@ -131,24 +138,50 @@
         	.build();
 
 	    connection.start()
-	        .then(function () { connection.invoke("AddToGame", "@Model.GameId") });
+	        .then(function () { connection.invoke("AddToGame", gameId) })
+	        .then(function () { connection.invoke("SendAllMarkers", gameId, mapId)});
 
-		function setMapMarker(mapMarker) {
-	        addMarker(mapMarker);
+
+        mapRApp = new Vue({
+            el: '#gameAdminVue',
+            data:{
+                markers: {},
+                maps: [],
+                activeMap: ""
+            },
+            methods:{
+				addMarker: function(marker){
+					console.log("adding marker", marker)
+					this.$set(this.markers, marker.id, marker);
+				},
+    			getMarker: function (id){
+			        return this.markers[id];
+			   	}
+            },
+            updated: function(){
+                this.$nextTick(function () {
+                    //resetMarkers();
+                })
+            }
+        });
+
+		function setMarker(marker) {
+			//How do i delay this?
+	        mapRApp.addMarker(marker);
 
 	        var mapTransform = mapZoom.getTransform();
-	        var element = document.querySelector('#' + mapMarker.id);
+	        var element = document.querySelector('#' + marker.id);
 
-	        var mapMarkerX = mapMarker.x - element.width() / 2,
-	            mapMarkerY = mapMarker.y - element.height() / 2,
-	        	left = mapTransform.scale * mapMarkerX + mapTransform.x,
-				top = mapTransform.scale * mapMarkerY + mapTransform.y;
+	        var markerX = marker.x - element.width() / 2,
+	            markerY = marker.y - element.height() / 2,
+	        	left = mapTransform.scale * markerX + mapTransform.x,
+				top = mapTransform.scale * markerY + mapTransform.y;
 
 	        var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
 	        element.css('transform', transformValue);
 	    }
 
-	    connection.on("SetMapMarker", setMapMarker);
+	    connection.on("SetMarker", setMarker);
         setUpNewMapForm(newMapUrl);
 
         var mapZoom = panzoom(document.querySelector('#map'), {
@@ -157,23 +190,8 @@
             minZoom: .1
         });
 
-        var gameAdminVue = new Vue({
-            el: '#gameAdminVue',
-            data:{
-                mapMarkers: [],
-                maps: [],
-                activeMap: ""
-            },
-            methods:{ },
-            updated: function(){
-                this.$nextTick(function () {
-                    //resetMapMarkers();
-                })
-            }
-        });
-
         var newMarkerForm = new Vue({
-            el: '#newMapMarkerModal',
+            el: '#newMarkerModal',
             data:{
                 markerName: "",
                 customCSS: "",
@@ -183,15 +201,15 @@
             },
             methods:{
                 submit: function() {
-					var mapMarker = {
+					var marker = {
 						id: "STUFFISHERE",
 						gameId: gameId,
 						mapId: mapId
 					};
-					connection.invoke('CreateMapMarker', mapMarker);
+					connection.invoke('CreateMarker', marker);
                 },
                 checkIsEmpty: function(event) {
-                    console.log(event);
+
                 }
             }
         });

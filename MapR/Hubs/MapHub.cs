@@ -27,7 +27,7 @@ namespace MapR.Hubs {
 
         //static List<MapMarker> _mapMarkers = new List<MapMarker>();
 
-        public async Task SendMapMarker(MapMarker marker) {
+        public async Task SendMarker(Marker marker) {
             await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
 			await _markerStore.UpdateMarker(new MarkerModel {
 				Id = marker.Id,
@@ -41,9 +41,9 @@ namespace MapR.Hubs {
 			});
         }
 
-        public async Task SendAllMapMarkers(string gameId, string mapId) {
+        public async Task SendAllMarkers(string gameId, string mapId) {
 			var mapMarkers = (await _markerStore.GetMarkers(gameId, mapId))
-				.Select(marker => new MapMarker {
+				.Select(marker => new Marker {
 					Id = marker.Id,
 					MapId = marker.MapId,
 					GameId = marker.GameId,
@@ -57,9 +57,9 @@ namespace MapR.Hubs {
 			await Clients.Group(gameId).SendAsync("SetAllMapMarkers", mapMarkers);
         }
 
-		public async Task CreateMapMarker(MapMarker marker) {
+		public async Task CreateMarker(Marker marker) {
 			//Context.UserIdentifier
-			if(await CheckGameAndMap(marker.GameId, marker.MapId)) { return; }
+			if(!await CheckGameAndMap(marker.GameId, marker.MapId)) { return; }
 
 			await _markerStore.AddMarker(new MarkerModel {
 				Id = marker.Id,
@@ -95,7 +95,7 @@ namespace MapR.Hubs {
 		}
 	}
 
-    public class MapMarker {
+    public class Marker {
         public string Id { get; set; }
 		public string MapId { get; set; }
 		public string GameId { get; set; }
@@ -106,9 +106,9 @@ namespace MapR.Hubs {
 		public string CustomCss { get; set; }
 
         public override bool Equals(object obj) {
-            if(typeof(MapMarker) != obj.GetType()) { return false; }
+            if(typeof(Marker) != obj.GetType()) { return false; }
 
-            return Id == ((MapMarker)obj).Id;
+            return Id == ((Marker)obj).Id;
         }
 
         public override int GetHashCode() {
