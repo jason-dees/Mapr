@@ -1,6 +1,5 @@
 ﻿"use strict";
 
-var global, mapRApp;
 var mapr = function() {
     mapRApp = new Vue({
         el: '#MapR',

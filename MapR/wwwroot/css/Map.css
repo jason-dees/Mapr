@@ -1,7 +1,8 @@
 ﻿body{
 	overflow: hidden;
+	height:100%;
 }
-#party {
+.marker {
     position: absolute;
     width: 25px;
     height: 25px;

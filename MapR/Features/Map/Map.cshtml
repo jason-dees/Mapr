@@ -1,0 +1,27 @@
+﻿@page
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Map";
+}
+<div id="MapR">
+    <nav>
+        <button class="nav-link pull-right btn btn-warning" id="center" href="#">center</button>
+    </nav>
+    <img id="map" src="~/images/maps/SKT/Campaign.jpg" />
+
+    <div v-for="marker in mapMarkers" :id="marker.id" :key="marker.id">
+        d
+    </div>
+</div>
+<ul>
+    <li>Need to change maps</li>
+    <li>Need to save map state</li>
+    <li>When updating a map, need some way to trigger the update</li>
+    <li>Need some way to obfuscate stuff</li>
+</ul>
+
+@section Scripts {
+    <script asp-append-version="true" src="~/js/MapR.js"></script>
+    <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
+}
+<link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />

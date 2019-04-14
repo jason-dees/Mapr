@@ -1,0 +1,122 @@
+﻿@model MapR.Features.Index.IndexViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Home";
+}
+
+@if (Model.IsSignedIn)
+{
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <form asp-controller="Account" asp-action="Logout"
+              asp-route-returnurl="/" method="POST"
+              class="form-horizontal ml-auto">
+            <span>You are signed in!!! @Model.UserName</span>
+            <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
+        </form>
+    </nav>
+    <div class="d-flex flex-row">
+        <div class="d-flex flex-column flex-fill">
+            <nav class="navbar">
+                <h2>Games You Run </h2> <div class="ml-auto">
+                    <button class="btn btn-outline-success" data-toggle="modal" data-target="#newGameModal">+</button>
+                </div>
+            </nav>
+            <ul>
+            @foreach (var yourGame in Model.YourGames){
+                <li>    
+                    <a href="/game/@yourGame.Id">@yourGame.Name - @yourGame.LastPlayed.Date.ToShortDateString()</a>
+                </li>
+            }
+            </ul>
+        </div>
+        <div class="d-flex flex-column flex-fill">
+            <nav class="navbar">
+                <h2>Games You Play</h2>
+            </nav>
+        </div>
+    </div>
+
+    <div class="modal" role="form" id="newGameModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Add New Game</h5>
+                </div>
+                <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control"
+                               placeholder="New Game Name"
+                               v-model="gameName"
+                               v-bind:class="{ 'is-invalid' : (nameErrorMessage.length > 0) }"
+                               v-on:keyup="checkIsEmpty" />
+                    </div>
+
+                    <div class="alert alert-warning" v-show="nameErrorMessage.length > 0">{{nameErrorMessage}}</div>
+
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input"
+                               name="isPrivate" id="isPrivate"
+                               v-model="isPrivate" value="true" />
+                        <label class="form-check-label" for="isPrivate">Is Private</label>
+                    </div>
+                    <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="submit">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @section Scripts {
+        <script type="text/javascript">
+            window.addEventListener("load", function () {
+                var newForm = new Vue({
+                    el: "#newGameModal",
+                    data: {
+                        gameName: "",
+                        isPrivate: false,
+                        nameErrorMessage: "",
+                        formErrorMessage: ""
+                    },
+                    methods: {
+                        submit: function (event) {
+                            var self = this;
+                            if (this.checkIsEmpty()) return;
+                            axios.post('/games/addgame', {
+                                name: this.gameName,
+                                isPrivate: this.isPrivate
+                            }).then(function (response) {
+                                window.location ='/game/' + response.data.id;
+                            }).catch(function (error) {
+                                self.formErrorMessage = error.message;
+                            });
+                        },
+                        checkIsEmpty: function () {
+                            if (this.gameName.trim().length == 0) {
+                                this.nameErrorMessage = "Game needs a name!";
+                                return true;
+                            }
+                            else {
+                                this.nameErrorMessage = "";
+                                return false;
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    }
+}
+else
+{
+    <form asp-controller="Account" asp-action="ExternalLogin"
+          asp-route-returnurl="/" method="POST"
+          class="form-horizontal">
+
+        @foreach (var provider in Model.AuthenticationSchemes)
+        {
+            <button type="submit" class="btn btn-outline-dark" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
+        }
+    </form>
+}
