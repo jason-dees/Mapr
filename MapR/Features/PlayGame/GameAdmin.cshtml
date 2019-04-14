@@ -39,13 +39,16 @@
         </form>
     </nav>
     <div id="mapVue">
-        <img id="map" src="/game/@Model.GameId/maps/@Model.ActiveMap?.Id" />
-		<div class="marker" 
-			 v-for="marker in markers" 
-			 v-bind:id="marker.id"
-			 v-bind:style="marker.customCSS"></div>
+		<div id="mapContainer">
+	        <img id="map" src="/game/@Model.GameId/maps/@Model.ActiveMap?.Id" />
+			<div class="marker" 
+				 v-for="marker in markers" 
+				 v-bind:id="marker.id"
+				 v-bind:style="marker.customCSS">
+            </div>
+		</div>
     </div>
-</div>
+</div><!-- gameAdminVue -->
 
 <div class="modal" role="form" id="newMapModal">
     <div class="modal-dialog" role="document">
@@ -126,8 +129,8 @@
     <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
 	<script type="text/javascript">
 
-		var mapRApp;
-    window.addEventListener("load", function () {
+	var mapRApp;
+   	window.addEventListener("load", function () {
         var newMapUrl = '/games/@Model.GameId/maps/AddMap';
 
 		var gameId = '@Model.GameId';
@@ -141,6 +144,20 @@
 	        .then(function () { connection.invoke("AddToGame", gameId) })
 	        .then(function () { connection.invoke("SendAllMarkers", gameId, mapId)});
 
+	    function resetMapMarkers() {
+	        for (var marker in mapRApp.mapMarkers) {
+	            setMapMarker(marker);
+	        }
+	    }
+        
+        //something is going on with this not working?
+        let mapZoom = panzoom(document.querySelector('#map'),{
+            maxZoom: 1,
+            smoothScroll: false,
+            minZoom: .1
+        });
+
+		mapZoom.on('transform', resetMapMarkers);
 
         mapRApp = new Vue({
             el: '#gameAdminVue',
@@ -151,68 +168,33 @@
             },
             methods:{
 				addMarker: function(marker){
-					console.log("adding marker", marker)
 					this.$set(this.markers, marker.id, marker);
+					this.$nextTick(function () {
+						setMarker(marker);
+	                })
 				},
     			getMarker: function (id){
 			        return this.markers[id];
 			   	}
-            },
-            updated: function(){
-                this.$nextTick(function () {
-                    //resetMarkers();
-                })
             }
         });
 
 		function setMarker(marker) {
-			//How do i delay this?
-	        mapRApp.addMarker(marker);
-
 	        var mapTransform = mapZoom.getTransform();
+			var mapElement = document.querySelector('#mapContainer');
 	        var element = document.querySelector('#' + marker.id);
-
-	        var markerX = marker.x - element.width() / 2,
-	            markerY = marker.y - element.height() / 2,
-	        	left = mapTransform.scale * markerX + mapTransform.x,
-				top = mapTransform.scale * markerY + mapTransform.y;
+	        var markerX = marker.x - element.offsetWidth / 2,
+	            markerY = marker.y - element.offsetHeight / 2,
+	        	left = mapTransform.scale * markerX + mapTransform.x + mapElement.offsetLeft,
+				top = mapTransform.scale * markerY + mapTransform.y + mapElement.offsetTop;
 
 	        var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
-	        element.css('transform', transformValue);
+			element.style.transform = transformValue
 	    }
 
-	    connection.on("SetMarker", setMarker);
+	    connection.on("SetMarker", mapRApp.addMarker);
         setUpNewMapForm(newMapUrl);
-
-        var mapZoom = panzoom(document.querySelector('#map'), {
-            maxZoom: 1,
-            smoothScroll: false,
-            minZoom: .1
-        });
-
-        var newMarkerForm = new Vue({
-            el: '#newMarkerModal',
-            data:{
-                markerName: "",
-                customCSS: "",
-                description: "",
-                nameErrorMessage: "",
-                formErrorMessage: ""
-            },
-            methods:{
-                submit: function() {
-					var marker = {
-						id: "STUFFISHERE",
-						gameId: gameId,
-						mapId: mapId
-					};
-					connection.invoke('CreateMarker', marker);
-                },
-                checkIsEmpty: function(event) {
-
-                }
-            }
-        });
+        setUpNewMarkerForm(connection);
     });
 	</script>
 }

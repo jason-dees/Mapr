@@ -62,3 +62,29 @@
 function setUpAdminMap() {
 
 }
+
+function setUpNewMarkerForm(connection){
+    var newMarkerForm = new Vue({
+        el: '#newMarkerModal',
+        data:{
+            markerName: "",
+            customCSS: "",
+            description: "",
+            nameErrorMessage: "",
+            formErrorMessage: ""
+        },
+        methods:{
+            submit: function() {
+                var marker = {
+                    id: "STUFFISHERE",
+                    gameId: gameId,
+                    mapId: mapId
+                };
+                connection.invoke('CreateMarker', marker);
+            },
+            checkIsEmpty: function(event) {
+
+            }
+        }
+    });
+}

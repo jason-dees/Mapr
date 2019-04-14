@@ -76,6 +76,7 @@ namespace MapR.Hubs {
 		}
 
 		public async Task AddToGame(string gameId) {
+			//everything is public now
 			await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
 		}
 
