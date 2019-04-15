@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using MapR.Extensions;
+using MapR.Data.Extensions;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Stores.Game {
+namespace MapR.Data.Models {
     public class GameModel : TableEntity {
 
         public GameModel() { }

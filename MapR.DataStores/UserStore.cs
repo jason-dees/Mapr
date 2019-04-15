@@ -2,19 +2,19 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MapR.Stores.Identity.Models;
+using MapR.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Stores.Identity.Stores {
-	public partial class UserStore : IUserStore<ApplicationUser> {
+namespace MapR.DataStores {
+	public partial class UserStore : IUserStore<MapRUser> {
 		const string _partition = "MapR";
 		readonly CloudTable _userTable;
 		public UserStore(CloudTableClient tableClient) {
 			_userTable = tableClient.GetTableReference("users");
 		}
 
-		public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken) {
+		public async Task<IdentityResult> CreateAsync(MapRUser user, CancellationToken cancellationToken) {
 			user.PartitionKey = _partition;
             user.RowKey = user.NameIdentifier;
 			TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(user);
@@ -24,7 +24,7 @@ namespace MapR.Stores.Identity.Stores {
 			return new MapRIdentityResult();
 		}
 
-		public Task<IdentityResult> DeleteAsync(ApplicationUser user, CancellationToken cancellationToken) {
+		public Task<IdentityResult> DeleteAsync(MapRUser user, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
@@ -32,41 +32,41 @@ namespace MapR.Stores.Identity.Stores {
 			GC.SuppressFinalize(this);
 		}
 
-		public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken) {
+		public async Task<MapRUser> FindByIdAsync(string userId, CancellationToken cancellationToken) {
             var idQuery = TableQuery.GenerateFilterCondition("NameIdentifier", QueryComparisons.Equal, userId);
-            var query = new TableQuery<ApplicationUser>()
+            var query = new TableQuery<MapRUser>()
                 .Where(idQuery);
             return (await _userTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
         }
 
-		public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken) {
+		public async Task<MapRUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken) {
             var providerKeyQuery = TableQuery.GenerateFilterCondition("UserName", QueryComparisons.Equal, normalizedUserName);
-            var query = new TableQuery<ApplicationUser>()
+            var query = new TableQuery<MapRUser>()
                 .Where(providerKeyQuery); 
             return (await _userTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
         }
 
-		public async Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken) {
+		public async Task<string> GetNormalizedUserNameAsync(MapRUser user, CancellationToken cancellationToken) {
 			return user.Email;
 		}
 
-		public async Task<string> GetUserIdAsync(ApplicationUser user, CancellationToken cancellationToken) {
+		public async Task<string> GetUserIdAsync(MapRUser user, CancellationToken cancellationToken) {
 			return user.Email;
 		}
 
-		public async Task<string> GetUserNameAsync(ApplicationUser user, CancellationToken cancellationToken) {
+		public async Task<string> GetUserNameAsync(MapRUser user, CancellationToken cancellationToken) {
 			return user.UserName;
 		}
 
-		public async Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken) {
+		public async Task SetNormalizedUserNameAsync(MapRUser user, string normalizedName, CancellationToken cancellationToken) {
 			
 		}
 
-		public async Task SetUserNameAsync(ApplicationUser user, string userName, CancellationToken cancellationToken) {
+		public async Task SetUserNameAsync(MapRUser user, string userName, CancellationToken cancellationToken) {
 			
 		}
 
-		public async Task<IdentityResult> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken) {
+		public async Task<IdentityResult> UpdateAsync(MapRUser user, CancellationToken cancellationToken) {
 			TableOperation operation = TableOperation.Replace(user);
 
 			await _userTable.ExecuteAsync(operation);

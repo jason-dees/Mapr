@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR", "MapR\MapR.csproj", "{8E4B906C-F86C-4267-9236-2195E5175170}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapR.Data", "MapR.Data\MapR.Data.csproj", "{B5D14C9B-159D-4640-BBD4-4E51C5662550}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapR.DataStores", "MapR.DataStores\MapR.DataStores.csproj", "{4D839236-EC2D-4154-802D-848316EB22B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{8E4B906C-F86C-4267-9236-2195E5175170}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E4B906C-F86C-4267-9236-2195E5175170}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E4B906C-F86C-4267-9236-2195E5175170}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D839236-EC2D-4154-802D-848316EB22B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D839236-EC2D-4154-802D-848316EB22B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D839236-EC2D-4154-802D-848316EB22B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D839236-EC2D-4154-802D-848316EB22B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5D14C9B-159D-4640-BBD4-4E51C5662550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5D14C9B-159D-4640-BBD4-4E51C5662550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5D14C9B-159D-4640-BBD4-4E51C5662550}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5D14C9B-159D-4640-BBD4-4E51C5662550}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

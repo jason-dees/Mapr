@@ -1,7 +1,6 @@
-﻿using MapR.Extensions;
-using MapR.Map;
-using MapR.Stores.Game;
-using MapR.Stores.Marker;
+﻿using MapR.Data.Models;
+using MapR.Data.Stores;
+using MapR.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;

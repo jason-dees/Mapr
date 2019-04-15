@@ -2,9 +2,8 @@
 using System.IO;
 using System.Threading.Tasks;
 using MapR.Extensions;
-using MapR.Map;
-using MapR.Stores.Game;
-using MapR.Stores.Map;
+using MapR.Data.Stores;
+using MapR.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MapR.Features.AddMap {
