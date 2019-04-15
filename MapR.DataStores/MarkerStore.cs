@@ -10,7 +10,7 @@ namespace MapR.DataStores {
 
 	public class MarkerStore : IStoreMarkers {
 
-		readonly List<MarkerModel> _markers = new List<MarkerModel>();
+		readonly static List<MarkerModel> _markers = new List<MarkerModel>();
 
 		public async Task AddMarker(MarkerModel marker) {
 			_markers.Add(marker);

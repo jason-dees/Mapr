@@ -9,4 +9,5 @@
     background-color: green;
     left: 0px;
     top: 0px;
+    transform-origin: left top 0px;
 }

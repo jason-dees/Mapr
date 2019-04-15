@@ -1,4 +1,6 @@
-﻿function setUpNewMapForm(newMapUrl) {
+﻿"use strict";
+
+function setUpNewMapForm(newMapUrl) {
     var newMap = new Vue({
         el: "#newMapModal",
         data: {
@@ -64,21 +66,23 @@ function setUpAdminMap() {
 }
 
 function setUpNewMarkerForm(connection){
-    var newMarkerForm = new Vue({
+    return new Vue({
         el: '#newMarkerModal',
         data:{
             markerName: "",
             customCSS: "",
             description: "",
             nameErrorMessage: "",
-            formErrorMessage: ""
+            formErrorMessage: "",
+            gameId: null,
+            mapId: null
         },
         methods:{
             submit: function() {
                 var marker = {
                     id: "STUFFISHERE",
-                    gameId: gameId,
-                    mapId: mapId
+                    gameId: this.gameId,
+                    mapId: this.mapId
                 };
                 connection.invoke('CreateMarker', marker);
             },
@@ -88,3 +92,73 @@ function setUpNewMarkerForm(connection){
         }
     });
 }
+
+
+var mapRApp, mapZoom;
+var gameAdmin = function (gameId, mapId) {
+    
+    //something is going on with this not working?
+    var newMapUrl = '/games/'+gameId+'/maps/AddMap';
+
+    let connection = new signalR.HubConnectionBuilder()
+        .withUrl("/mapHub", { accessTokenFactory: () => this.loginToken })
+        .build();
+
+    connection.start()
+        .then(function () { connection.invoke("AddToGame", gameId) })
+        .then(function () { connection.invoke("SendAllMarkers", gameId, mapId)});
+
+    function resetMapMarkers() {
+        for (var marker in mapRApp.markers) {
+            setMarker(mapRApp.markers[marker]);
+        }
+    }
+
+    mapRApp = new Vue({
+        el: '#gameAdminVue',
+        data:{
+            markers: {},
+            maps: [],
+            activeMap: '/game/' + gameId + '/maps/' + mapId
+        },
+        methods:{
+            addMarker: function(marker){
+                this.$set(this.markers, marker.id, marker);
+                this.$nextTick(function () {
+                    setMarker(marker);
+                })
+            },
+            getMarker: function (id){
+                return this.markers[id];
+            }
+        },
+        mounted: function(){
+            mapZoom = panzoom(document.querySelector('#map'),{
+                maxZoom: 1,
+                smoothScroll: false,
+                minZoom: .1
+            });
+
+            mapZoom.on('transform', resetMapMarkers);
+        }
+    });
+
+    function setMarker(marker) {
+        var mapTransform = mapZoom.getTransform();
+        var element = document.querySelector('#' + marker.id);
+        var mapElement = document.querySelector('#map');
+        var markerX = marker.x,
+            markerY = marker.y,
+            left = mapTransform.scale * markerX + mapTransform.x + mapElement.offsetLeft,
+            top = mapTransform.scale * markerY + mapTransform.y + mapElement.offsetTop;
+
+        var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
+        element.style.transform = transformValue;
+    }
+
+    connection.on("SetMarker", mapRApp.addMarker);
+    setUpNewMapForm(newMapUrl);
+    var markerForm = setUpNewMarkerForm(connection);
+    markerForm.gameId = gameId;
+    markerForm.mapId = mapId;
+};

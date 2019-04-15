@@ -40,7 +40,7 @@
     </nav>
     <div id="mapVue">
 		<div id="mapContainer">
-	        <img id="map" src="/game/@Model.GameId/maps/@Model.ActiveMap?.Id" />
+	        <img id="map" v-bind:src="activeMap" />
 			<div class="marker" 
 				 v-for="marker in markers" 
 				 v-bind:id="marker.id"
@@ -127,74 +127,11 @@
 @section Scripts {
     <script asp-append-version="true" src="~/js/GameAdmin.js"></script>
     <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
-	<script type="text/javascript">
+    <script type="text/javascript">
 
-	var mapRApp;
-   	window.addEventListener("load", function () {
-        var newMapUrl = '/games/@Model.GameId/maps/AddMap';
-
-		var gameId = '@Model.GameId';
-		var mapId = '@Model.ActiveMap.Id';
-
-        let connection = new signalR.HubConnectionBuilder()
-        	.withUrl("/mapHub", { accessTokenFactory: () => this.loginToken })
-        	.build();
-
-	    connection.start()
-	        .then(function () { connection.invoke("AddToGame", gameId) })
-	        .then(function () { connection.invoke("SendAllMarkers", gameId, mapId)});
-
-	    function resetMapMarkers() {
-	        for (var marker in mapRApp.mapMarkers) {
-	            setMapMarker(marker);
-	        }
-	    }
-        
-        //something is going on with this not working?
-        let mapZoom = panzoom(document.querySelector('#map'),{
-            maxZoom: 1,
-            smoothScroll: false,
-            minZoom: .1
-        });
-
-		mapZoom.on('transform', resetMapMarkers);
-
-        mapRApp = new Vue({
-            el: '#gameAdminVue',
-            data:{
-                markers: {},
-                maps: [],
-                activeMap: ""
-            },
-            methods:{
-				addMarker: function(marker){
-					this.$set(this.markers, marker.id, marker);
-					this.$nextTick(function () {
-						setMarker(marker);
-	                })
-				},
-    			getMarker: function (id){
-			        return this.markers[id];
-			   	}
-            }
-        });
-
-		function setMarker(marker) {
-	        var mapTransform = mapZoom.getTransform();
-			var mapElement = document.querySelector('#mapContainer');
-	        var element = document.querySelector('#' + marker.id);
-	        var markerX = marker.x - element.offsetWidth / 2,
-	            markerY = marker.y - element.offsetHeight / 2,
-	        	left = mapTransform.scale * markerX + mapTransform.x + mapElement.offsetLeft,
-				top = mapTransform.scale * markerY + mapTransform.y + mapElement.offsetTop;
-
-	        var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
-			element.style.transform = transformValue
-	    }
-
-	    connection.on("SetMarker", mapRApp.addMarker);
-        setUpNewMapForm(newMapUrl);
-        setUpNewMarkerForm(connection);
-    });
-	</script>
+    (function startUp(gameId, mapId){
+        window.onload = gameAdmin.bind(window, gameId, mapId);
+    })('@Model.GameId','@Model.ActiveMap.Id');
+       
+    </script>
 }
