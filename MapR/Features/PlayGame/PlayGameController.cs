@@ -3,25 +3,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using MapR.Extensions;
 using MapR.Features.PlayGame.Models;
-using MapR.Map;
-using MapR.Stores.Game;
-using MapR.Stores.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ImageMagick;
+using MapR.Data.Stores;
+using MapR.Data.Models;
 
 namespace MapR.Features.PlayGame {
 
     [Route("game/")]
     public class PlayGameController : Controller {
 
-        readonly SignInManager<ApplicationUser> _signInManager;
+        readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreGames _gameStore;
         readonly IStoreMaps _mapStore;
         public PlayGameController(IStoreGames gameStore, 
             IStoreMaps mapStore,
-            SignInManager<ApplicationUser> signInManager) {
+            SignInManager<MapRUser> signInManager) {
             _gameStore = gameStore;
             _mapStore = mapStore;
             _signInManager = signInManager;

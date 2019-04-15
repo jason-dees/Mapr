@@ -1,6 +1,6 @@
-﻿using MapR.Extensions;
-using MapR.Stores.Game;
-using MapR.Stores.Identity.Models;
+﻿using MapR.Data.Models;
+using MapR.Data.Stores;
+using MapR.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace MapR.Features.Index {
         [TempData]
         public string ErrorMessage { get; set; }
 
-        readonly SignInManager<ApplicationUser> _signInManager;
+        readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreGames _gameStore;
-        public IndexController(SignInManager<ApplicationUser> signInManager, 
+        public IndexController(SignInManager<MapRUser> signInManager, 
             IStoreGames gameStore) {
             _signInManager = signInManager;
             _gameStore = gameStore;

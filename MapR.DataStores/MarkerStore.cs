@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MapR.Data.Models;
+using MapR.Data.Stores;
 
-namespace MapR.Stores.Marker {
-	public interface IStoreMarkers {
-		Task AddMarker(MarkerModel marker);
-		Task UpdateMarker(MarkerModel marker);
-		Task DeleteMarker(MarkerModel marker);
-		Task<MarkerModel> GetMarker(string gameId, string mapId, string markerId);
-		Task<IList<MarkerModel>> GetMarkers(string gameId, string mapId);
-	}
+namespace MapR.DataStores {
+
 
 	public class MarkerStore : IStoreMarkers {
 
-		readonly List<MarkerModel> _markers = new List<MarkerModel>();
+		readonly static List<MarkerModel> _markers = new List<MarkerModel>();
 
 		public async Task AddMarker(MarkerModel marker) {
 			_markers.Add(marker);

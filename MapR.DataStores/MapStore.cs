@@ -2,19 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MapR.Extensions;
-using MapR.Stores.Map;
+using MapR.Data.Extensions;
+using MapR.Data.Models;
+using MapR.Data.Stores;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Map {
+namespace MapR.DataStores {
 
-    public interface IStoreMaps {
-        Task<bool> AddMap(MapModel map);
-        Task<MapModel> GetMap(string mapId);
-        Task<IList<MapModel>> GetMaps(string gameId);
-        Task<bool> DeleteMap(string mapId);
-    }
 
     public class MapStore : IStoreMaps {
 

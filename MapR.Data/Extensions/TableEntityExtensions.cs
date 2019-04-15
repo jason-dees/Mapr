@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using MapR.Stores.Map;
+using MapR.Data.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Extensions {
+namespace MapR.Data.Extensions {
     public static class TableEntityExtensions {
         public static void GenerateRandomId(this TableEntity entity) {
             entity.RowKey = RandomString(6);

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  
+  <ItemGroup>
+        <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Stores\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+</Project>

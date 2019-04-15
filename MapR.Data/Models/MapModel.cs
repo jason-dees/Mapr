@@ -1,6 +1,6 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Stores.Map {
+namespace MapR.Data.Models {
     public class MapModel : TableEntity {
 
         [IgnoreProperty]
