@@ -24,8 +24,6 @@ namespace MapR.Hubs {
 			_gameStore = gameStore;
 		}
 
-        //static List<MapMarker> _mapMarkers = new List<MapMarker>();
-
         public async Task SendMarker(Marker marker) {
             await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
 			await _markerStore.UpdateMarker(new MarkerModel {
@@ -57,7 +55,6 @@ namespace MapR.Hubs {
         }
 
 		public async Task CreateMarker(Marker marker) {
-			//Context.UserIdentifier
 			if(!await CheckGameAndMap(marker.GameId, marker.MapId)) { return; }
 
 			await _markerStore.AddMarker(new MarkerModel {

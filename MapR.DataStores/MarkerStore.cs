@@ -7,7 +7,6 @@ using MapR.Data.Stores;
 
 namespace MapR.DataStores {
 
-
 	public class MarkerStore : IStoreMarkers {
 
 		readonly static List<MarkerModel> _markers = new List<MarkerModel>();
