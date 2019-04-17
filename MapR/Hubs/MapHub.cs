@@ -71,6 +71,11 @@ namespace MapR.Hubs {
 			await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
 		}
 
+        public async Task MoveMarker(string markerId, int x, int y) {
+            //get marker and then check stuff?
+            //Send all info up and use that to check stuff? I like the first option
+        }
+
 		public async Task AddToGame(string gameId) {
 			//everything is public now
 			await Groups.AddToGroupAsync(Context.ConnectionId, gameId);

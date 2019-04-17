@@ -93,26 +93,14 @@ function setUpNewMarkerForm(connection){
     });
 }
 
-
-var mapRApp, mapZoom;
+var mapRApp, mapZoom, global;
 var gameAdmin = function (gameId, mapId) {
     
-    //something is going on with this not working?
     var newMapUrl = '/games/'+gameId+'/maps/AddMap';
 
     let connection = new signalR.HubConnectionBuilder()
         .withUrl("/mapHub", { accessTokenFactory: () => this.loginToken })
         .build();
-
-    connection.start()
-        .then(function () { connection.invoke("AddToGame", gameId) })
-        .then(function () { connection.invoke("SendAllMarkers", gameId, mapId)});
-
-    function resetMapMarkers() {
-        for (var marker in mapRApp.markers) {
-            setMarker(mapRApp.markers[marker]);
-        }
-    }
 
     mapRApp = new Vue({
         el: '#gameAdminVue',
@@ -125,7 +113,7 @@ var gameAdmin = function (gameId, mapId) {
             addMarker: function(marker){
                 this.$set(this.markers, marker.id, marker);
                 this.$nextTick(function () {
-                    setMarker(marker);
+                    setMarker(marker, mapZoom);
                 })
             },
             getMarker: function (id){
@@ -133,30 +121,102 @@ var gameAdmin = function (gameId, mapId) {
             }
         },
         mounted: function(){
+            var self = this;
             mapZoom = panzoom(document.querySelector('#map'),{
                 maxZoom: 1,
                 smoothScroll: false,
                 minZoom: .1
             });
 
-            mapZoom.on('transform', resetMapMarkers);
+            mapZoom.on('transform', function(){resetMapMarkers(self.markers, mapZoom);});
+            setUpMarkerDrag();
+
+            connection.start()
+                .then(function () { connection.invoke("AddToGame", gameId) })
+                .then(function () { connection.invoke("SendAllMarkers", gameId, mapId)});
         }
     });
 
-    function setMarker(marker) {
-        var mapTransform = mapZoom.getTransform();
-        var element = document.querySelector('#' + marker.id);
-        var mapElement = document.querySelector('#map');
-        var markerX = marker.x,
-            markerY = marker.y,
-            left = mapTransform.scale * markerX + mapTransform.x + mapElement.offsetLeft,
-            top = mapTransform.scale * markerY + mapTransform.y + mapElement.offsetTop;
+    function setUpMarkerDrag(){
+        var dragItem;
+        var container = document.querySelector("#mapVue");
+    
+        var active = false;
+        var currentX;
+        var currentY;
+        var initialX;
+        var initialY;
+        var xOffset = document.querySelector('#map').offsetLeft;
+        var yOffset = document.querySelector('#map').offsetTop;
+        container.addEventListener("mousedown", dragStart, false);
+        container.addEventListener("mouseup", dragEnd, false);
+        container.addEventListener("mousemove", drag, false);
+    
+        var mapTransform = null;
+        function dragStart(e) {
+            mapTransform = mapZoom.getTransform();
 
-        var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
-        element.style.transform = transformValue;
+            if (e.target.classList.contains('marker')) {
+                if (e.type === "touchstart") {
+                    var bb = e.target.getBoundingClientRect();
+                    // initialX = e.touches[0].clientX - xOffset;
+                    // initialY = e.touches[0].clientY - yOffset;
+                    initialX = e.center.x - bb.left;
+                    initialY = e.center.y - bb.top;
+                } else {
+                    initialX = e.layerX;
+                    initialY = e.layerY;
+                }
+
+                dragItem = e.target;
+                active = true;
+            }
+        }
+    
+        function dragEnd(e) {
+            if(active){
+                initialX = currentX;
+                initialY = currentY;
+
+                mapRApp.markers[dragItem.id].x = (initialX - mapTransform.x - document.querySelector('#map').offsetLeft)/mapTransform.scale;
+                mapRApp.markers[dragItem.id].y = (initialY - mapTransform.y - document.querySelector('#map').offsetTop)/mapTransform.scale;
+                connection.invoke("MoveMarker", dragItem.id, mapRApp.markers[dragItem.id].x, mapRApp.markers[dragItem.id].y);
+
+                active = false;
+            }
+        }
+    
+        function drag(e) {
+            if (active) {
+                global = e;
+                e.preventDefault();
+                if (e.type === "touchmove") {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                setTranslate(currentX, currentY, dragItem);
+            }
+        }
+    
+        function setTranslate(xPos, yPos, el) {
+            var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ xPos + ', ' + yPos + ')';
+            el.style.transform = transformValue; 
+        }
     }
 
     connection.on("SetMarker", mapRApp.addMarker);
+    connection.on("SetAllMapMarkers", function(markers){
+        for(var i = 0; i< markers.length; i++){
+            mapRApp.addMarker(markers[i]);
+        }
+    });
     setUpNewMapForm(newMapUrl);
     var markerForm = setUpNewMarkerForm(connection);
     markerForm.gameId = gameId;

@@ -40,13 +40,13 @@
     </nav>
     <div id="mapVue">
 		<div id="mapContainer">
-	        <img id="map" v-bind:src="activeMap" />
-			<div class="marker" 
-				 v-for="marker in markers" 
-				 v-bind:id="marker.id"
-				 v-bind:style="marker.customCSS">
-            </div>
+	        <img id="map" v-bind:src="activeMap" style="min-width:100px;min-height:100px"/>
 		</div>
+        <div class="marker"
+             v-for="marker in markers"
+             v-bind:id="marker.id"
+             v-bind:style="marker.customCSS">
+        </div>
     </div>
 </div><!-- gameAdminVue -->
 
@@ -126,6 +126,7 @@
 <link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />
 @section Scripts {
     <script asp-append-version="true" src="~/js/GameAdmin.js"></script>
+    <script asp-append-version="true" src="~/js/MapR.js"></script>
     <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
     <script type="text/javascript">
 
