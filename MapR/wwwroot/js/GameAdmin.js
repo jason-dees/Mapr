@@ -144,10 +144,8 @@ var gameAdmin = function (gameId, mapId) {
         var active = false;
         var currentX;
         var currentY;
-        var initialX;
-        var initialY;
-        var xOffset = document.querySelector('#map').offsetLeft;
-        var yOffset = document.querySelector('#map').offsetTop;
+        var inElementX;
+        var inElementY;
         container.addEventListener("mousedown", dragStart, false);
         container.addEventListener("mouseup", dragEnd, false);
         container.addEventListener("mousemove", drag, false);
@@ -161,11 +159,11 @@ var gameAdmin = function (gameId, mapId) {
                     var bb = e.target.getBoundingClientRect();
                     // initialX = e.touches[0].clientX - xOffset;
                     // initialY = e.touches[0].clientY - yOffset;
-                    initialX = e.center.x - bb.left;
-                    initialY = e.center.y - bb.top;
+                    inElementX = e.center.x - bb.left;
+                    inElementY = e.center.y - bb.top;
                 } else {
-                    initialX = e.layerX;
-                    initialY = e.layerY;
+                    inElementX = e.layerX;
+                    inElementY = e.layerY;
                 }
 
                 dragItem = e.target;
@@ -175,11 +173,11 @@ var gameAdmin = function (gameId, mapId) {
     
         function dragEnd(e) {
             if(active){
-                initialX = currentX;
-                initialY = currentY;
+                inElementX = currentX;
+                inElementY = currentY;
 
-                mapRApp.markers[dragItem.id].x = (initialX - mapTransform.x - document.querySelector('#map').offsetLeft)/mapTransform.scale;
-                mapRApp.markers[dragItem.id].y = (initialY - mapTransform.y - document.querySelector('#map').offsetTop)/mapTransform.scale;
+                mapRApp.markers[dragItem.id].x = (inElementX - mapTransform.x - document.querySelector('#map').offsetLeft)/mapTransform.scale;
+                mapRApp.markers[dragItem.id].y = (inElementY - mapTransform.y - document.querySelector('#map').offsetTop)/mapTransform.scale;
                 connection.invoke("MoveMarker", dragItem.id, mapRApp.markers[dragItem.id].x, mapRApp.markers[dragItem.id].y);
 
                 active = false;
@@ -191,11 +189,11 @@ var gameAdmin = function (gameId, mapId) {
                 global = e;
                 e.preventDefault();
                 if (e.type === "touchmove") {
-                    currentX = e.touches[0].clientX - initialX;
-                    currentY = e.touches[0].clientY - initialY;
+                    currentX = e.touches[0].clientX - inElementX;
+                    currentY = e.touches[0].clientY - inElementY;
                 } else {
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
+                    currentX = e.clientX - inElementX;
+                    currentY = e.clientY - inElementY;
                 }
 
                 xOffset = currentX;
