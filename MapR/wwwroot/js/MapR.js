@@ -16,3 +16,28 @@ function resetMapMarkers(markers, map) {
         setMarker(markers[marker], map);
     }
 }
+
+//Do a MapVue Component here with display of markers and map
+
+Vue.component('map-vue', {
+    data: function(){
+        return {
+
+        };
+    },
+    template:`
+        <div>
+            <div class="mapContainer">
+                <img class="map" v-bind:src="activeMap" style="min-width:100px;min-height:100px"/>
+            </div>
+            <map-marker-vue></map-marker-vue>
+        </div>
+    `
+});
+
+Vue.component('map-marker-vue', {
+    data: function(){
+        return {};
+    },
+    template:``
+});

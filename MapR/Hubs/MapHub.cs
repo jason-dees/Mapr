@@ -1,4 +1,5 @@
-﻿using MapR.Data.Models;
+﻿using MapR.Data.Extensions;
+using MapR.Data.Models;
 using MapR.Data.Stores;
 using MapR.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -56,17 +57,18 @@ namespace MapR.Hubs {
 
 		public async Task CreateMarker(Marker marker) {
 			if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
-
-			await _markerStore.AddMarker(new MarkerModel {
-				Id = marker.Id,
-				MapId = marker.MapId,
-				GameId = marker.GameId,
-				Name = marker.Name,
-				Description = marker.Description,
-				CustomCss = marker.CustomCss,
-				X = marker.X,
-				Y = marker.Y
-			});
+            var newMarker = new MarkerModel {
+                MapId = marker.MapId,
+                GameId = marker.GameId,
+                Name = marker.Name,
+                Description = marker.Description,
+                CustomCss = marker.CustomCss,
+                X = marker.X,
+                Y = marker.Y
+            };
+            newMarker.GenerateRandomId();
+            marker.Id = newMarker.Id;
+            await _markerStore.AddMarker(newMarker);
 
 			await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
 		}

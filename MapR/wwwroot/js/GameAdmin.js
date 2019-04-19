@@ -79,15 +79,27 @@ function setUpNewMarkerForm(connection){
         },
         methods:{
             submit: function() {
+                var self = this;
                 var marker = {
-                    id: "STUFFISHERE",
-                    gameId: this.gameId,
-                    mapId: this.mapId
+                    name: self.markerName,
+                    description: self.description,
+                    customCSS: self.customCSS,
+                    gameId: self.gameId,
+                    mapId: self.mapId
                 };
-                connection.invoke('CreateMarker', marker);
+                connection.invoke('CreateMarker', marker)
+                    .then(() => {
+                        $('#newMarkerModal').modal('hide');
+                        self.emptyForm();
+                    });
+
             },
             checkIsEmpty: function(event) {
-
+            },
+            emptyForm: function(){
+                this.markerName = '';
+                this.customCSS = '';
+                this.description = '';
             }
         }
     });
