@@ -196,9 +196,6 @@ var gameAdmin = function (gameId, mapId) {
                     currentY = e.clientY - inElementY;
                 }
 
-                xOffset = currentX;
-                yOffset = currentY;
-
                 setTranslate(currentX, currentY, dragItem);
             }
         }

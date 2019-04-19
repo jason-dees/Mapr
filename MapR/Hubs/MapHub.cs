@@ -55,7 +55,7 @@ namespace MapR.Hubs {
         }
 
 		public async Task CreateMarker(Marker marker) {
-			if(!await CheckGameAndMap(marker.GameId, marker.MapId)) { return; }
+			if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
 
 			await _markerStore.AddMarker(new MarkerModel {
 				Id = marker.Id,
@@ -72,8 +72,13 @@ namespace MapR.Hubs {
 		}
 
         public async Task MoveMarker(string markerId, int x, int y) {
-            //get marker and then check stuff?
-            //Send all info up and use that to check stuff? I like the first option
+            var marker = await _markerStore.GetMarker(markerId);
+            if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
+
+            marker.X = x;
+            marker.Y = y;
+            await _markerStore.UpdateMarker(marker);
+            await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
         }
 
 		public async Task AddToGame(string gameId) {
@@ -85,7 +90,7 @@ namespace MapR.Hubs {
 			await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
 		}
 
-		async Task<bool> CheckGameAndMap(string gameId, string mapId) {
+		async Task<bool> CheckGameAndMapOwnership(string gameId, string mapId) {
 
 			var game = await _gameStore.GetGame(gameId);
 			if (game.Owner != Context.User.GetUserName()) { return false; }

@@ -23,7 +23,11 @@ namespace MapR.DataStores {
 			return _markers.FirstOrDefault(m => m.GameId == gameId && m.MapId == mapId && m.Id == markerId);
 		}
 
-		public async Task<IList<MarkerModel>> GetMarkers(string gameId, string mapId) {
+        public async Task<MarkerModel> GetMarker(string markerId) {
+            return _markers.FirstOrDefault(m => m.Id == markerId);
+        }
+
+        public async Task<IList<MarkerModel>> GetMarkers(string gameId, string mapId) {
 			return _markers.Where(m => m.GameId == gameId && m.MapId == mapId).ToList();
 		}
 

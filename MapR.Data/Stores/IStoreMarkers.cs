@@ -8,6 +8,7 @@ namespace MapR.Data.Stores {
         Task UpdateMarker(MarkerModel marker);
         Task DeleteMarker(MarkerModel marker);
         Task<MarkerModel> GetMarker(string gameId, string mapId, string markerId);
+        Task<MarkerModel> GetMarker(string markerId);
         Task<IList<MarkerModel>> GetMarkers(string gameId, string mapId);
     }
 }
