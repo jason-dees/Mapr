@@ -39,14 +39,7 @@
         </form>
     </nav>
     <div id="mapVue">
-		<div id="mapContainer">
-	        <img id="map" v-bind:src="activeMap" style="min-width:100px;min-height:100px"/>
-		</div>
-        <div class="marker"
-             v-for="marker in markers"
-             v-bind:id="marker.id"
-             v-bind:style="marker.customCSS">
-        </div>
+        <map-vue v-bind:markers="markers" v-bind:map-src="activeMap"></map-vue>
     </div>
 </div><!-- gameAdminVue -->
 

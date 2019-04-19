@@ -105,7 +105,7 @@ function setUpNewMarkerForm(connection){
     });
 }
 
-var mapRApp, mapZoom, global;
+var mapRApp, global;
 var gameAdmin = function (gameId, mapId) {
     
     var newMapUrl = '/games/'+gameId+'/maps/AddMap';
@@ -119,34 +119,42 @@ var gameAdmin = function (gameId, mapId) {
         data:{
             markers: {},
             maps: [],
-            activeMap: '/game/' + gameId + '/maps/' + mapId
+            activeMap: '/game/' + gameId + '/maps/' + mapId,
+            mapZoom: null
         },
         methods:{
             addMarker: function(marker){
+                var self = this;
                 this.$set(this.markers, marker.id, marker);
                 this.$nextTick(function () {
-                    setMarker(marker, mapZoom);
+                    setMarker(marker, self.mapZoom, self.getMap());
                 })
             },
             getMarker: function (id){
                 return this.markers[id];
+            },
+            getMap: function(){
+                return this.getEle('.map');
+            },
+            getEle: function(query){
+                return this.$el.querySelector(query);
             }
         },
         mounted: function(){
             var self = this;
-            mapZoom = panzoom(document.querySelector('#map'),{
+            self.mapZoom = panzoom(self.getMap(),{
                 maxZoom: 1,
                 smoothScroll: false,
                 minZoom: .1
             });
 
-            mapZoom.on('transform', function(){resetMapMarkers(self.markers, mapZoom);});
+            self.mapZoom.on('transform', function(){resetMapMarkers(self.markers, self.mapZoom, self.getMap());});
             setUpMarkerDrag();
 
             connection.start()
                 .then(function () { connection.invoke("AddToGame", gameId) })
                 .then(function () { connection.invoke("SendAllMarkers", gameId, mapId)});
-        }
+        },
     });
 
     function setUpMarkerDrag(){
@@ -164,7 +172,7 @@ var gameAdmin = function (gameId, mapId) {
     
         var mapTransform = null;
         function dragStart(e) {
-            mapTransform = mapZoom.getTransform();
+            mapTransform = mapRApp.mapZoom.getTransform();
 
             if (e.target.classList.contains('marker')) {
                 if (e.type === "touchstart") {
@@ -188,8 +196,8 @@ var gameAdmin = function (gameId, mapId) {
                 inElementX = currentX;
                 inElementY = currentY;
 
-                mapRApp.markers[dragItem.id].x = (inElementX - mapTransform.x - document.querySelector('#map').offsetLeft)/mapTransform.scale;
-                mapRApp.markers[dragItem.id].y = (inElementY - mapTransform.y - document.querySelector('#map').offsetTop)/mapTransform.scale;
+                mapRApp.markers[dragItem.id].x = (inElementX - mapTransform.x - mapRApp.getMap().offsetLeft)/mapTransform.scale;
+                mapRApp.markers[dragItem.id].y = (inElementY - mapTransform.y - mapRApp.getMap().offsetTop)/mapTransform.scale;
                 connection.invoke("MoveMarker", dragItem.id, mapRApp.markers[dragItem.id].x, mapRApp.markers[dragItem.id].y);
 
                 active = false;
@@ -198,7 +206,6 @@ var gameAdmin = function (gameId, mapId) {
     
         function drag(e) {
             if (active) {
-                global = e;
                 e.preventDefault();
                 if (e.type === "touchmove") {
                     currentX = e.touches[0].clientX - inElementX;
