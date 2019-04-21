@@ -30,6 +30,9 @@ function addToGame(gameId, mountedFn){
             getMarker: function (id){
                 return this.markers[id];
             },
+            setMap: function(mapId){
+                this.connection.invoke('ChangeMap', gameId, mapId);
+            },
             getMap: function(){
                 return this.getEle('.map');
             },

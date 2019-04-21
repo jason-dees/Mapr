@@ -19,6 +19,7 @@ namespace MapR.Features.AddMap {
             _mapStore = mapStore;
         }
 
+		[HttpPost]
         public async Task<IActionResult> AddMap(string gameId, [FromForm]Models.AddMap newMap) {
             var game = await _gameStore.GetGame(User.GetUserName(), gameId);
 

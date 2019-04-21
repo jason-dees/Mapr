@@ -14,9 +14,12 @@
                     Change Map
                 </button>
                 <div class="dropdown-menu" aria-labelledby="mapGroupDropdown">
-                    @foreach (var yourGame in Model.Maps)
-                    {
-                        <span class="dropdown-item">@yourGame.Name</span>
+                    @foreach (var gameMap in Model.Maps) {
+					<span class="dropdown-item" 
+						v-on:click="setMap('@gameMap.Id')" 
+						v-bind:class="{ active: '@gameMap.Id'==activeMapId }">
+							@gameMap.Name
+					</span>
                     }
                 </div>
             </div>

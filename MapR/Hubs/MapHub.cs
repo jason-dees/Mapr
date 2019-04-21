@@ -39,6 +39,23 @@ namespace MapR.Hubs {
 			});
         }
 
+		public async Task ChangeMap(string gameId, string mapId) {
+			if(!await CheckGameAndMapOwnership(gameId, mapId)) { return; }
+
+			var maps = await _mapStore.GetMaps(gameId);
+
+			var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+			primaryMap.IsPrimary = false;
+
+			var newPrimaryMap = maps.FirstOrDefault(m => m.Id == mapId);
+			newPrimaryMap.IsPrimary = true;
+
+			await _mapStore.UpdateMap(primaryMap);
+			await _mapStore.UpdateMap(newPrimaryMap);
+
+			await Clients.Group(gameId).SendAsync("SetMap", mapId);
+		}
+
         public async Task SendAllMarkers(string gameId, string mapId) {
 			var mapMarkers = (await _markerStore.GetMarkers(gameId, mapId))
 				.Select(marker => new Marker {

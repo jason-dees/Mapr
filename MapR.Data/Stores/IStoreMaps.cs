@@ -9,5 +9,7 @@ namespace MapR.Data.Stores {
         Task<MapModel> GetMap(string mapId);
         Task<IList<MapModel>> GetMaps(string gameId);
         Task<bool> DeleteMap(string mapId);
-    }
+		Task<bool> UpdateMap(MapModel map);
+		Task<bool> ReplaceMapImage(MapModel map);
+	}
 }

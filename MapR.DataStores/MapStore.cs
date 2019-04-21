@@ -22,17 +22,26 @@ namespace MapR.DataStores {
             _mapContainer = mapContainer;
         }
 
+		async Task InsertOrMerge(MapModel map) {
+
+			TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(map);
+			await _mapTable.ExecuteAsync(insertOrMergeOperation);
+
+		}
+
+		async Task<string> UploadMapImage(string gameId, string mapId, byte[] mapBytes) {
+			CloudBlockBlob cloudBlockBlob = _mapContainer.GetBlockBlobReference($"{gameId}-{mapId}");
+			await cloudBlockBlob.UploadFromByteArrayAsync(mapBytes, 0, mapBytes.Length);
+			return cloudBlockBlob.Name;
+		}
+
         public async Task<bool> AddMap(MapModel map) {
             map.GenerateRandomId();
             map.IsActive = true;
 
-            CloudBlockBlob cloudBlockBlob = _mapContainer.GetBlockBlobReference($"{map.GameId}-{map.Id}");
-            await cloudBlockBlob.UploadFromByteArrayAsync(map.ImageBytes, 0, map.ImageBytes.Length);
+			map.ImageUri = await UploadMapImage(map.GameId, map.Id, map.ImageBytes);
 
-            map.ImageUri = cloudBlockBlob.Name;
-
-            TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(map);
-            await _mapTable.ExecuteAsync(insertOrMergeOperation);
+			await InsertOrMerge(map);
 
             return true;
         }
@@ -73,5 +82,22 @@ namespace MapR.DataStores {
 
             return mapResult.ToList();
         }
+
+		public async Task<bool> ReplaceMapImage(MapModel map) {
+			map.ImageUri = await UploadMapImage(map.GameId, map.Id, map.ImageBytes);
+			return await UpdateMap(map);
+		}
+
+		public async Task<bool> UpdateMap(MapModel map) {
+			var originalMap = await GetMap(map.Id);
+
+			originalMap.IsPrimary = map.IsPrimary;
+			originalMap.IsActive = map.IsActive;
+			originalMap.Name = map.Name;
+
+			await InsertOrMerge(originalMap);
+
+			return true;
+		}
     }
 }
