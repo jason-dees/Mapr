@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MapR.Hubs {
 
-	[Authorize]
+	//[Authorize]
 	public class MapHub : Hub {
 
 		readonly IStoreMarkers _markerStore;
@@ -52,7 +52,7 @@ namespace MapR.Hubs {
 					Y = marker.Y
 				});
 
-			await Clients.Group(gameId).SendAsync("SetAllMapMarkers", mapMarkers);
+			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
 
 		public async Task CreateMarker(Marker marker) {
@@ -86,6 +86,11 @@ namespace MapR.Hubs {
 		public async Task AddToGame(string gameId) {
 			//everything is public now
 			await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
+			var maps = await _mapStore.GetMaps(gameId);
+			var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+
+			await Clients.Caller.SendAsync("SetMap", primaryMap.Id);
+			await SendAllMarkers(gameId, primaryMap.Id);
 		}
 
 		public async Task RemoveFromGame(string gameId) {

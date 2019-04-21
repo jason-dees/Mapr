@@ -61,7 +61,7 @@ namespace MapR.Features.PlayGame {
                 PrimaryMapName = primaryMap.Name
             };
 
-            return View("Game", model);
+            return View("GamePlayer", model);
         }
 
         async Task<IActionResult> GameAdmin(GameModel game) {

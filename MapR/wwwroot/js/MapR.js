@@ -15,7 +15,6 @@ function resetMapMarkers(markers, map, mapElement) {
         setMarker(markers[marker], map, mapElement);
     }
 }
-
 //Do a MapVue Component here with display of markers and map
 
 Vue.component('map-vue', {
