@@ -37,7 +37,6 @@ Vue.component('map-vue', {
         </div>  
     `,
     mounted: function(){
-        console.log('this is a thing')
     }
 });
 

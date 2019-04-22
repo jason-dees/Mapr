@@ -1,135 +1,68 @@
 ﻿@model MapR.Features.PlayGame.Models.GameAdmin
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Game Admin";
+	Layout = "_Layout";
+	ViewData["Title"] = "Game Admin";
 }
 <div id="gameVue">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="/" class="btn navbar-brand">Home</a>
-        <div class="btn-group">
-            <button class="btn btn-secondary" data-toggle="modal" data-target="#newMapModal">Add Map</button>
-            <div class="btn-group" role="group">
-                <button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Change Map
-                </button>
-                <div class="dropdown-menu" aria-labelledby="mapGroupDropdown">
-                    @foreach (var gameMap in Model.Maps) {
-					<span class="dropdown-item" 
-						v-on:click="setMap('@gameMap.Id')" 
-						v-bind:class="{ active: '@gameMap.Id'==activeMapId }">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a href="/" class="btn navbar-brand">Home</a>
+		<div class="btn-group">
+			<button class="btn btn-secondary" data-toggle="modal" data-target="#newMapModal">Add Map</button>
+			<div class="btn-group" role="group">
+				<button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Change Map
+				</button>
+				<div class="dropdown-menu" aria-labelledby="mapGroupDropdown">
+					@foreach (var gameMap in Model.Maps)
+					{
+						<span class="dropdown-item"
+							  v-on:click="setMap('@gameMap.Id')"
+							  v-bind:class="{ active: '@gameMap.Id'==activeMapId }">
 							@gameMap.Name
-					</span>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="btn-group ml-sm-2">
-            <button class="btn btn-secondary" data-toggle="modal" data-target="#newMarkerModal">Add Marker</button>
-            <div class="btn-group" role="group">
-                <button id="markerGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Markers
-                </button>
-                <div class="dropdown-menu" aria-labelledby="markerGroupDropdown">
-                </div>
-            </div>
-        </div>
-        <form asp-controller="Account" asp-action="Logout"
-              asp-route-returnurl="/" method="POST"
-              class="form-horizontal ml-auto">
-            <button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
-        </form>
-    </nav>
-    <div id="mapVue">
-        <map-vue v-bind:markers="markers" v-bind:map-src="activeMapUrl"></map-vue>
-    </div>
+						</span>
+					}
+				</div>
+			</div>
+		</div>
+		<div class="btn-group ml-sm-2">
+			<button class="btn btn-secondary" data-toggle="modal" data-target="#newMarkerModal">Add Marker</button>
+			<div class="btn-group" role="group">
+				<button id="markerGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Markers
+				</button>
+				<div class="dropdown-menu" aria-labelledby="markerGroupDropdown">
+				</div>
+			</div>
+		</div>
+		<form asp-controller="Account" asp-action="Logout"
+			  asp-route-returnurl="/" method="POST"
+			  class="form-horizontal ml-auto">
+			<button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
+		</form>
+	</nav>
+	<div id="mapVue">
+		<map-vue v-bind:markers="markers" v-bind:map-src="activeMapUrl"></map-vue>
+	</div>
+
+	<add-marker-vue v-bind:game-id="gameId" v-bind:map-id="activeMapId">
+
+	</add-marker-vue>
+	<add-map-vue v-bind:game-id="gameId"></add-map-vue>
 </div><!-- gameAdminVue -->
 
-<div class="modal" role="form" id="newMapModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5>Add New Game</h5>
-            </div>
-            <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
-                <div class="form-group">
-                    <input type="text" name="name" class="form-control"
-                           placeholder="New Map Name"
-                           v-model="mapName"
-                           v-bind:class="{ 'is-invalid' : (nameErrorMessage.length > 0) }"
-                           v-on:keyup="checkIsEmpty" />
-                </div>
-
-                <div class="alert alert-warning" v-show="nameErrorMessage.length > 0">{{nameErrorMessage}}</div>
-
-                <div class="form-group">
-                    <label class="form-label" for="imageUpload">Map Image</label>
-                    <input type="file" class="form-input"
-                           name="imageUpload" id="imageUpload"
-                           accept="image/png, image/jpeg"
-                           v-on:change="fileSelected" />
-                    <img id="imagePreview" v-bind:src="imagePreview" style="width:100%;" />
-                </div>
-                <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-primary" v-on:click="submit">Create</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal" role="form" id="newMarkerModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5>Add New Game</h5>
-            </div>
-            <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
-                <div class="form-group">
-                    <input type="text" name="name" class="form-control"
-                           placeholder="New Marker Name"
-                           v-model="markerName"
-                           v-bind:class="{ 'is-invalid' : (nameErrorMessage.length > 0) }"
-                           v-on:keyup="checkIsEmpty" />
-                </div>
-
-                <div class="alert alert-warning" v-show="nameErrorMessage.length > 0">{{nameErrorMessage}}</div>
-
-                <div class="form-group">
-                    <input type="text" 
-                           class="form-control"
-                           placeholder="Custom CSS"
-                           v-model="customCSS" />
-                </div>
-
-                <div class="form-group">
-                    <label for="">Description</label>
-                    <textarea class="form-control" rows="3" v-model="description"></textarea>
-                </div>
-
-                <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-primary" v-on:click="submit">Create</button>
-            </div>
-        </div>
-    </div>
-</div>
 <link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />
 @section Scripts {
 	<script asp-append-version="true" src="~/js/Game.js"></script>
-    <script asp-append-version="true" src="~/js/GameAdmin.js"></script>
-    <script asp-append-version="true" src="~/js/MapR.js"></script>
-    <script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
-    <script type="text/javascript">
+	<script asp-append-version="true" src="~/js/GameAdmin.js"></script>
+	<script asp-append-version="true" src="~/js/MapR.js"></script>
+	<script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
+	<script type="text/javascript">
 
     (function startUp(gameId, mapId){
         window.onload = gameAdmin.bind(window, gameId, mapId);
     })('@Model.GameId','@Model.ActiveMap.Id');
-       
-    </script>
+
+	</script>
 }

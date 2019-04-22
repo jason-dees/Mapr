@@ -12,7 +12,8 @@ function addToGame(gameId, mountedFn){
             maps: [],
             activeMapId: '',
             mapZoom: null,
-            connection: connection 
+            connection: connection,
+            gameId : gameId 
         },
         computed: {
             activeMapUrl: function(){

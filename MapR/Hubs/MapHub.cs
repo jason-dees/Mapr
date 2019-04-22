@@ -54,6 +54,7 @@ namespace MapR.Hubs {
 			await _mapStore.UpdateMap(newPrimaryMap);
 
 			await Clients.Group(gameId).SendAsync("SetMap", mapId);
+			await SendAllMarkers(gameId, mapId);
 		}
 
         public async Task SendAllMarkers(string gameId, string mapId) {
