@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MapR.Data.Models;
+using AutoMapper;
+using MapR.DataStores.Configuration;
+using MapR.DataStores.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores {
-	public class RoleStore : IRoleStore<MapRRole> {
+	public class RoleStore : IRoleStore<Data.Models.MapRRole> {
 		const string _partition = "MapR";
 		readonly CloudTable _roleTable;
-		public RoleStore(CloudTableClient tableClient) {
+		readonly IMapper _mapper;
+		public RoleStore(CloudTableClient tableClient, IAmDataStoreMapper mapper) {
 			_roleTable = tableClient.GetTableReference("roles");
+			_mapper = mapper;
 		}
 
-		public async Task<IdentityResult> CreateAsync(MapRRole role, CancellationToken cancellationToken) {
+		public async Task<IdentityResult> CreateAsync(Data.Models.MapRRole roleModel, CancellationToken cancellationToken) {
+			var role = _mapper.Map<MapRRole>(roleModel);
 			role.PartitionKey = _partition;
 			role.RowKey = role.Id;
 			TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(role);
@@ -23,7 +28,7 @@ namespace MapR.DataStores {
 			return new MapRIdentityResult();
 		}
 
-		public Task<IdentityResult> DeleteAsync(MapRRole role, CancellationToken cancellationToken) {
+		public Task<IdentityResult> DeleteAsync(Data.Models.MapRRole role, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
@@ -31,37 +36,38 @@ namespace MapR.DataStores {
 			GC.SuppressFinalize(this);
 		}
 
-		public async Task<MapRRole> FindByIdAsync(string roleId, CancellationToken cancellationToken) {
+		public async Task<Data.Models.MapRRole> FindByIdAsync(string roleId, CancellationToken cancellationToken) {
 			TableOperation operation = TableOperation.Retrieve<MapRRole>(_partition, roleId);
 			var result = await _roleTable.ExecuteAsync(operation);
 			return result.Result as MapRRole;
 		}
 
-		public Task<MapRRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken) {
+		public Task<Data.Models.MapRRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
-		public Task<string> GetNormalizedRoleNameAsync(MapRRole role, CancellationToken cancellationToken) {
+		public Task<string> GetNormalizedRoleNameAsync(Data.Models.MapRRole role, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
-		public Task<string> GetRoleIdAsync(MapRRole role, CancellationToken cancellationToken) {
+		public Task<string> GetRoleIdAsync(Data.Models.MapRRole role, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
-		public Task<string> GetRoleNameAsync(MapRRole role, CancellationToken cancellationToken) {
+		public Task<string> GetRoleNameAsync(Data.Models.MapRRole role, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
-		public Task SetNormalizedRoleNameAsync(MapRRole role, string normalizedName, CancellationToken cancellationToken) {
+		public Task SetNormalizedRoleNameAsync(Data.Models.MapRRole role, string normalizedName, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
-		public Task SetRoleNameAsync(MapRRole role, string roleName, CancellationToken cancellationToken) {
+		public Task SetRoleNameAsync(Data.Models.MapRRole role, string roleName, CancellationToken cancellationToken) {
 			throw new NotImplementedException();
 		}
 
-		public async Task<IdentityResult> UpdateAsync(MapRRole role, CancellationToken cancellationToken) {
+		public async Task<IdentityResult> UpdateAsync(Data.Models.MapRRole roleModel, CancellationToken cancellationToken) {
+			var role = _mapper.Map<MapRRole>(roleModel);
 			TableOperation operation = TableOperation.Replace(role);
 
 			await _roleTable.ExecuteAsync(operation);

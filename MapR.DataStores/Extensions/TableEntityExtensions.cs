@@ -5,7 +5,7 @@ using MapR.Data.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.Data.Extensions {
+namespace MapR.DataStores.Extensions {
     public static class TableEntityExtensions {
         public static void GenerateRandomId(this TableEntity entity) {
             entity.RowKey = RandomString(6);

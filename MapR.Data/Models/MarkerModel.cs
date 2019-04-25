@@ -1,19 +1,17 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-
+﻿
 namespace MapR.Data.Models {
-	public class MarkerModel : TableEntity {
+	public interface MarkerModel {
 
-		[IgnoreProperty]
-		public string Id { get => RowKey; set { RowKey = value; } }
-		[IgnoreProperty]
-		public string GameId { get => PartitionKey; set { PartitionKey = value; } }
-
-		public string MapId { get; set; }
-		public int X { get; set; }
-		public int Y { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public string CustomCss { get; set; }
+		string Id { get; set; }
+		string GameId { get; set; }
+		string MapId { get; set; }
+		int X { get; set; }
+		int Y { get; set; }
+		string Name { get; set; }
+		string Description { get; set; }
+		string CustomCss { get; set; }
+		string IconUri { get; set; }
+		byte[] IconBytes { get; set; }
 
 	}
 }

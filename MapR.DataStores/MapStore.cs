@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MapR.Data.Extensions;
-using MapR.Data.Models;
+using AutoMapper;
 using MapR.Data.Stores;
+using MapR.DataStores.Configuration;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
+using MapR.DataStores.Models;
+using MapR.DataStores.Extensions;
 
 namespace MapR.DataStores {
 
@@ -15,14 +17,19 @@ namespace MapR.DataStores {
 
         readonly CloudTable _mapTable;
         readonly CloudBlobContainer _mapContainer;
+		readonly IMapper _mapper;
 
         public MapStore(CloudTable mapTable, 
-            CloudBlobContainer mapContainer) {
+            CloudBlobContainer mapContainer,
+			IAmDataStoreMapper mapper) {
+
             _mapTable = mapTable;
             _mapContainer = mapContainer;
+			_mapper = mapper;
         }
 
-		async Task InsertOrMerge(MapModel map) {
+		async Task InsertOrMerge(Data.Models.MapModel mapModel) {
+			var map = _mapper.Map<MapModel>(mapModel);
 
 			TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(map);
 			await _mapTable.ExecuteAsync(insertOrMergeOperation);
@@ -35,7 +42,8 @@ namespace MapR.DataStores {
 			return cloudBlockBlob.Name;
 		}
 
-        public async Task<bool> AddMap(MapModel map) {
+        public async Task<bool> AddMap(Data.Models.MapModel mapModel) {
+			var map = _mapper.Map<MapModel>(mapModel);
             map.GenerateRandomId();
             map.IsActive = true;
 
@@ -47,7 +55,7 @@ namespace MapR.DataStores {
         }
 
         public async Task<bool> DeleteMap(string mapId) {
-            var map = await GetMap(mapId);
+            var map = await GetMapModel(mapId);
 
             var blob = _mapContainer.GetBlobReference(map.ImageUri);
             await blob.DeleteAsync();
@@ -59,20 +67,11 @@ namespace MapR.DataStores {
             return true;
         }
 
-        public async Task<MapModel> GetMap(string mapId) {
-            var idQuery = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, mapId);
+        public async Task<Data.Models.MapModel> GetMap(string mapId) {
+			return await GetMapModel(mapId);
+		}
 
-            var query = new TableQuery<MapModel>()
-                .Where(idQuery);
-
-            var map = (await _mapTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
-
-            await map.LoadImageBytes(_mapContainer);
-
-            return map;
-        }
-
-        public async Task<IList<MapModel>> GetMaps(string gameId) {
+        public async Task<IList<Data.Models.MapModel>> GetMaps(string gameId) {
             var ownerQuery = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, gameId);
 
             var query = new TableQuery<MapModel>()
@@ -80,15 +79,15 @@ namespace MapR.DataStores {
 
             var mapResult = await _mapTable.ExecuteQuerySegmentedAsync(query, null);
 
-            return mapResult.ToList();
+            return (IList<Data.Models.MapModel>)mapResult.ToList();
         }
 
-		public async Task<bool> ReplaceMapImage(MapModel map) {
+		public async Task<bool> ReplaceMapImage(Data.Models.MapModel map) {
 			map.ImageUri = await UploadMapImage(map.GameId, map.Id, map.ImageBytes);
 			return await UpdateMap(map);
 		}
 
-		public async Task<bool> UpdateMap(MapModel map) {
+		public async Task<bool> UpdateMap(Data.Models.MapModel map) {
 			var originalMap = await GetMap(map.Id);
 
 			originalMap.IsPrimary = map.IsPrimary;
@@ -98,6 +97,19 @@ namespace MapR.DataStores {
 			await InsertOrMerge(originalMap);
 
 			return true;
+		}
+
+		async Task<MapModel> GetMapModel(string mapId) {
+			var idQuery = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, mapId);
+
+			var query = new TableQuery<MapModel>()
+				.Where(idQuery);
+
+			var map = (await _mapTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
+
+			await map.LoadImageBytes(_mapContainer);
+
+			return map;
 		}
     }
 }

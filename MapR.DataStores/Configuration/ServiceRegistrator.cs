@@ -11,7 +11,8 @@ using Microsoft.WindowsAzure.Storage.Table;
 namespace MapR.DataStores.Configuration {
     public static class ServiceRegistrator {
         public static void AddAzureCloudStuff(IServiceCollection services, string connectionString) {
-            var account = CloudStorageAccount.Parse(connectionString);
+			var mapper = AutoMapperConfiguration.MapperConfiguration(services);
+			var account = CloudStorageAccount.Parse(connectionString);
 
             services.AddSingleton((sp) => account);
             services.AddSingleton<CloudTableClient>((sp) => account.CreateCloudTableClient());
@@ -21,19 +22,21 @@ namespace MapR.DataStores.Configuration {
 
             services.AddSingleton<IStoreGames>((serviceProvider) => {
                 var cloudClient = serviceProvider.GetService(typeof(CloudTableClient)) as CloudTableClient;
-                return new GameStore(cloudClient.GetTableReference("games"));
+                return new GameStore(cloudClient.GetTableReference("games"), mapper);
             });
             services.AddSingleton<IStoreMaps>((serviceProvider) => {
                 var cloudClient = serviceProvider.GetService(typeof(CloudTableClient)) as CloudTableClient;
-                var blobClient = serviceProvider.GetService(typeof(CloudBlobClient)) as CloudBlobClient; ;
+                var blobClient = serviceProvider.GetService(typeof(CloudBlobClient)) as CloudBlobClient;
 
-                return new MapStore(cloudClient.GetTableReference("gamemaps"),
-                    blobClient.GetContainerReference("mapimagestorage"));
+				return new MapStore(cloudClient.GetTableReference("gamemaps"),
+                    blobClient.GetContainerReference("mapimagestorage"),
+					mapper);
             });
 
             services.AddSingleton<IStoreMarkers>((sreviceProvider) => {
                 return new MarkerStore();
             });
+
         }
     }
 
