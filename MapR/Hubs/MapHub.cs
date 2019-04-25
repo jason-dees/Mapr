@@ -85,6 +85,7 @@ namespace MapR.Hubs {
                 Y = marker.Y
             };
             newMarker.GenerateRandomId();
+			newMarker.Id = "M" + newMarker.Id;
             marker.Id = newMarker.Id;
             await _markerStore.AddMarker(newMarker);
 

@@ -75,7 +75,7 @@ var gameAdmin = function (gameId, mapId) {
     }
 };
 Vue.component('add-marker-vue', {
-    props:['gameId', 'mapId'],
+    props:['gameId', 'mapId', 'connection'],
     data: function(){
         return {
             markerName: "",
@@ -95,7 +95,7 @@ Vue.component('add-marker-vue', {
                 gameId: self.gameId,
                 mapId: self.mapId
             };
-            connection.invoke('CreateMarker', marker)
+            self.connection.invoke('CreateMarker', marker)
                 .then(() => {
                     $('#newMarkerModal').modal('hide');
                     self.emptyForm();
@@ -115,7 +115,7 @@ Vue.component('add-marker-vue', {
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Add New Game</h5>
+                    <h5>Add New Marker</h5>
                 </div>
                 <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
                     <div class="form-group">
@@ -151,6 +151,7 @@ Vue.component('add-marker-vue', {
     </div>
     `,
     mounted: function(){
+        global = this;
     }
 });
 
@@ -219,7 +220,7 @@ Vue.component('add-map-vue', {
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Add New Game</h5>
+                    <h5>Add New Map</h5>
                 </div>
                 <div class="modal-body" v-bind:class="{ 'alert-danger' : (formErrorMessage.length > 0) }">
                     <div class="form-group">
