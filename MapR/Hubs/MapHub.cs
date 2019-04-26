@@ -2,7 +2,6 @@
 using MapR.Data.Stores;
 using MapR.Extensions;
 using MapR.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace MapR.Hubs {
 
-	//[Authorize]
 	public class MapHub : Hub {
 
 		readonly IStoreMarkers _markerStore;

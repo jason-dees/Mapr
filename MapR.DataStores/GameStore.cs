@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MapR.Data.Stores;
 using Microsoft.WindowsAzure.Storage.Table;
 using MapR.DataStores.Models;
-using MapR.DataStores.Configuration;
 using AutoMapper;
 using MapR.DataStores.Extensions;
 
