@@ -35,7 +35,7 @@ namespace MapR.Features.Index {
                 YourGames = (await _gameStore.GetGames(userName)).Select(gm => new Models.YourGame {
                     Id = gm.Id,
                     Name = gm.Name,
-                    LastPlayed = gm.Timestamp
+                    LastPlayed = gm.LastPlayed
                 }).OrderByDescending(g => g.LastPlayed).ToList()
             };
             return View("Index", indexViewModel);

@@ -6,6 +6,10 @@ using Microsoft.WindowsAzure.Storage.Table;
 namespace MapR.DataStores.Models {
 	public class MapRUser : Data.Models.MapRUser, ITableEntity {
 
+        public string PartitionKey { get; set; }
+        public string RowKey { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
+        public string ETag { get; set; }
 
         public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
 			MapRUser entity = TableEntity.ConvertBack<MapRUser>(properties, operationContext);

@@ -25,6 +25,7 @@
     <Folder Include="Features\PlayGame\Models\" />
     <Folder Include="Features\AddMap\" />
     <Folder Include="Features\AddMap\Models\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>

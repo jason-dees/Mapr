@@ -14,7 +14,7 @@ namespace MapR.DataStores {
     public class GameStore : IStoreGames{
         readonly CloudTable _gameTable;
 		readonly IMapper _mapper;
-		public GameStore(CloudTable gameTable, IAmDataStoreMapper mapper) {
+		public GameStore(CloudTable gameTable, IMapper mapper) {
             _gameTable = gameTable;
 			_mapper = mapper;
         }
@@ -46,7 +46,7 @@ namespace MapR.DataStores {
             var query = new TableQuery<GameModel>()
                 .Where(ownerQuery);
 
-            return (IList<MapR.Data.Models.GameModel>)(await _gameTable.ExecuteQuerySegmentedAsync(query, null)).Results;
+            return (await _gameTable.ExecuteQuerySegmentedAsync(query, null)).Results.Select(g => g as Data.Models.GameModel).ToList();
         }
 
         async Task<bool> IsUniqueId(string gameId) {
@@ -60,6 +60,8 @@ namespace MapR.DataStores {
 
         public async Task<bool> AddGame(Data.Models.GameModel gameModel) {
 			var game = _mapper.Map<GameModel>(gameModel);
+            game.GenerateRandomId();
+
             while(!await IsUniqueId(game.Id)) { //Let's hope and pray it never gets stuck
                 game.GenerateRandomId();
             }

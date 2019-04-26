@@ -1,7 +1,7 @@
-﻿using MapR.Data.Extensions;
-using MapR.Data.Models;
+﻿
 using MapR.Data.Stores;
 using MapR.Extensions;
+using MapR.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -84,12 +84,9 @@ namespace MapR.Hubs {
                 X = marker.X,
                 Y = marker.Y
             };
-            newMarker.GenerateRandomId();
-			newMarker.Id = "M" + newMarker.Id;
-            marker.Id = newMarker.Id;
-            await _markerStore.AddMarker(newMarker);
+            marker.Id = (await _markerStore.AddMarker(newMarker)).Id;
 
-			await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
+            await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
 		}
 
         public async Task MoveMarker(string markerId, int x, int y) {

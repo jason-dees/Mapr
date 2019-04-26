@@ -1,0 +1,15 @@
+﻿
+namespace MapR.Models {
+    public class MarkerModel : Data.Models.MarkerModel {
+        public string Id { get; set; }
+        public string GameId { get; set; }
+        public string MapId { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string CustomCss { get; set; }
+        public string IconUri { get; set; }
+        public byte[] IconBytes { get; set; }
+    }
+}

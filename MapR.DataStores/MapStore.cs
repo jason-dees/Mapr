@@ -21,7 +21,7 @@ namespace MapR.DataStores {
 
         public MapStore(CloudTable mapTable, 
             CloudBlobContainer mapContainer,
-			IAmDataStoreMapper mapper) {
+			IMapper mapper) {
 
             _mapTable = mapTable;
             _mapContainer = mapContainer;
@@ -79,7 +79,7 @@ namespace MapR.DataStores {
 
             var mapResult = await _mapTable.ExecuteQuerySegmentedAsync(query, null);
 
-            return (IList<Data.Models.MapModel>)mapResult.ToList();
+            return mapResult.Select(m => m as Data.Models.MapModel).ToList();
         }
 
 		public async Task<bool> ReplaceMapImage(Data.Models.MapModel map) {

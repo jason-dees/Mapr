@@ -6,7 +6,12 @@ using Microsoft.WindowsAzure.Storage.Table;
 namespace MapR.DataStores.Models {
 	public class MapRRole : Data.Models.MapRRole, ITableEntity {
 
-		public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
+        public string PartitionKey { get; set; }
+        public string RowKey { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
+        public string ETag { get; set; }
+
+        public void ReadEntity(IDictionary<string, EntityProperty> properties, OperationContext operationContext) {
 			MapRRole entity = TableEntity.ConvertBack<MapRRole>(properties, operationContext);
 
 			this.Id = entity.Id;

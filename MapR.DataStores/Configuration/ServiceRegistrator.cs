@@ -32,11 +32,7 @@ namespace MapR.DataStores.Configuration {
                     blobClient.GetContainerReference("mapimagestorage"),
 					mapper);
             });
-
-            services.AddSingleton<IStoreMarkers>((sreviceProvider) => {
-                return new MarkerStore();
-            });
-
+            services.AddSingleton<IStoreMarkers>((sp) => new MarkerStore(mapper));
         }
     }
 

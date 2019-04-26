@@ -12,7 +12,7 @@ namespace MapR.DataStores {
 		const string _partition = "MapR";
 		readonly CloudTable _roleTable;
 		readonly IMapper _mapper;
-		public RoleStore(CloudTableClient tableClient, IAmDataStoreMapper mapper) {
+		public RoleStore(CloudTableClient tableClient, IMapper mapper) {
 			_roleTable = tableClient.GetTableReference("roles");
 			_mapper = mapper;
 		}
