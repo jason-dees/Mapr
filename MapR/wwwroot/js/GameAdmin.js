@@ -74,6 +74,40 @@ var gameAdmin = function (gameId, mapId) {
         }
     }
 };
+Vue.component('image-upload', {
+    data: function(){
+        return {
+            imagePreview: "",
+            image:null
+        };
+    },
+    methods:{
+        fileSelected: function(event){
+            let self = this;
+            self.imagePreview = "";
+            self.image = null;
+
+            if(event.target.files.length == 0) return;
+            self.image = event.target.files[0];
+
+            let fileReader = new FileReader();
+            fileReader.addEventListener('load', function(){
+                self.imagePreview = fileReader.result;
+            }, false);
+            fileReader.readAsDataURL(self.image);
+            this.$emit('update:image', self.image)
+        }
+    },
+    template: `
+        <div>
+            <input type="file" class="form-input"
+                name="imageUpload" id="imageUpload"
+                accept="image/png, image/jpeg"
+                v-on:change="fileSelected" />
+            <img id="imagePreview" v-bind:src="imagePreview" style="width:100%;" />
+        </div>
+    `
+});
 Vue.component('add-marker-vue', {
     props:['gameId', 'mapId', 'connection'],
     data: function(){
@@ -82,24 +116,34 @@ Vue.component('add-marker-vue', {
             customCSS: "",
             description: "",
             nameErrorMessage: "",
-            formErrorMessage: ""
+            formErrorMessage: "",
+            imageData: null
         };
     },
     methods:{
         submit: function() {
             var self = this;
-            var marker = {
-                name: self.markerName,
-                description: self.description,
-                customCSS: self.customCSS,
-                gameId: self.gameId,
-                mapId: self.mapId
-            };
-            self.connection.invoke('CreateMarker', marker)
-                .then(() => {
-                    $('#newMarkerModal').modal('hide');
-                    self.emptyForm();
-                });
+
+            var newMarkerUrl = '/games/' + self.gameId + '/maps/' + self.mapId + '/markers/AddMarker';
+
+            let formData = new FormData();
+            console.log(self.imageData)
+            formData.append("ImageData", self.imageData);
+            formData.set("Name", self.markerName);
+            formData.set("Description", self.description);
+            formData.set("CustomCSS", self.customCSS);
+
+            const config =  { headers: {'Content-Type': 'multipart/form-data' }};
+            axios({
+                method: 'post',
+                url: newMarkerUrl,
+                data: formData,
+                config: config
+            }).then(function (response) {
+                self.formErrorMessage = "";
+            }).catch(function (error) {
+                self.formErrorMessage = error.message;
+            });
 
         },
         checkIsEmpty: function(event) {
@@ -140,6 +184,8 @@ Vue.component('add-marker-vue', {
                         <textarea class="form-control" rows="3" v-model="description"></textarea>
                     </div>
 
+                    <image-upload v-bind:image.sync="imageData"></image-upload>
+
                     <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
                 </div>
                 <div class="modal-footer">
@@ -161,7 +207,6 @@ Vue.component('add-map-vue', {
         return {
             mapName: "",
             image: null,
-            imagePreview: "",
             nameErrorMessage: "",
             formErrorMessage: ""
         };
@@ -199,20 +244,6 @@ Vue.component('add-map-vue', {
                 this.nameErrorMessage = "";
                 return false;
             }
-        },
-        fileSelected: function(event){
-            let self = this;
-            self.imagePreview = "";
-            self.image = null;
-
-            if(event.target.files.length == 0) return;
-            self.image = event.target.files[0];
-
-            let fileReader = new FileReader();
-            fileReader.addEventListener('load', function(){
-                self.imagePreview = fileReader.result;
-            }, false);
-            fileReader.readAsDataURL(self.image);
         }
     },
     template:`
@@ -235,11 +266,7 @@ Vue.component('add-map-vue', {
 
                     <div class="form-group">
                         <label class="form-label" for="imageUpload">Map Image</label>
-                        <input type="file" class="form-input"
-                            name="imageUpload" id="imageUpload"
-                            accept="image/png, image/jpeg"
-                            v-on:change="fileSelected" />
-                        <img id="imagePreview" v-bind:src="imagePreview" style="width:100%;" />
+                        <image-upload v-bind:image.sync="image"></image-upload>
                     </div>
                     <div class="alert alert-warning" v-show="formErrorMessage.length > 0">{{formErrorMessage}}</div>
                 </div>

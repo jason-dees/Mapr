@@ -26,6 +26,8 @@
     <Folder Include="Features\AddMap\" />
     <Folder Include="Features\AddMap\Models\" />
     <Folder Include="Models\" />
+    <Folder Include="Features\AddMarker\" />
+    <Folder Include="Features\AddMarker\Models\" />
   </ItemGroup>
 
   <ItemGroup>

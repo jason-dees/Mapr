@@ -23,7 +23,7 @@ namespace MapR.Hubs {
 			_gameStore = gameStore;
 		}
 
-        public async Task SendMarker(Marker marker) {
+        public async Task SendMarker(MarkerModel marker) {
             await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
 			await _markerStore.UpdateMarker(new MarkerModel {
 				Id = marker.Id,
@@ -57,7 +57,7 @@ namespace MapR.Hubs {
 
         async Task SendAllMarkers(string mapId) {
 			var mapMarkers = (await _markerStore.GetMarkers(mapId))
-				.Select(marker => new Marker {
+				.Select(marker => new MarkerModel {
 					Id = marker.Id,
 					MapId = marker.MapId,
 					GameId = marker.GameId,
@@ -72,22 +72,22 @@ namespace MapR.Hubs {
 			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
 
-		public async Task CreateMarker(Marker marker) {
-			if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
-            var newMarker = new MarkerModel {
-                MapId = marker.MapId,
-                GameId = marker.GameId,
-                Name = marker.Name,
-                Description = marker.Description,
-                CustomCss = marker.CustomCss,
-                X = marker.X,
-                Y = marker.Y,
-                ImageBytes = new byte[]
-            };
-            marker.Id = (await _markerStore.AddMarker(newMarker)).Id;
+		//public async Task CreateMarker(Marker marker) {
+		//	if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
+  //          var newMarker = new MarkerModel {
+  //              MapId = marker.MapId,
+  //              GameId = marker.GameId,
+  //              Name = marker.Name,
+  //              Description = marker.Description,
+  //              CustomCss = marker.CustomCss,
+  //              X = marker.X,
+  //              Y = marker.Y,
+  //              ImageBytes = new byte[0] //signalr does not like this. Or i put a size limit
+  //          };
+  //          marker.Id = (await _markerStore.AddMarker(newMarker)).Id;
 
-            await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
-		}
+  //          await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
+		//}
 
         public async Task MoveMarker(string markerId, int x, int y) {
             var marker = await _markerStore.GetMarker(markerId);
@@ -124,29 +124,6 @@ namespace MapR.Hubs {
 			return true;
 		}
 	}
-
-    public class Marker {
-        public string Id { get; set; }
-		public string MapId { get; set; }
-		public string GameId { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public string CustomCss { get; set; }
-        public string IconUrl { get => $"/games/{GameId}/maps/{MapId}/markers/{Id}"; }
-        public bool HasIcon { get; set; }
-
-        public override bool Equals(object obj) {
-            if(typeof(Marker) != obj.GetType()) { return false; }
-
-            return Id == ((Marker)obj).Id;
-        }
-
-        public override int GetHashCode() {
-            return HashCode.Combine(Id, X, Y);
-        }
-    }
 
 	public class MapMarkerPosition {
 		public string Id { get; set; }

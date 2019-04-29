@@ -11,5 +11,7 @@ namespace MapR.Models {
         public string CustomCss { get; set; }
         public string ImageUri { get; set; }
         public byte[] ImageBytes { get; set; }
+        public string IconUrl { get => $"/game/{GameId}/maps/{MapId}/markers/{Id}"; }
+        public bool HasIcon { get; set; }
     }
 }

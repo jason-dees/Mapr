@@ -45,5 +45,9 @@ Vue.component('map-marker-vue', {
     data: function(){
         return {};
     },
-    template:`<div v-bind:style="marker.customCSS" v-bind:id="marker.id" class="marker"></div>`
+    template:`
+        <div v-bind:style="marker.customCSS" v-bind:id="marker.id" class="marker">
+            <img v-if="marker.hasIcon" v-bind:src="marker.iconUrl" />
+        </div>
+    `
 });
