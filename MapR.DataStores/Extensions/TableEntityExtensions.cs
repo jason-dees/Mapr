@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using MapR.Data.Models;
+using MapR.DataStores.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores.Extensions {
     public static class TableEntityExtensions {
-        public static void GenerateRandomId(this TableEntity entity) {
+        public static void GenerateRandomId(this ITableEntity entity) {
             entity.RowKey = RandomString(6);
         }
 
@@ -18,12 +18,12 @@ namespace MapR.DataStores.Extensions {
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public static async Task LoadImageBytes(this MapModel map, CloudBlobContainer mapContainer) {
-            var mapBlob = mapContainer.GetBlobReference(map.ImageUri);
+        public static async Task LoadImageBytes(this IHaveImageData obj, CloudBlobContainer blobContainer) {
+            var blob = blobContainer.GetBlobReference(obj.ImageUri);
 
-            map.ImageBytes = new byte[mapBlob.StreamMinimumReadSizeInBytes];
+            obj.ImageBytes = new byte[blob.StreamMinimumReadSizeInBytes];
 
-            await mapBlob.DownloadToByteArrayAsync(map.ImageBytes, 0);
+            await blob.DownloadToByteArrayAsync(obj.ImageBytes, 0);
         }
     }
 }

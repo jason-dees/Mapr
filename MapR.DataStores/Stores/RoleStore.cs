@@ -2,12 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using MapR.DataStores.Configuration;
 using MapR.DataStores.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.DataStores {
+namespace MapR.DataStores.Stores {
 	public class RoleStore : IRoleStore<Data.Models.MapRRole> {
 		const string _partition = "MapR";
 		readonly CloudTable _roleTable;

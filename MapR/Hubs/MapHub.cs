@@ -52,11 +52,11 @@ namespace MapR.Hubs {
 			await _mapStore.UpdateMap(newPrimaryMap);
 
 			await Clients.Group(gameId).SendAsync("SetMap", mapId);
-			await SendAllMarkers(gameId, mapId);
+			await SendAllMarkers(mapId);
 		}
 
-        public async Task SendAllMarkers(string gameId, string mapId) {
-			var mapMarkers = (await _markerStore.GetMarkers(gameId, mapId))
+        async Task SendAllMarkers(string mapId) {
+			var mapMarkers = (await _markerStore.GetMarkers(mapId))
 				.Select(marker => new Marker {
 					Id = marker.Id,
 					MapId = marker.MapId,
@@ -65,8 +65,9 @@ namespace MapR.Hubs {
 					Description = marker.Description,
 					CustomCss = marker.CustomCss,
 					X = marker.X,
-					Y = marker.Y
-				});
+					Y = marker.Y,
+                    HasIcon = !string.IsNullOrEmpty(marker.ImageUri)
+                });
 
 			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
@@ -80,7 +81,8 @@ namespace MapR.Hubs {
                 Description = marker.Description,
                 CustomCss = marker.CustomCss,
                 X = marker.X,
-                Y = marker.Y
+                Y = marker.Y,
+                ImageBytes = new byte[]
             };
             marker.Id = (await _markerStore.AddMarker(newMarker)).Id;
 
@@ -98,13 +100,13 @@ namespace MapR.Hubs {
         }
 
 		public async Task AddToGame(string gameId) {
-			//everything is public now
+			//everything is public now. Information wants to be free
 			await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
 			var maps = await _mapStore.GetMaps(gameId);
 			var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
 
 			await Clients.Caller.SendAsync("SetMap", primaryMap.Id);
-			await SendAllMarkers(gameId, primaryMap.Id);
+			await SendAllMarkers(primaryMap.Id);
 		}
 
 		public async Task RemoveFromGame(string gameId) {
@@ -132,6 +134,8 @@ namespace MapR.Hubs {
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public string CustomCss { get; set; }
+        public string IconUrl { get => $"/games/{GameId}/maps/{MapId}/markers/{Id}"; }
+        public bool HasIcon { get; set; }
 
         public override bool Equals(object obj) {
             if(typeof(Marker) != obj.GetType()) { return false; }

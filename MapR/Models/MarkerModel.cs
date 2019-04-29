@@ -9,7 +9,7 @@ namespace MapR.Models {
         public string Name { get; set; }
         public string Description { get; set; }
         public string CustomCss { get; set; }
-        public string IconUri { get; set; }
-        public byte[] IconBytes { get; set; }
+        public string ImageUri { get; set; }
+        public byte[] ImageBytes { get; set; }
     }
 }

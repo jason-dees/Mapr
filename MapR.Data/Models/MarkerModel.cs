@@ -10,8 +10,8 @@ namespace MapR.Data.Models {
 		string Name { get; set; }
 		string Description { get; set; }
 		string CustomCss { get; set; }
-		string IconUri { get; set; }
-		byte[] IconBytes { get; set; }
+		string ImageUri { get; set; }
+		byte[] ImageBytes { get; set; }
 
 	}
 }

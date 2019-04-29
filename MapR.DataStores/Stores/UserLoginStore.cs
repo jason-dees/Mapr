@@ -7,7 +7,7 @@ using MapR.DataStores.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.DataStores {
+namespace MapR.DataStores.Stores {
     public partial class UserStore : IUserLoginStore<Data.Models.MapRUser> {
 
         public Task AddLoginAsync(Data.Models.MapRUser user, UserLoginInfo login, CancellationToken cancellationToken) {

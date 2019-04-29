@@ -7,7 +7,7 @@ using MapR.DataStores.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace MapR.DataStores {
+namespace MapR.DataStores.Stores {
 	public partial class UserStore : IUserStore<Data.Models.MapRUser> {
 		const string _partition = "MapR";
 		readonly CloudTable _userTable;

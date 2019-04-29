@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MapR.DataStores;
 using MapR.DataStores.Configuration;
+using MapR.DataStores.Stores;
 
 namespace MapR
 {
