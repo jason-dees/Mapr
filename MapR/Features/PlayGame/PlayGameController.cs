@@ -55,7 +55,7 @@ namespace MapR.Features.PlayGame {
             if (game.IsPrivate) { return NotFound(); }
 
             var marker = await _markerStore.GetMarker(markerId);
-            if (width == 0 || height == 0) {
+            if (width == 0 && height == 0) {
                 return File(marker.ImageBytes, "image/jpeg");
             }
             return File(marker.ImageBytes.Resize(width, height), "image/jpeg");

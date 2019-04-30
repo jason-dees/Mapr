@@ -25,16 +25,6 @@ namespace MapR.Hubs {
 
         public async Task SendMarker(MarkerModel marker) {
             await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
-			await _markerStore.UpdateMarker(new MarkerModel {
-				Id = marker.Id,
-				MapId = marker.MapId,
-				GameId = marker.GameId,
-				Name = marker.Name,
-				Description = marker.Description,
-				CustomCss = marker.CustomCss,
-				X = marker.X,
-				Y = marker.Y
-			});
         }
 
 		public async Task ChangeMap(string gameId, string mapId) {
@@ -57,17 +47,7 @@ namespace MapR.Hubs {
 
         async Task SendAllMarkers(string mapId) {
 			var mapMarkers = (await _markerStore.GetMarkers(mapId))
-				.Select(marker => new MarkerModel {
-					Id = marker.Id,
-					MapId = marker.MapId,
-					GameId = marker.GameId,
-					Name = marker.Name,
-					Description = marker.Description,
-					CustomCss = marker.CustomCss,
-					X = marker.X,
-					Y = marker.Y,
-                    HasIcon = !string.IsNullOrEmpty(marker.ImageUri)
-                });
+				.Select(MapToModel);
 
 			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
@@ -96,7 +76,7 @@ namespace MapR.Hubs {
             marker.X = x;
             marker.Y = y;
             await _markerStore.UpdateMarker(marker);
-            await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
+            await SendMarker(MapToModel(marker));
         }
 
 		public async Task AddToGame(string gameId) {
@@ -123,6 +103,20 @@ namespace MapR.Hubs {
 
 			return true;
 		}
+
+        MarkerModel MapToModel(Data.Models.MarkerModel marker) {
+            return new MarkerModel {
+                Id = marker.Id,
+                MapId = marker.MapId,
+                GameId = marker.GameId,
+                Name = marker.Name,
+                Description = marker.Description,
+                CustomCss = marker.CustomCss,
+                X = marker.X,
+                Y = marker.Y,
+                HasIcon = !string.IsNullOrEmpty(marker.ImageUri)
+            };
+        }
 	}
 
 	public class MapMarkerPosition {

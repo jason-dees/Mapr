@@ -31,6 +31,8 @@ namespace MapR.DataStores.Stores {
                 .Where(idQuery);
 
             obj = (await _table.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
+            if (obj == null) 
+                return obj;
             _cache.Add(obj);
 
             return obj;

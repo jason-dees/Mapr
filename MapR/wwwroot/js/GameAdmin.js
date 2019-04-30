@@ -23,7 +23,7 @@ var gameAdmin = function (gameId, mapId) {
         function dragStart(e) {
             mapTransform = mapRApp.mapZoom.getTransform();
 
-            if (e.target.classList.contains('marker')) {
+            if (e.target.classList.contains('marker') ) {
                 if (e.type === "touchstart") {
                     var bb = e.target.getBoundingClientRect();
                     // initialX = e.touches[0].clientX - xOffset;

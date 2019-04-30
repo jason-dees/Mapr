@@ -10,4 +10,5 @@
     left: 0px;
     top: 0px;
     transform-origin: left top 0px;
+    box-shadow: 0 0 5px 5px crimson;
 }
