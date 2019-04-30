@@ -52,6 +52,13 @@ Vue.component('map-marker-vue', {
             return backgroundImage + this.marker.customCSS;
         }
     },
+    mounted:function(){
+        $('#' + this.marker.id).popover({
+            container:'body',
+            content: this.marker.description || "",
+            title: this.marker.name
+        });
+    },
     template:`
         <div v-bind:style="computedCss" v-bind:id="marker.id" class="marker">
         </div>

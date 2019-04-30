@@ -52,23 +52,6 @@ namespace MapR.Hubs {
 			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
 
-		//public async Task CreateMarker(Marker marker) {
-		//	if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
-  //          var newMarker = new MarkerModel {
-  //              MapId = marker.MapId,
-  //              GameId = marker.GameId,
-  //              Name = marker.Name,
-  //              Description = marker.Description,
-  //              CustomCss = marker.CustomCss,
-  //              X = marker.X,
-  //              Y = marker.Y,
-  //              ImageBytes = new byte[0] //signalr does not like this. Or i put a size limit
-  //          };
-  //          marker.Id = (await _markerStore.AddMarker(newMarker)).Id;
-
-  //          await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
-		//}
-
         public async Task MoveMarker(string markerId, int x, int y) {
             var marker = await _markerStore.GetMarker(markerId);
             if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }

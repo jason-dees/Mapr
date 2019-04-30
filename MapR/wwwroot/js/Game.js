@@ -49,7 +49,10 @@ function addToGame(gameId, mountedFn){
                 minZoom: .1
             });
 
-            self.mapZoom.on('transform', function(){resetMapMarkers(self.markers, self.mapZoom, self.getMap());});
+            self.mapZoom.on('transform', function(){
+                $('.marker').popover('hide');
+                resetMapMarkers(self.markers, self.mapZoom, self.getMap());
+            });
 
             connection.start()
                 .then(function () { connection.invoke("AddToGame", gameId) })
@@ -65,6 +68,7 @@ function addToGame(gameId, mountedFn){
         }
     });
     connection.on("SetMap", function(mapId){
+        $('.marker').popover('hide');
         vue.activeMapId = mapId;
         vue.markers = {};
     });
