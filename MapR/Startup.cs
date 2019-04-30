@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using MapR.Hubs;
 using MapR.Data.Models;
 using Microsoft.AspNetCore.Builder;
@@ -12,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MapR.DataStores;
 using MapR.DataStores.Configuration;
-using MapR.Data.Extensions;
+using MapR.DataStores.Stores;
 
 namespace MapR
 {

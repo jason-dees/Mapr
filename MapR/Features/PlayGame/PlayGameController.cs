@@ -18,11 +18,14 @@ namespace MapR.Features.PlayGame {
         readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreGames _gameStore;
         readonly IStoreMaps _mapStore;
+        readonly IStoreMarkers _markerStore;
         public PlayGameController(IStoreGames gameStore, 
             IStoreMaps mapStore,
+            IStoreMarkers markerStore,
             SignInManager<MapRUser> signInManager) {
             _gameStore = gameStore;
             _mapStore = mapStore;
+            _markerStore = markerStore;
             _signInManager = signInManager;
         }
 
@@ -40,6 +43,22 @@ namespace MapR.Features.PlayGame {
                 return File(map.ImageBytes, "image/jpeg");
             }
             return File(map.ImageBytes.Resize(width, height), "image/jpeg");
+        }
+
+        [HttpGet]
+        [Route("{gameId}/maps/{mapId}/markers/{markerId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMarkerImage(string gameId, string mapId, string markerId,
+            [FromQuery]int width, [FromQuery]int height) {
+
+            var game = await _gameStore.GetGame(gameId);
+            if (game.IsPrivate) { return NotFound(); }
+
+            var marker = await _markerStore.GetMarker(markerId);
+            if (width == 0 && height == 0) {
+                return File(marker.ImageBytes, "image/jpeg");
+            }
+            return File(marker.ImageBytes.Resize(width, height), "image/jpeg");
         }
 
         [HttpGet]

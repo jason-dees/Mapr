@@ -3,8 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using MapR.Extensions;
 using MapR.Data.Stores;
-using MapR.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using MapR.Models;
 
 namespace MapR.Features.AddMap {
     [Route("games/{gameId}/maps/[action]")]

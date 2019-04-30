@@ -2,7 +2,7 @@
 using MapR.Extensions;
 using MapR.Data.Stores;
 using Microsoft.AspNetCore.Mvc;
-using MapR.Data.Models;
+using MapR.Models;
 
 namespace MapR.Features.AddGame {
 
@@ -15,8 +15,9 @@ namespace MapR.Features.AddGame {
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGame([FromBody]Models.AddGame game) {
-            var newGame = new GameModel(User.GetUserName()) {
+        public async Task<IActionResult> AddGame([FromBody] Models.AddGame game) {
+            var newGame = new GameModel {
+                Owner = User.GetUserName(),
                 Name = game.Name,
                 IsPrivate = game.IsPrivate
             };

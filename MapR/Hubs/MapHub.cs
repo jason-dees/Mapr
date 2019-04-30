@@ -1,8 +1,7 @@
-﻿using MapR.Data.Extensions;
-using MapR.Data.Models;
+﻿
 using MapR.Data.Stores;
 using MapR.Extensions;
-using Microsoft.AspNetCore.Authorization;
+using MapR.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace MapR.Hubs {
 
-	//[Authorize]
 	public class MapHub : Hub {
 
 		readonly IStoreMarkers _markerStore;
@@ -25,18 +23,8 @@ namespace MapR.Hubs {
 			_gameStore = gameStore;
 		}
 
-        public async Task SendMarker(Marker marker) {
+        public async Task SendMarker(MarkerModel marker) {
             await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
-			await _markerStore.UpdateMarker(new MarkerModel {
-				Id = marker.Id,
-				MapId = marker.MapId,
-				GameId = marker.GameId,
-				Name = marker.Name,
-				Description = marker.Description,
-				CustomCss = marker.CustomCss,
-				X = marker.X,
-				Y = marker.Y
-			});
         }
 
 		public async Task ChangeMap(string gameId, string mapId) {
@@ -54,43 +42,32 @@ namespace MapR.Hubs {
 			await _mapStore.UpdateMap(newPrimaryMap);
 
 			await Clients.Group(gameId).SendAsync("SetMap", mapId);
-			await SendAllMarkers(gameId, mapId);
+			await SendAllMarkers(mapId);
 		}
 
-        public async Task SendAllMarkers(string gameId, string mapId) {
-			var mapMarkers = (await _markerStore.GetMarkers(gameId, mapId))
-				.Select(marker => new Marker {
-					Id = marker.Id,
-					MapId = marker.MapId,
-					GameId = marker.GameId,
-					Name = marker.Name,
-					Description = marker.Description,
-					CustomCss = marker.CustomCss,
-					X = marker.X,
-					Y = marker.Y
-				});
+        async Task SendAllMarkers(string mapId) {
+			var mapMarkers = (await _markerStore.GetMarkers(mapId))
+				.Select(MapToModel);
 
 			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
 
-		public async Task CreateMarker(Marker marker) {
-			if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
-            var newMarker = new MarkerModel {
-                MapId = marker.MapId,
-                GameId = marker.GameId,
-                Name = marker.Name,
-                Description = marker.Description,
-                CustomCss = marker.CustomCss,
-                X = marker.X,
-                Y = marker.Y
-            };
-            newMarker.GenerateRandomId();
-			newMarker.Id = "M" + newMarker.Id;
-            marker.Id = newMarker.Id;
-            await _markerStore.AddMarker(newMarker);
+		//public async Task CreateMarker(Marker marker) {
+		//	if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
+  //          var newMarker = new MarkerModel {
+  //              MapId = marker.MapId,
+  //              GameId = marker.GameId,
+  //              Name = marker.Name,
+  //              Description = marker.Description,
+  //              CustomCss = marker.CustomCss,
+  //              X = marker.X,
+  //              Y = marker.Y,
+  //              ImageBytes = new byte[0] //signalr does not like this. Or i put a size limit
+  //          };
+  //          marker.Id = (await _markerStore.AddMarker(newMarker)).Id;
 
-			await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
-		}
+  //          await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
+		//}
 
         public async Task MoveMarker(string markerId, int x, int y) {
             var marker = await _markerStore.GetMarker(markerId);
@@ -98,18 +75,20 @@ namespace MapR.Hubs {
 
             marker.X = x;
             marker.Y = y;
-            await _markerStore.UpdateMarker(marker);
-            await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
+            await Task.Factory.StartNew(async () => {
+                await _markerStore.UpdateMarker(marker);
+            });
+            await SendMarker(MapToModel(marker));
         }
 
 		public async Task AddToGame(string gameId) {
-			//everything is public now
+			//everything is public now. Information wants to be free
 			await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
 			var maps = await _mapStore.GetMaps(gameId);
 			var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
 
 			await Clients.Caller.SendAsync("SetMap", primaryMap.Id);
-			await SendAllMarkers(gameId, primaryMap.Id);
+			await SendAllMarkers(primaryMap.Id);
 		}
 
 		public async Task RemoveFromGame(string gameId) {
@@ -126,28 +105,21 @@ namespace MapR.Hubs {
 
 			return true;
 		}
+
+        MarkerModel MapToModel(Data.Models.MarkerModel marker) {
+            return new MarkerModel {
+                Id = marker.Id,
+                MapId = marker.MapId,
+                GameId = marker.GameId,
+                Name = marker.Name,
+                Description = marker.Description,
+                CustomCss = marker.CustomCss,
+                X = marker.X,
+                Y = marker.Y,
+                HasIcon = !string.IsNullOrEmpty(marker.ImageUri)
+            };
+        }
 	}
-
-    public class Marker {
-        public string Id { get; set; }
-		public string MapId { get; set; }
-		public string GameId { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public string CustomCss { get; set; }
-
-        public override bool Equals(object obj) {
-            if(typeof(Marker) != obj.GetType()) { return false; }
-
-            return Id == ((Marker)obj).Id;
-        }
-
-        public override int GetHashCode() {
-            return HashCode.Combine(Id, X, Y);
-        }
-    }
 
 	public class MapMarkerPosition {
 		public string Id { get; set; }

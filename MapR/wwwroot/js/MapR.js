@@ -43,7 +43,17 @@ Vue.component('map-vue', {
 Vue.component('map-marker-vue', {
     props:['marker'],
     data: function(){
-        return {};
+        return {
+        };
     },
-    template:`<div v-bind:style="marker.customCSS" v-bind:id="marker.id" class="marker"></div>`
+    computed: {
+        computedCss: function(){
+            var backgroundImage = 'background-image: url("' + this.marker.iconUrl + '?width=25");';
+            return backgroundImage + this.marker.customCSS;
+        }
+    },
+    template:`
+        <div v-bind:style="computedCss" v-bind:id="marker.id" class="marker">
+        </div>
+    `
 });
