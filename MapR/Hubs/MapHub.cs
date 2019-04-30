@@ -75,7 +75,9 @@ namespace MapR.Hubs {
 
             marker.X = x;
             marker.Y = y;
-            await _markerStore.UpdateMarker(marker);
+            await Task.Factory.StartNew(async () => {
+                await _markerStore.UpdateMarker(marker);
+            });
             await SendMarker(MapToModel(marker));
         }
 
