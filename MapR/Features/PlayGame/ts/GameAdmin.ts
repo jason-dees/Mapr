@@ -1,0 +1,3 @@
+﻿function Stuff() {
+    alert("ok");
+}

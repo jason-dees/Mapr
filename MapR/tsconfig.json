@@ -1,0 +1,11 @@
+﻿{
+    "compilerOptions": {
+        "module": "system",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "wwwroot/js/TSMapR.js",
+        "sourceMap": true
+    },
+    "include": ["Features/**/*.ts"]
+}
