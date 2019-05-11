@@ -7,16 +7,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>tsc</command>
-          <workingdir>${ProjectDir}</workingdir>
-          <externalConsole>True</externalConsole>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -40,7 +30,6 @@
     <Folder Include="Models\" />
     <Folder Include="Features\AddMarker\" />
     <Folder Include="Features\AddMarker\Models\" />
-    <Folder Include="Features\PlayGame\ts\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,9 +37,8 @@
     <ProjectReference Include="..\MapR.DataStores\MapR.DataStores.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Features\PlayGame\ts\GameAdmin.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Features\PlayGame\ts\GameAdmin.ts" />
+    <Content Remove="wwwroot\main.0c0e78afca3f5876608c.js" />
+    <Content Remove="wwwroot\main.51abaa6aa305e44a66fe.js" />
+    <Content Remove="wwwroot\main.89c3b5b42ec2d3db0902.js" />
   </ItemGroup>
 </Project>

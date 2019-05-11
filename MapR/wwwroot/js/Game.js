@@ -3,7 +3,7 @@ function addToGame(gameId, mountedFn){
     mountedFn = mountedFn || function(){}; 
 
     let connection = new signalR.HubConnectionBuilder()
-        .withUrl("/mapHub", { accessTokenFactory: () => this.loginToken })
+        .withUrl("/mapHub", { accessTokenFactory: () => Window.loginToken })
         .build();
     var vue = new Vue({
         el: '#gameVue',
