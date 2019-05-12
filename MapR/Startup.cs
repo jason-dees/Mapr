@@ -77,7 +77,6 @@ namespace MapR
             app.UseStaticFiles();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chatHub");
                 routes.MapHub<MapHub>("/mapHub");
             });
             app.UseMvc();
