@@ -1,5 +1,5 @@
 import {addToGame} from "./Game";
 
-var gamePlayer = function (gameId) {
+export default function gamePlayer(gameId) {
     var vue = addToGame(gameId);
 };
