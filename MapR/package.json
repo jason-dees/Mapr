@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch_webapp": "npm-watch webapp",
     "webapp": "npx webpack",
-    "build": "npm install && webpack --mode production"
+    "build": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
