@@ -78,12 +78,12 @@ IF !ERRORLEVEL! NEQ 0 goto error
 
 :: 3. Install npm dependencies for app and build
 echo 3. Installing npm packages for app and build in %~dp0% 
-call :ExecuteCmd npm install
+call :ExecuteCmd npm --prefix %DEPLOYMENT_SOURCE%\MapR\ install %DEPLOYMENT_SOURCE%\MapR\
 IF !ERRORLEVEL! NEQ 0 goto error
 
 :: 4. Build
 echo 4. Building app 
-call :ExecuteCmd npm run build
+call :ExecuteCmd npm run --prefix %DEPLOYMENT_SOURCE%\MapR\ build
 IF !ERRORLEVEL! NEQ 0 goto error
 
 :: 5. KuduSync
