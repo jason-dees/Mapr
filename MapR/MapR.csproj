@@ -39,12 +39,6 @@
     </CustomCommands>
   </PropertyGroup>
 	
-  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="." Command="npm install" />
-    <Exec WorkingDirectory="." Command="npx webpack" />
-  </Target>
-	
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
