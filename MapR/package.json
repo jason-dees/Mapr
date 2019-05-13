@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "engines": { "node": ">=6.11.5" },
   "watch": {
     "webapp": "Features/**/*.js"
   },
