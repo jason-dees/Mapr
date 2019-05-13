@@ -22,6 +22,22 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>AfterBuild</type>
+          <command>npx webpack</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>BeforeBuild</type>
+          <command>npm install</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -44,15 +60,11 @@
     <Folder Include="Models\" />
     <Folder Include="Features\AddMarker\" />
     <Folder Include="Features\AddMarker\Models\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MapR.Data\MapR.Data.csproj" />
     <ProjectReference Include="..\MapR.DataStores\MapR.DataStores.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="wwwroot\main.0c0e78afca3f5876608c.js" />
-    <Content Remove="wwwroot\main.51abaa6aa305e44a66fe.js" />
-    <Content Remove="wwwroot\main.89c3b5b42ec2d3db0902.js" />
   </ItemGroup>
 </Project>
