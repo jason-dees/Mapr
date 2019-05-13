@@ -14,6 +14,11 @@
           <command>npx webpack</command>
           <workingdir>${ProjectDir}</workingdir>
         </Command>
+        <Command>
+          <type>BeforeBuild</type>
+          <command>npm install</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

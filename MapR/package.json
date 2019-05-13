@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "watch":{
-    "webapp":"Features/**/*.js"
+  "watch": {
+    "webapp": "Features/**/*.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch_webapp":"npm-watch webapp",
+    "watch_webapp": "npm-watch webapp",
     "webapp": "npx webpack"
   },
   "keywords": [],
