@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch_webapp": "npm-watch webapp",
+    "install_webpack": "npm install -D webpack && npm install -D webpack-cli",
+    "watch_webapp": "npm run install_webpack && npm-watch webapp",
     "webapp": "npx webpack",
     "build": "webpack --mode production"
   },
