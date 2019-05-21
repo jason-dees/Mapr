@@ -40,7 +40,9 @@ export function addToGame(gameId, mountedFn){
                 return this.$el.querySelector(query);
             },
             moveToMarker: function(marker){
-                console.log(marker);
+                let viewWidth = window.innerWidth,
+                    viewHeight = window.innerHeight;
+                this.mapZoom.moveTo(-1 * marker.x + viewWidth/2, -1 * marker.y + viewHeight/2);
             }
         },
         mounted: function(){
@@ -60,6 +62,7 @@ export function addToGame(gameId, mountedFn){
                 .then(function () { connection.invoke("AddToGame", gameId) })
 
             mountedFn(self);
+            window.mapZoom = self.mapZoom;
         },
     });
 

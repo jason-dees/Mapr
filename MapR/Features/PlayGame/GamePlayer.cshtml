@@ -9,6 +9,20 @@
 		<h3>@Model.GameName - @Model.PrimaryMapName</h3>
 		<div class="btn-group">
 		</div>
+		<div class="btn-group ml-sm-2">
+			<div class="btn-group" role="group">
+				<button id="markerGroupDropdown" type="button" class="btn btn-info dropdown-toggle"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Markers
+				</button>
+				<div class="dropdown-menu" aria-labelledby="markerGroupDropdown">
+					<span class="dropdown-item" 
+						v-for="marker in markers"
+						v-on:click="moveToMarker(marker)">
+						{{marker.name}}</span>
+				</div>
+			</div>
+		</div>
 		@if (Model.IsSignedIn)
 		{
 			<form asp-controller="Account" asp-action="Logout"
