@@ -5,11 +5,11 @@
 }
 <div id="gameVue">
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a href="/" class="btn navbar-brand">Home</a>
+		<a href="/" class="btn navbar-brand">H</a>
 		<div class="btn-group">
-			<button class="btn btn-secondary" data-toggle="modal" data-target="#newMapModal">Add Map</button>
+			<button class="btn btn-primary" data-toggle="modal" data-target="#newMapModal">+</button>
 			<div class="btn-group" role="group">
-				<button id="mapGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+				<button id="mapGroupDropdown" type="button" class="btn btn-primary dropdown-toggle"
 						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Change Map
 				</button>
@@ -26,20 +26,24 @@
 			</div>
 		</div>
 		<div class="btn-group ml-sm-2">
-			<button class="btn btn-secondary" data-toggle="modal" data-target="#newMarkerModal">Add Marker</button>
+			<button class="btn btn-info" data-toggle="modal" data-target="#newMarkerModal">+</button>
 			<div class="btn-group" role="group">
-				<button id="markerGroupDropdown" type="button" class="btn btn-secondary dropdown-toggle"
+				<button id="markerGroupDropdown" type="button" class="btn btn-info dropdown-toggle"
 						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Markers
 				</button>
 				<div class="dropdown-menu" aria-labelledby="markerGroupDropdown">
+					<span class="dropdown-item" 
+						v-for="marker in markers"
+						v-on:click="moveToMarker(marker)">
+						{{marker.name}}</span>
 				</div>
 			</div>
 		</div>
 		<form asp-controller="Account" asp-action="Logout"
 			  asp-route-returnurl="/" method="POST"
 			  class="form-horizontal ml-auto">
-			<button type="submit" title="Logout" class="btn btn-default btn-outline-dark">Logout</button>
+			<button type="submit" title="Logout" class="btn btn-default btn-outline-dark">L</button>
 		</form>
 	</nav>
 	<div id="mapVue">
@@ -54,9 +58,7 @@
 
 <link rel="stylesheet" href="~/css/Map.css" asp-append-version="true" />
 @section Scripts {
-	<script asp-append-version="true" src="~/js/Game.js"></script>
-	<script asp-append-version="true" src="~/js/GameAdmin.js"></script>
-	<script asp-append-version="true" src="~/js/MapR.js"></script>
+	<script asp-append-version="true" src="~/js/gameAdmin.js"></script>
 	<script src='https://unpkg.com/panzoom@7.1.2/dist/panzoom.min.js'></script>
 	<script type="text/javascript">
 

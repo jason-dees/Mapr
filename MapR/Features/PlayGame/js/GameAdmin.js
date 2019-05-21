@@ -1,11 +1,11 @@
 ﻿"use strict";
-var mapRApp, global;
-var gameAdmin = function (gameId, mapId) {
+import {addToGame} from "./Game";
+export default function gameAdmin(gameId, mapId) {
     
     var mountedFn = function(self){
         setUpMarkerDrag(document.querySelector("#mapVue"), self);
     }
-    mapRApp = addToGame(gameId, mountedFn);
+    let mapRApp = addToGame(gameId, mountedFn);
 
     function setUpMarkerDrag(container, mapRApp){
         var dragItem;
@@ -74,6 +74,7 @@ var gameAdmin = function (gameId, mapId) {
         }
     }
 };
+
 Vue.component('image-upload', {
     data: function(){
         return {
@@ -108,6 +109,7 @@ Vue.component('image-upload', {
         </div>
     `
 });
+
 Vue.component('add-marker-vue', {
     props:['gameId', 'mapId', 'connection'],
     data: function(){

@@ -1,0 +1,28 @@
+{
+  "name": "MapR",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "watch": {
+    "webapp": "Features/**/*.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install_webpack": "npm install -D webpack && npm install -D webpack-cli",
+    "watch_webapp": "npm-watch webapp",
+    "webapp": "npx webpack",
+    "build": "webpack --mode production"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "npm-watch": "^0.6.0",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2"
+  },
+  "dependencies": {
+    "npm": "^6.9.0",
+    "webapp": "0.0.2"
+  }
+}

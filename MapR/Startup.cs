@@ -1,5 +1,10 @@
-using MapR.Hubs;
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using MapR.Data.Models;
+using MapR.DataStores.Configuration;
+using MapR.DataStores.Stores;
+using MapR.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,12 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MapR.DataStores;
-using MapR.DataStores.Configuration;
-using MapR.DataStores.Stores;
 
-namespace MapR
-{
+
+namespace MapR {
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -80,6 +82,48 @@ namespace MapR
                 routes.MapHub<MapHub>("/mapHub");
             });
             app.UseMvc();
+            if (env.IsDevelopment()) {
+                RunNpmScript("watch_webapp");
+            }
+        }
+
+        //Stole from https://github.com/EEParker/aspnetcore-vueclimiddleware/blob/master/src/VueCliMiddleware/Util/ScriptRunner.cs
+        //But without the sweet logging
+        void RunNpmScript(string scriptName) {
+            var npmExe = "npm";
+            var completeArguments = $"run  {scriptName}";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                completeArguments = $"/c {npmExe} {completeArguments}";
+                npmExe = "cmd";
+            }
+
+            var processStartInfo = new ProcessStartInfo(npmExe) {
+                Arguments = completeArguments,
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                WorkingDirectory = ""
+            };
+
+            LaunchNodeProcess(processStartInfo);
+        }
+
+        static Process LaunchNodeProcess(ProcessStartInfo startInfo) {
+            try {
+                var process = Process.Start(startInfo);
+                process.EnableRaisingEvents = true;
+
+                return process;
+            }
+            catch (Exception ex) {
+                var message = $"Failed to start '{startInfo.FileName}'. To resolve this:.\n\n"
+                            + $"[1] Ensure that '{startInfo.FileName}' is installed and can be found in one of the PATH directories.\n"
+                            + $"    Current PATH enviroment variable is: { Environment.GetEnvironmentVariable("PATH") }\n"
+                            + "    Make sure the executable is in one of those directories, or update your PATH.\n\n"
+                            + "[2] See the InnerException for further details of the cause.";
+                throw new InvalidOperationException(message, ex);
+            }
         }
     }
 }
