@@ -1,5 +1,4 @@
 export function addToGame(gameId, mountedFn){
-
     mountedFn = mountedFn || function(){}; 
 
     let connection = new signalR.HubConnectionBuilder()
@@ -39,6 +38,9 @@ export function addToGame(gameId, mountedFn){
             },
             getEle: function(query){
                 return this.$el.querySelector(query);
+            },
+            moveToMarker: function(marker){
+                console.log(marker);
             }
         },
         mounted: function(){
