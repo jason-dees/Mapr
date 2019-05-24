@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MapR.Data.Models;
 using MapR.Data.Stores;
 using MapR.Extensions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
