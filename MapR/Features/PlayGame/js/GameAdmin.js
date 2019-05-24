@@ -27,12 +27,11 @@ export default function gameAdmin(gameId, mapId) {
             mapTransform = mapRApp.mapZoom.getTransform();
 
             if (e.target.classList.contains('marker') ) {
+                e.preventDefault();
                 if (e.type === "touchstart") {
-                    var bb = e.target.getBoundingClientRect();
-                    // initialX = e.touches[0].clientX - xOffset;
-                    // initialY = e.touches[0].clientY - yOffset;
-                    inElementX = e.center.x - bb.left;
-                    inElementY = e.center.y - bb.top;
+                    inElementX = 0;
+                    inElementY = 0;
+
                 } else {
                     inElementX = e.layerX;
                     inElementY = e.layerY;
@@ -60,7 +59,7 @@ export default function gameAdmin(gameId, mapId) {
             if (active) {
                 e.preventDefault();
                 if (e.type === "touchmove") {
-                    currentX = e.touches[0].clientX - inElementX;
+                    currentX = e.touches[0].clientX -inElementX;
                     currentY = e.touches[0].clientY - inElementY;
                 } else {
                     currentX = e.clientX - inElementX;
