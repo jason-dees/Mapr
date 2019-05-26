@@ -27,7 +27,6 @@ export default function gameAdmin(gameId, mapId) {
             mapTransform = mapRApp.mapZoom.getTransform();
 
             if (e.target.classList.contains('marker') ) {
-                e.preventDefault();
                 if (e.type === "touchstart") {
                     inElementX = 0;
                     inElementY = 0;
