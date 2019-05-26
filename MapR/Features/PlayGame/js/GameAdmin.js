@@ -2,27 +2,28 @@
 import {addToGame} from "./Game";
 export default function gameAdmin(gameId, mapId) {
     
-    var mountedFn = function(self){
+    let mountedFn = function(self){
         setUpMarkerDrag(document.querySelector("#mapVue"), self);
     }
     let mapRApp = addToGame(gameId, mountedFn);
 
     function setUpMarkerDrag(container, mapRApp){
-        var dragItem;
+        let dragItem;
 
-        var active = false;
-        var currentX;
-        var currentY;
-        var inElementX;
-        var inElementY;
+        let active = false;
+        let currentX;
+        let currentY;
+        let inElementX;
+        let inElementY;
         container.addEventListener("touchstart", dragStart, false);
         container.addEventListener("touchend", dragEnd, false);
         container.addEventListener("touchmove", drag, false);
+
         container.addEventListener("mousedown", dragStart, false);
         container.addEventListener("mouseup", dragEnd, false);
         container.addEventListener("mousemove", drag, false);
 
-        var mapTransform = null;
+        let mapTransform = null;
         function dragStart(e) {
             mapTransform = mapRApp.mapZoom.getTransform();
 
@@ -51,6 +52,7 @@ export default function gameAdmin(gameId, mapId) {
                 mapRApp.connection.invoke("MoveMarker", dragItem.id, mapRApp.markers[dragItem.id].x, mapRApp.markers[dragItem.id].y);
 
                 active = false;
+                
             }
         }
 
@@ -70,8 +72,9 @@ export default function gameAdmin(gameId, mapId) {
         }
 
         function setTranslate(xPos, yPos, el) {
-            var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ xPos + ', ' + yPos + ')';
-            el.style.transform = transformValue; 
+            $(el).popover('update');
+            let transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ xPos + ', ' + yPos + ')';
+            el.style.transform = transformValue;
         }
     }
 };
@@ -125,9 +128,9 @@ Vue.component('add-marker-vue', {
     },
     methods:{
         submit: function() {
-            var self = this;
+            let self = this;
 
-            var newMarkerUrl = '/games/' + self.gameId + '/maps/' + self.mapId + '/markers/AddMarker';
+            let newMarkerUrl = '/games/' + self.gameId + '/maps/' + self.mapId + '/markers/AddMarker';
 
             let formData = new FormData();
             console.log(self.imageData)
@@ -220,7 +223,7 @@ Vue.component('add-map-vue', {
 
             if (this.checkIsEmpty()) return;
             if (self.image == null) return;
-            var newMapUrl = '/games/' + self.gameId + '/maps/AddMap';
+            let newMapUrl = '/games/' + self.gameId + '/maps/AddMap';
 
             let formData = new FormData();
             formData.append("ImageData", self.image);
