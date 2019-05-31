@@ -5,8 +5,8 @@
 	<UserSecretsId>MapRSecrets</UserSecretsId>
     <LangVersion>latest</LangVersion>
     <SpaRoot>.\</SpaRoot>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>		
-  	<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+   	<RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
