@@ -265,3 +265,7 @@ __pycache__/
 \.vscode/
 
 MapR/wwwroot/js/
+
+MapR\.Functions/local\.settings\.json
+
+MapR\.Functions/Properties/PublishProfiles/MapRFunctions - Zip Deploy\.pubxml
