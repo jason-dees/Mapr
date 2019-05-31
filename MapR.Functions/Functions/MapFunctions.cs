@@ -14,7 +14,7 @@ namespace MapR.Functions
     {
         [FunctionName("GetMaps")]
         public static async Task<IActionResult> RunGetMaps(
-            [HttpTrigger(AuthorizationLevel.User, "get", Route = "games/{gameId}/maps")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "games/{gameId}/maps")] HttpRequest req,
             string gameId,
             ILogger log,
             ClaimsPrincipal claimsPrincipal) {
