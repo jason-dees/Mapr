@@ -1,4 +1,6 @@
 [Mapr](https://mapr-app.azurewebsites.net/)
+[Sample Map](https://mapr-app.azurewebsites.net/game/KR0ACE)
+[Sample Function](https://maprfunctions.azurewebsites.net/api/jhdees@gmail.com/games)
 
 
 Uses:

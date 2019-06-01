@@ -15,7 +15,7 @@ namespace MapR.Functions
         [FunctionName("GetGames")]
         [Authorize]
         public static async Task<IActionResult> RunGetGames(
-            [HttpTrigger(AuthorizationLevel.User, "get", Route = "{admin}/games")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "{admin}/games")] HttpRequest req,
             string admin,
             ILogger log)
         {

@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.deployment = .deployment
 		deploy.cmd = deploy.cmd
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.Functions", "MapR.Functions\MapR.Functions.csproj", "{509B2AA5-3DBB-4B9B-AEF0-3FD324CCB0C9}"
