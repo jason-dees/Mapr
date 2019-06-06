@@ -7,13 +7,32 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using MapR.Functions.Extensions;
+using System.Linq;
 
 namespace MapR.Functions
 {
     public static class GameFunctions
     {
+        [FunctionName("GetUserGames")]
+        public static async Task<IActionResult> RunGetUserGames(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games")] HttpRequest req,
+        ClaimsPrincipal user,
+        ILogger log) {
+
+            if (!user.CheckIsSignedIn()) {
+                return new RedirectResult("/api/login");
+            }
+
+            var gameStore = FunctionServices.GameStore;
+            var games = await gameStore.GetGames(user.GetUserName());
+            var result = new OkObjectResult(games);
+
+            return result;
+        }
+
         [FunctionName("GetGames")]
-        [Authorize]
         public static async Task<IActionResult> RunGetGames(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "{admin}/games")] HttpRequest req,
             string admin,
