@@ -24,11 +24,11 @@ namespace MapR.DataStores.Stores {
         }
 
         protected override async Task<TModel> GetByRowKey(string rowKey) {
-            var marker = await base.GetByRowKey(rowKey);
+            var dataObject = await base.GetByRowKey(rowKey);
 
-            await marker.LoadImageBytes(_blobContainer);
+            await dataObject.LoadImageBytes(_blobContainer);
 
-            return marker;
+            return dataObject;
         }
 
         protected override async Task Delete(string rowKey) {

@@ -7,6 +7,7 @@ namespace MapR.Data.Stores {
     public interface IStoreMaps {
         Task<bool> AddMap(MapModel map);
         Task<MapModel> GetMap(string mapId);
+        Task<MapModel> GetActiveMap(string gameId);
         Task<IList<MapModel>> GetMaps(string gameId);
         Task DeleteMap(string mapId);
 		Task<bool> UpdateMap(MapModel map);

@@ -37,7 +37,15 @@ namespace MapR.DataStores.Stores {
 
         public async Task<Data.Models.MapModel> GetMap(string mapId) {
 			return await GetByRowKey(mapId);
-		}
+        }
+
+        public async Task<Data.Models.MapModel> GetActiveMap(string gameId) {
+            var map = (await GetByPartitionKey(gameId)).Select(m => m as Data.Models.MapModel).FirstOrDefault( m => m.IsPrimary);
+
+            await (map as MapModel).LoadImageBytes(_blobContainer);
+
+            return map;
+        }
 
         public async Task<IList<Data.Models.MapModel>> GetMaps(string gameId) {
             return (await GetByPartitionKey(gameId)).Select(m => m as Data.Models.MapModel).ToList();
