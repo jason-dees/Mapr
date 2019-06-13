@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MapR.Data.Models;
 
 namespace MapR.Functions.Models {
@@ -17,7 +18,7 @@ namespace MapR.Functions.Models {
         public string Name { get; set; }
         public bool IsPrivate { get; set; }
         public DateTimeOffset LastPlayed { get; set; }
-        public string PrimaryMapId { get; set; }
+        public string PrimaryMapId { get { return Maps.FirstOrDefault(m => m.IsPrimary)?.Id; } }
         public IEnumerable<Map> Maps { get; set; }
     }
 }
