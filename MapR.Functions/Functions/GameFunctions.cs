@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using MapR.Functions.Extensions;
 using System.Linq;
+using MapR.Functions.Models;
 
 namespace MapR.Functions
 {
@@ -54,7 +55,23 @@ namespace MapR.Functions
                 ILogger log)
         {
             var gameStore = FunctionServices.GameStore;
-            var game = await gameStore.GetGame(gameId);
+            var mapStore = FunctionServices.MapStore;
+            var markerStore = FunctionServices.MarkerStore;
+
+            var game = new Game(await gameStore.GetGame(gameId));
+            var maps = (await mapStore.GetMaps(gameId)).Select(async m => { 
+                var map = new Map(m);
+                var mapMarkers = await markerStore.GetMarkers(map.Id);
+                map.ImageUri = $"{Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME")}/api/games/{map.GameId}/maps/{map.Id}/image";
+                map.Markers = mapMarkers.Select(mm => { 
+                    var marker = new Marker(mm);
+                    marker.ImageUri = $"{Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME")}/api/games/{map.GameId}/maps/{map.Id}/markers/{marker.Id}/image";
+                    return marker;
+                    });
+                return map;
+            });
+
+            game.Maps = await Task.WhenAll(maps.ToArray());
 
             return new OkObjectResult(game);
         }
