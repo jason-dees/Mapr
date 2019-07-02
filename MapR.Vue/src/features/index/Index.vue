@@ -13,10 +13,18 @@
 <script>
 import MapRNav from '../nav/MapRNav.vue'
 const config = require('../../../config.json')
+import mFuncs from '../../lib/MapRFunctions'
+
+
 
 export default {
   name: 'index',
   data: function(){
+    mFuncs.getUser().then(r => {
+      alert(r.data.name)
+    })
+    .catch(r => {
+    });
     return  {
       config: config,
       appServer: window.location.href
