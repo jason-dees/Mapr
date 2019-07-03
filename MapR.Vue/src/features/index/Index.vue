@@ -1,7 +1,8 @@
 <template>
   <div>
       <MapRNav v-bind:functionsUrl="config.mapRFunctionsUrl"
-              v-bind:appServerUrl="appServer"/>
+              v-bind:appServerUrl="appServer"
+              v-bind:userInfo="userInfo"/>
     <div id="app">
       <router-view>
       this is the index
@@ -12,12 +13,25 @@
 
 <script>
 import MapRNav from '../nav/MapRNav.vue'
+import mapRFunctions from '../../lib/MapRFunctions.js'
 const config = require('../../../config.json')
 
 export default {
   name: 'index',
-  data: function(){
+  data: function() {
+    let self = this;
+    mapRFunctions.getUser().then((r) => {
+      console.log("Succeeded", r);
+    }).catch((r) => {
+      console.log("Failed", r);
+    }).finally((r) => {
+      self.userInfo.loadedUserInfo = true;
+    });
     return  {
+      userInfo: {
+        loadedUserInfo: false,
+        user: '',
+      },
       config: config,
       appServer: window.location.href
       }

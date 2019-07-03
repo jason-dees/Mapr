@@ -47,7 +47,7 @@ namespace MapR.Functions.Functions {
 			if (user.CheckIsSignedIn()) {
 				return new OkObjectResult(new { user.Identity.Name });
 			}
-			return new NotFoundObjectResult("Not logged in");
+			return new UnauthorizedResult();
 		}
 
         static IActionResult DoLogin(ClaimsPrincipal user, string provider, string redirectRoute) {
