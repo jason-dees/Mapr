@@ -9,6 +9,7 @@
             I need to do javascript app auth with google or whomever
         </span>
         <span v-else>loading user information</span>
+        <a v-bind:href="functionsUrl+'api/logout'">logout</a>
     </nav> 
 </template>
 <script>

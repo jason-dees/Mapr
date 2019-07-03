@@ -6,15 +6,15 @@ import Games from './features/games/Games.vue'
 
 Vue.config.productionTip = false
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 const routes = [
   { path: '/', component: Games, props: true },
   { path: '/games/:id', component: Game, props: true },
   { path: '/games', component: Games, props: true },
-]
+];
 const router = new VueRouter({
   routes // short for `routes: routes`
-})
+});
 new Vue({
   render: h => h(Index),
   router,
