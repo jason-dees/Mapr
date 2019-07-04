@@ -25,6 +25,7 @@ export default {
     let self = this;
     mapRFunctions.getUser().then((r) => {
       console.log("Succeeded", r);
+      self.userInfo.user = r.data.name;
     }).catch((r) => {
       console.log("Failed", r);
     }).finally((r) => {
