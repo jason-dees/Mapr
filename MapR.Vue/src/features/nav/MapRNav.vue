@@ -22,9 +22,6 @@ export default{
     }
 }
 </script>
-<style>
-    .navbar{
-        background-color:green;
-        padding:20px;
-    }
+<style lang="scss" scoped>
+    @import 'MapRNav.scss'
 </style>

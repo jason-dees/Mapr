@@ -15,9 +15,6 @@
 import MapRNav from '../nav/MapRNav.vue'
 import mapRFunctions from '../../lib/MapRFunctions.js'
 const config = require('../../../config.json')
-import mFuncs from '../../lib/MapRFunctions'
-
-
 
 export default {
   name: 'index',
@@ -28,7 +25,7 @@ export default {
       self.userInfo.user = r.data.name;
     }).catch((r) => {
       console.log("Failed", r);
-    }).finally((r) => {
+    }).finally(() => {
       self.userInfo.loadedUserInfo = true;
     });
     return  {
