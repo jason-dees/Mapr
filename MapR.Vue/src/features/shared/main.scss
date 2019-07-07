@@ -1,0 +1,13 @@
+@import 'variables.scss';
+body {
+  margin:0px;
+  padding-top:$menu-height;
+  font-family: sans-serif;
+}
+.left {
+    float:left;
+}
+
+.right {
+    float:right;
+}
