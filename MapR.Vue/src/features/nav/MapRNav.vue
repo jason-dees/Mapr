@@ -40,10 +40,10 @@ export default{
         position:fixed;
         width:100%;
         top:0px;
-        height:$menu-height + 'px';
         .nav-wrapper{
             padding-top: 0px;
             background-color:$papyrus;
+            height:$menu-height;
             ul {
                 margin:0px;
                 list-style: none;

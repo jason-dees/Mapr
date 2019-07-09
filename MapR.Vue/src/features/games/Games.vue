@@ -1,8 +1,8 @@
 <template>
   <div>
     <ul id="example-1">
-      <li v-for="game in games" v-bind:key="game">
-        {{ game.name }}
+      <li v-for="game in gamesList" v-bind:key="game.id">
+        <router-link v-bind:to="'/games/'+game.id">{{ game.name }}</router-link>
       </li>
     </ul>
   </div>
@@ -12,15 +12,18 @@
 import mapRFunctions from '../../lib/MapRFunctions.js'
 
 export default {
-  name: 'games',
+  // props: {
+  //   gamesList: Array
+  // },
   data: function(){
+    let self = this;
     mapRFunctions.getGames().then(r => {
-      self.games = r.data;
+      self.$set(self, 'gamesList', r.data);
     })
     .catch(() => {})
     .finally(() =>{})
     return {
-      games: []
+      gamesList: []
     };
   },
   components: {

@@ -8,5 +8,8 @@ export default {
    }, 
    async getGames(){
        return await axios.get(config.mapRFunctionsUrl + 'api/games', {withCredentials: true});
+   },
+   async getGame(gameId){
+       return await axios.get(config.mapRFunctionsUrl + 'api/games/' + gameId, {withCredentials: true});
    }
 }
