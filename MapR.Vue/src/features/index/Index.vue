@@ -21,21 +21,23 @@ export default {
   data: function() {
     let self = this;
     mapRFunctions.getUser().then((r) => {
-      console.log("Succeeded", r);
       self.userInfo.user = r.data.name;
-    }).catch((r) => {
-      console.log("Failed", r);
+    }).catch(() => {
     }).finally(() => {
       self.userInfo.loadedUserInfo = true;
     });
+
+
     return  {
       userInfo: {
         loadedUserInfo: false,
         user: '',
       },
+      games: [],
+      activeGame: null,
       config: config,
       appServer: window.location.href
-      }
+    }
   },
   components: {
     MapRNav

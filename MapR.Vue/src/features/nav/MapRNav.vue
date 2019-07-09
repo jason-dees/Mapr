@@ -2,7 +2,9 @@
     <nav class="navbar">
         <div class="nav-wrapper">
             <ul>
-                <li><router-link to="/">Home</router-link></li>
+                <li>
+                    <router-link to="/">Home</router-link>
+                </li>
                 <li class="right" v-if="!userInfo.loadedUserInfo || userInfo.user === ''">
                     <a v-bind:href="functionsUrl+'api/login/google?redirect=' + appServerUrl">google</a>
                 </li>
