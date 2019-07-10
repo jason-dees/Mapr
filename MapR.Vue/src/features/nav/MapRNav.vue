@@ -1,17 +1,22 @@
 <template>
     <nav class="navbar">
         <div class="nav-wrapper">
-            <ul>
+            <ul class="left">
                 <li>
                     <router-link to="/">Home</router-link>
                 </li>
-                <li class="right" v-if="!userInfo.loadedUserInfo || userInfo.user === ''">
+            </ul>
+            <span class="title">
+                {{sharedState.title}}
+            </span>
+            <ul class="right">
+                <li v-if="!userInfo.loadedUserInfo || userInfo.user === ''">
                     <a v-bind:href="functionsUrl+'api/login/google?redirect=' + appServerUrl">google</a>
                 </li>
-                <li class="right" v-if="userInfo.loadedUserInfo && userInfo.user !== ''">
+                <li v-if="userInfo.loadedUserInfo && userInfo.user !== ''">
                     <a v-bind:href="functionsUrl+'api/logout'">logout</a>
                 </li>
-                <li class="right">
+                <li>
                     <span v-if="userInfo.loadedUserInfo && userInfo.user !== ''">
                         {{userInfo.user}}
                     </span>
@@ -25,12 +30,18 @@
     </nav> 
 </template>
 <script>
+import {store} from '../shared/store.js'
 export default{
     name: 'MapRNav',
     props: {
         userInfo: Object,
         functionsUrl: String,
         appServerUrl: String
+    },
+    data: function(){
+        return {
+            sharedState:  store.state
+        };
     }
 }
 </script>
@@ -44,6 +55,7 @@ export default{
             padding-top: 0px;
             background-color:$papyrus;
             height:$menu-height;
+            text-align: center;
             ul {
                 margin:0px;
                 list-style: none;

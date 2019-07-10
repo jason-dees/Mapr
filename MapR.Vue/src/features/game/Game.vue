@@ -7,6 +7,7 @@
 <script>
 import mapRFunctions from '../../lib/MapRFunctions.js'
 import config from '../../../config.json';
+import { store } from '../shared/store.js'
 
 export default {
   name: 'game',
@@ -16,12 +17,11 @@ export default {
   components: {
   },
   data: function(){
-    console.log(config);
     let self = this;
     mapRFunctions.getGame(self.id).then(r => {
       self.$set(self, 'game', r.data);
       self.$set(self, 'imageUrl', config.mapRFunctionsUrl + 'api/games/'+ self.game.id + '/activemap/image');
-      console.log(r.data);
+      store.setPageTitle(self.game.name);
     });
     return {
       game: null,

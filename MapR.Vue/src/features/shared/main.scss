@@ -4,9 +4,15 @@ body {
   font-family: sans-serif;
 }
 .left {
-    float:left;
+  float:left;
 }
 
 .right {
-    float:right;
+  float:right;
+}
+
+.title {
+  display: inline-block;
+  height:$menu-height;
+  vertical-align: middle;
 }
