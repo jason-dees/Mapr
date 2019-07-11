@@ -11,7 +11,7 @@
             </span>
             <ul class="right">
                 <li v-if="!userInfo.loadedUserInfo || userInfo.user === ''">
-                    <a v-bind:href="functionsUrl+'api/login/google?redirect=' + appServerUrl">google</a>
+                    <a  href="#" v-on:click.prevent="googleLogin">google</a>
                 </li>
                 <li v-if="userInfo.loadedUserInfo && userInfo.user !== ''">
                     <a v-bind:href="functionsUrl+'api/logout'">logout</a>
@@ -40,8 +40,14 @@ export default{
     },
     data: function(){
         return {
-            sharedState:  store.state
+            sharedState: store.state,
+            googleUrl: `${this.functionsUrl}.auth/login/google?post_login_redirect_url=${encodeURIComponent(window.location.href)}`
         };
+    },
+    methods: {
+        googleLogin: function(){
+            window.location.href = this.googleUrl;
+        }
     }
 }
 </script>
