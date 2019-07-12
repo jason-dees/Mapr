@@ -22,15 +22,19 @@ export default {
     let self = this;
     mapRFunctions.getUser().then((r) => {
       self.userInfo.user = r.data.name;
-    }).catch(() => {
-    }).finally(() => {
       self.userInfo.loadedUserInfo = true;
+    }).catch(() => {
+      self.userInfo.user = null;
+      self.userInfo.loadedUserInfo = false;
+    }).finally(() => {
+      self.userInfo.loadingUserInfo = false;
     });
 
 
     return  {
       userInfo: {
         loadedUserInfo: false,
+        loadingUserInfo: true,
         user: '',
       },
       games: [],

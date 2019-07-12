@@ -9,21 +9,25 @@
             <span class="title">
                 {{sharedState.title}}
             </span>
-            <ul class="right">
-                <li v-if="!userInfo.loadedUserInfo || userInfo.user === ''">
-                    <a  href="#" v-on:click.prevent="googleLogin">google</a>
-                </li>
-                <li v-if="userInfo.loadedUserInfo && userInfo.user !== ''">
-                    <a v-bind:href="functionsUrl+'api/logout'">logout</a>
-                </li>
+            <ul class="right" v-if="!userInfo.loadedUserInfo && !userInfo.loadingUserInfo">
                 <li>
-                    <span v-if="userInfo.loadedUserInfo && userInfo.user !== ''">
-                        {{userInfo.user}}
-                    </span>
-                    <span v-else-if="userInfo.loadedUserInfo && userInfo.user === ''">
+                    <span>
                         Login with a provider
                     </span>
-                    <span v-else>loading user information</span>
+                </li>
+                <li>
+                    <a  href="#" v-on:click.prevent="googleLogin">google</a>
+                </li>
+            </ul>
+            <span class="right" v-else-if="userInfo.loadingUserInfo">Loading User</span>
+            <ul class="right" v-else>
+                <li>
+                    <span v-if="userInfo.loadedUserInfo">
+                        {{userInfo.user}}
+                    </span>
+                </li>
+                <li>
+                    <a v-bind:href="functionsUrl+'api/logout'">logout</a>
                 </li>
             </ul>
         </div>
