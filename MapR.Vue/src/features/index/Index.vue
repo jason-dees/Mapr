@@ -14,29 +14,15 @@
 <script>
 import MapRNav from '../nav/MapRNav.vue'
 import mapRFunctions from '../../lib/MapRFunctions.js'
+import {store} from '../shared/store.js'
 const config = require('../../../config.json')
 
 export default {
   name: 'index',
   data: function() {
     let self = this;
-    mapRFunctions.getUser().then((r) => {
-      self.userInfo.user = r.data.name;
-      self.userInfo.loadedUserInfo = true;
-    }).catch(() => {
-      self.userInfo.user = null;
-      self.userInfo.loadedUserInfo = false;
-    }).finally(() => {
-      self.userInfo.loadingUserInfo = false;
-    });
-
-
+    store.getUser();
     return  {
-      userInfo: {
-        loadedUserInfo: false,
-        loadingUserInfo: true,
-        user: '',
-      },
       games: [],
       activeGame: null,
       config: config,

@@ -9,7 +9,7 @@
             <span class="title">
                 {{sharedState.title}}
             </span>
-            <ul class="right" v-if="!userInfo.loadedUserInfo && !userInfo.loadingUserInfo">
+            <ul class="right" v-if="!sharedState.loadedUserInfo && !sharedState.loadingUserInfo">
                 <li>
                     <span>
                         Login with a provider
@@ -19,11 +19,11 @@
                     <a  href="#" v-on:click.prevent="googleLogin">google</a>
                 </li>
             </ul>
-            <span class="right" v-else-if="userInfo.loadingUserInfo">Loading User</span>
+            <span class="right" v-else-if="sharedState.loadingUserInfo">Loading User</span>
             <ul class="right" v-else>
                 <li>
-                    <span v-if="userInfo.loadedUserInfo">
-                        {{userInfo.user}}
+                    <span v-if="sharedState.loadedUserInfo">
+                        {{sharedState.user}}
                     </span>
                 </li>
                 <li>
@@ -38,7 +38,6 @@ import {store} from '../shared/store.js'
 export default{
     name: 'MapRNav',
     props: {
-        userInfo: Object,
         functionsUrl: String,
         appServerUrl: String
     },
