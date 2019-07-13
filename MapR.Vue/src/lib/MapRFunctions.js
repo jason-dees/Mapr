@@ -11,5 +11,8 @@ export default {
    },
    async getGame(gameId){
        return await axios.get(config.mapRFunctionsUrl + 'api/games/' + gameId, {withCredentials: true});
+   },
+   async negotiateSignalr(){
+       return await axios.get(config.mapRFunctionsUrl + 'api/negotiate', {withCredentials: true});
    }
 }
