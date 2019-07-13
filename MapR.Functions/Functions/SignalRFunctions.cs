@@ -1,13 +1,10 @@
-using System;
-using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
+using System.Security.Claims;
+using MapR.Functions.Extensions;
 
 namespace MapR.Functions {
 	public static class SignalRFunctions {
@@ -23,12 +20,16 @@ namespace MapR.Functions {
 		[FunctionName("AddToGame")]
 		public static Task AddToGame(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post")] string gameId,
-			[SignalR(HubName = "mapr")] IAsyncCollector<SignalRMessage> signalRMessages,
-			[SignalRConnectionInfo(HubName = "mapr", UserId = "{headers.x-ms-client-principal-id}")]
-				SignalRConnectionInfo connectionInfo) {
+			ClaimsPrincipal user,
+			[SignalR(HubName = "mapr")]IAsyncCollector<SignalRMessage> signalRMessages,
+			[SignalR(HubName = "mapr")] IAsyncCollector<SignalRGroupAction> signalRGroupActions) {
 
-			connectionInfo.
-			return null;
+			return signalRGroupActions.AddAsync(
+				new SignalRGroupAction {
+					UserId = user.GetUserName(),
+					GroupName = gameId,
+					Action = GroupAction.Add
+				});
 		}
 	}
 }
