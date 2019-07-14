@@ -2,7 +2,7 @@
   <div>
       <MapRNav v-bind:functionsUrl="config.mapRFunctionsUrl"
               v-bind:appServerUrl="appServer"
-              v-bind:userInfo="userInfo"/>
+              />
     <div id="app">
       <router-view>
       this is the index
@@ -13,14 +13,12 @@
 
 <script>
 import MapRNav from '../nav/MapRNav.vue'
-import mapRFunctions from '../../lib/MapRFunctions.js'
 import {store} from '../shared/store.js'
 const config = require('../../../config.json')
 
 export default {
   name: 'index',
   data: function() {
-    let self = this;
     store.getUser();
     return  {
       games: [],

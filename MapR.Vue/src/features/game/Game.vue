@@ -5,6 +5,8 @@
 </template>
 
 <script>
+window.$ = window.jQuery = require("jquery");
+import signalR from 'signalr';
 import mapRFunctions from '../../lib/MapRFunctions.js'
 import config from '../../../config.json';
 import { store } from '../shared/store.js'
@@ -23,10 +25,20 @@ export default {
       self.$set(self, 'imageUrl', config.mapRFunctionsUrl + 'api/games/'+ self.game.id + '/activemap/image');
       store.setPageTitle(self.game.name);
     });
+    mapRFunctions.negotiateSignalr().then(r => { self.signalrData = r.data; });
     return {
       game: null,
-      imageUrl: ''
+      imageUrl: '',
+      signalrData: null
     };
+  },
+  watch: {
+    signalrData: function(newData){
+      console.log(signalR)
+      // let connection = new signalR.HubConnectionBuilder()
+      //   .withUrl(newData.url)
+      //   .build();
+    }
   }
 }
 </script>
