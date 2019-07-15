@@ -5,7 +5,7 @@
 </template>
 
 <script>
-window.$ = window.jQuery = require("jquery");
+import 'expose-loader?jQuery!jquery';
 import signalR from 'signalr';
 import mapRFunctions from '../../lib/MapRFunctions.js'
 import config from '../../../config.json';
@@ -35,9 +35,9 @@ export default {
   watch: {
     signalrData: function(newData){
       console.log(signalR)
-      // let connection = new signalR.HubConnectionBuilder()
-      //   .withUrl(newData.url)
-      //   .build();
+      let connection = new signalR.HubConnectionBuilder()
+        .withUrl(newData.url)
+        .build();
     }
   }
 }
