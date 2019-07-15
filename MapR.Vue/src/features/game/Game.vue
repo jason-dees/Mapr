@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import 'expose-loader?jQuery!jquery';
-import signalR from 'signalr';
+import * as signalR from '@aspnet/signalr';
 import mapRFunctions from '../../lib/MapRFunctions.js'
 import config from '../../../config.json';
 import { store } from '../shared/store.js'

@@ -17,4 +17,3 @@ module.exports = {
         }
     }
  }
- new ProvidePlugin({ jQuery: 'jquery', $: 'jquery', jquery: 'jquery' })
