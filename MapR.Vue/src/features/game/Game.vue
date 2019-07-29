@@ -28,29 +28,33 @@ export default {
     return {
       game: null,
       imageUrl: '',
-      signalrData: null
+      markers: []
     };
   },
   methods:{
     connect: function(gameId){
+      let self = this;
       let connection = store.getSignalRConnection(); 
+      window.connection = connection;
 
       connection.on("SetAllMapMarkers", function(markers){
-          console.log(markers);
+          console.log(markers, markers.length);
           for(var i = 0; i< markers.length; i++){
-              vue.addMarker(markers[i]);
+            console.log(markers[i])
           }
       });
 
       connection.start()
         .then(function () { 
-          console.log("started")
-          connection.invoke("AddToGame", gameId) 
-          connection.invoke("SendAllMapMarkers");
+          store.addToGame(gameId)
       });
-
-
-
+    },
+    addMarker: function(marker){
+        var self = this;
+        this.$set(this.markers, marker.id, marker);
+        this.$nextTick(function () {
+            //setMarker(marker, self.mapZoom, self.getMap());
+        })
     }
   },
   watch: {

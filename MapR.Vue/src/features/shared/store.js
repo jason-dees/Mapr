@@ -28,6 +28,9 @@ var store = {
             self.state.loadingUserInfo = false;
         });
     },
+    addToGame(gameId){
+        return mapRFunctions.addToGame(gameId);
+    },
     getSignalRConnection(){
         var self = this;
         if(self.state.connection == null){

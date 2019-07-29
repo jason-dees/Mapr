@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using System.Security.Claims;
 using MapR.Functions.Extensions;
+using System.Linq;
 
 namespace MapR.Functions {
 	public static class SignalRFunctions {
@@ -25,10 +26,21 @@ namespace MapR.Functions {
 			[SignalR(HubName = "mapr")] IAsyncCollector<SignalRGroupAction> signalRGroupActions) {
 
 			return signalRGroupActions.AddAsync(
+			signalRGroupActions.AddAsync(
 				new SignalRGroupAction {
 					UserId = user.GetUserName(),
 					GroupName = gameId,
 					Action = GroupAction.Add
+				}).Wait();
+
+			//var map = FunctionServices.MapStore.GetMaps(gameId).Result.FirstOrDefault(m => m.IsPrimary);
+			//var markers = FunctionServices.MarkerStore.GetMarkers(map.Id).Result;
+
+			return signalRMessages.AddAsync(
+				new SignalRMessage {
+					UserId = user.GetUserName(),
+					Target = "SetAllMapMarkers",
+					Arguments = new[] { gameId, user.Identity.Name }
 				});
 		}
 
@@ -37,12 +49,15 @@ namespace MapR.Functions {
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post")] string gameId,
 			ClaimsPrincipal user,
 			[SignalR(HubName = "mapr")]IAsyncCollector<SignalRMessage> signalRMessages) {
+			
+			var map = FunctionServices.MapStore.GetMaps(gameId).Result.FirstOrDefault(m => m.IsPrimary);
+			var markers = FunctionServices.MarkerStore.GetMarkers(map.Id).Result;
 
 			return signalRMessages.AddAsync(
 				new SignalRMessage {
 					UserId = user.GetUserName(),
 					Target = "SetAllMapMarkers",
-					Arguments = new object[0]
+					Arguments = new[] {markers}
 				});
 
 		}
