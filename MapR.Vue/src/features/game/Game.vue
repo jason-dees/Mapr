@@ -33,18 +33,12 @@ export default {
   },
   methods:{
     connect: function(gameId){
-      let connection = new signalR.HubConnectionBuilder()
-        .withUrl(config.mapRFunctionsUrl +'api')
-        .build();
+      let connection = store.getSignalRConnection(); 
       connection.start()
         .then(function () { connection.invoke("AddToGame", gameId) });
     }
   },
   watch: {
-    signalrData: function(newData){
-      window.s = signalR;
-      
-    }
   }
 }
 </script>

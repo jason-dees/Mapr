@@ -1,10 +1,14 @@
 import mapRFunctions from '../../lib/MapRFunctions.js'
+import * as signalR from '@aspnet/signalr';
+import config from '../../../config.json';
+
 var store = {
     state: {
         title: 'MapR',
         user: '',
         loadedUserInfo: false,
-        loadingUserInfo: true
+        loadingUserInfo: true,
+        connection: null
     },
     setPageTitle  (newTitle){
         this.state.title = newTitle;
@@ -23,6 +27,16 @@ var store = {
         }).finally(() => {
             self.state.loadingUserInfo = false;
         });
+    },
+    getSignalRConnection(){
+        var self = this;
+        if(self.state.connection == null){
+            self.state.connection = new signalR.HubConnectionBuilder()
+            .withUrl(config.mapRFunctionsUrl +'api')
+            .build();
+
+        }
+        return self.state.connection;
     }
 };
 export {store}
