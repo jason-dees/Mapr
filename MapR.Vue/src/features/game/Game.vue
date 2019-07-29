@@ -23,20 +23,27 @@ export default {
       self.$set(self, 'game', r.data);
       self.$set(self, 'imageUrl', config.mapRFunctionsUrl + 'api/games/'+ self.game.id + '/activemap/image');
       store.setPageTitle(self.game.name);
+      self.connect(self.game.id);
     });
-    mapRFunctions.negotiateSignalr().then(r => { self.signalrData = r.data; });
     return {
       game: null,
       imageUrl: '',
       signalrData: null
     };
   },
+  methods:{
+    connect: function(gameId){
+      let connection = new signalR.HubConnectionBuilder()
+        .withUrl(config.mapRFunctionsUrl +'api')
+        .build();
+      connection.start()
+        .then(function () { connection.invoke("AddToGame", gameId) });
+    }
+  },
   watch: {
     signalrData: function(newData){
-      console.log(signalR)
-      let connection = new signalR.HubConnectionBuilder()
-        .withUrl(newData.url)
-        .build();
+      window.s = signalR;
+      
     }
   }
 }

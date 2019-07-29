@@ -11,7 +11,7 @@ namespace MapR.Functions {
 		[FunctionName("negotiate")]
 		public static SignalRConnectionInfo Negotiate(
 			[HttpTrigger(AuthorizationLevel.Anonymous)]HttpRequest req,
-			[SignalRConnectionInfo(HubName = "mapr", UserId = "{headers.x-ms-client-principal-id}")]
+			[SignalRConnectionInfo(HubName = "mapr", UserId = "{headers.x-ms-client-principal-name}")]
 			SignalRConnectionInfo connectionInfo){
 				// connectionInfo contains an access key token with a name identifier claim set to the authenticated user
 				return connectionInfo;
