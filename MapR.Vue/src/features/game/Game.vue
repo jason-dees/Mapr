@@ -34,8 +34,23 @@ export default {
   methods:{
     connect: function(gameId){
       let connection = store.getSignalRConnection(); 
+
+      connection.on("SetAllMapMarkers", function(markers){
+          console.log(markers);
+          for(var i = 0; i< markers.length; i++){
+              vue.addMarker(markers[i]);
+          }
+      });
+
       connection.start()
-        .then(function () { connection.invoke("AddToGame", gameId) });
+        .then(function () { 
+          console.log("started")
+          connection.invoke("AddToGame", gameId) 
+          connection.invoke("SendAllMapMarkers");
+      });
+
+
+
     }
   },
   watch: {

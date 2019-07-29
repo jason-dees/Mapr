@@ -33,6 +33,7 @@ var store = {
         if(self.state.connection == null){
             self.state.connection = new signalR.HubConnectionBuilder()
             .withUrl(config.mapRFunctionsUrl +'api')
+            .configureLogging(signalR.LogLevel.Debug)
             .build();
 
         }

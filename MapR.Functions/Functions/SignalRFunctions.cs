@@ -31,6 +31,21 @@ namespace MapR.Functions {
 					Action = GroupAction.Add
 				});
 		}
+
+		[FunctionName("SendAllMapMarkers")]
+		public static Task SendAllMapMarkers(
+			[HttpTrigger(AuthorizationLevel.Anonymous, "post")] string gameId,
+			ClaimsPrincipal user,
+			[SignalR(HubName = "mapr")]IAsyncCollector<SignalRMessage> signalRMessages) {
+
+			return signalRMessages.AddAsync(
+				new SignalRMessage {
+					UserId = user.GetUserName(),
+					Target = "SetAllMapMarkers",
+					Arguments = new object[0]
+				});
+
+		}
 	}
 }
 
