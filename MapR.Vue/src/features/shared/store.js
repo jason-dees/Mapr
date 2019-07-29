@@ -1,6 +1,5 @@
 import mapRFunctions from '../../lib/MapRFunctions.js'
 import * as signalR from '@aspnet/signalr';
-import config from '../../../config.json';
 
 var store = {
     state: {
@@ -30,17 +29,6 @@ var store = {
     },
     addToGame(gameId){
         return mapRFunctions.addToGame(gameId);
-    },
-    getSignalRConnection(){
-        var self = this;
-        if(self.state.connection == null){
-            self.state.connection = new signalR.HubConnectionBuilder()
-            .withUrl(config.mapRFunctionsUrl +'api')
-            .configureLogging(signalR.LogLevel.Debug)
-            .build();
-
-        }
-        return self.state.connection;
     }
 };
 export {store}

@@ -21,11 +21,11 @@ namespace MapR.Functions {
 		[FunctionName("AddToGame")]
 		public static Task AddToGame(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post")] string gameId,
+			HttpRequest req,
 			ClaimsPrincipal user,
 			[SignalR(HubName = "mapr")]IAsyncCollector<SignalRMessage> signalRMessages,
 			[SignalR(HubName = "mapr")] IAsyncCollector<SignalRGroupAction> signalRGroupActions) {
 
-			return signalRGroupActions.AddAsync(
 			signalRGroupActions.AddAsync(
 				new SignalRGroupAction {
 					UserId = user.GetUserName(),
@@ -33,14 +33,14 @@ namespace MapR.Functions {
 					Action = GroupAction.Add
 				}).Wait();
 
-			//var map = FunctionServices.MapStore.GetMaps(gameId).Result.FirstOrDefault(m => m.IsPrimary);
+			var map = FunctionServices.MapStore.GetMaps(gameId).Result;
 			//var markers = FunctionServices.MarkerStore.GetMarkers(map.Id).Result;
 
 			return signalRMessages.AddAsync(
 				new SignalRMessage {
 					UserId = user.GetUserName(),
 					Target = "SetAllMapMarkers",
-					Arguments = new[] { gameId, user.Identity.Name }
+					Arguments = new[] { map }
 				});
 		}
 

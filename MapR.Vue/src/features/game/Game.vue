@@ -34,20 +34,28 @@ export default {
   methods:{
     connect: function(gameId){
       let self = this;
-      let connection = store.getSignalRConnection(); 
-      window.connection = connection;
+      let connection;// = store.getSignalRConnection(); 
+      mapRFunctions.negotiateSignalr().then(resp => {
+        let con = resp.data;
+        const options = {
+            accessTokenFactory: () => con.accessToken
+        };
+        connection = new signalR.HubConnectionBuilder()
+          // .withUrl(config.mapRFunctionsUrl +'api')
+          .withUrl(con.url, options)
+          .configureLogging(signalR.LogLevel.Debug)
+          .build();
+        window.connection = connection;
+        connection.on("SetAllMapMarkers", function(markers){
+            console.log(markers, markers.length);
+        });
 
-      connection.on("SetAllMapMarkers", function(markers){
-          console.log(markers, markers.length);
-          for(var i = 0; i< markers.length; i++){
-            console.log(markers[i])
-          }
+        connection.start()
+          .then(function () { 
+            store.addToGame(gameId)
+        });
       });
 
-      connection.start()
-        .then(function () { 
-          store.addToGame(gameId)
-      });
     },
     addMarker: function(marker){
         var self = this;

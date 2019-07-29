@@ -1,21 +1,33 @@
 import axios from 'axios';
+import config from '../../config.json';
+import { store } from '../features/shared/store.js'
 
-const config = require('../../config.json')
+const axiosOptions = {  };
+const getInstance = function(){
+    console.log(store.state.user);
+    return axios.create({
+        baseURL: config.mapRFunctionsUrl + 'api/',
+        withCredentials: true
+    });
+}
 
 export default {
     async getUser(){
-       return await axios.get(config.mapRFunctionsUrl + 'api/user', {withCredentials: true});
+        console.log("get user")
+       return await getInstance().get('user');
     }, 
     async getGames(){
-       return await axios.get(config.mapRFunctionsUrl + 'api/games', {withCredentials: true});
+       return await axios.get(config.mapRFunctionsUrl + 'api/games', axiosOptions);
     },
     async getGame(gameId){
-       return await axios.get(config.mapRFunctionsUrl + 'api/games/' + gameId, {withCredentials: true});
+        console.log("getgame")
+       return await getInstance().get('games/' + gameId);
     },
     async negotiateSignalr(){
-       return await axios.get(config.mapRFunctionsUrl + 'api/negotiate', {withCredentials: true});
+        console.log("neg signal")
+       return await getInstance().get('negotiate');
     },
     async addToGame(gameId){
-        return await axios.post(config.mapRFunctionsUrl + 'api/AddToGame', {gameId}, {withCredentials: true});
+        return await getInstance().post('AddToGame', {gameId});
     }
 }
