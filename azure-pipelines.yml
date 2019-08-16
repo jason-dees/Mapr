@@ -8,6 +8,8 @@ trigger:
 
 variables:
   functionsproject: '**/MapR.Functions.csproj'
+  vuefolder: '**/MapR.Vue'
+
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -17,7 +19,6 @@ stages:
    - job: Build
      steps:
       - task: NuGetToolInstaller@1
-
       - task: NuGetCommand@2
         inputs:
           restoreSolution: '$(solution)'
@@ -26,3 +27,12 @@ stages:
           command: 'build'
           projects: '$(functionsproject)'
           configuration: '$(buildConfiguration)'
+      - task: Npm@1
+        inputs:
+          command: 'install'
+          workingDir: '$(vuefolder)'
+      - task: Npm@1
+        inputs:
+          command: 'custom'
+          workingDir: '$(vuefolder)'
+          customCommand: 'npm run build'
