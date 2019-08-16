@@ -35,4 +35,4 @@ stages:
         inputs:
           command: 'custom'
           workingDir: '$(vuefolder)'
-          customCommand: 'npm run build'
+          customCommand: 'run build'
