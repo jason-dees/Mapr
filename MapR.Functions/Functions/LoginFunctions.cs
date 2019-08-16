@@ -38,11 +38,24 @@ namespace MapR.Functions.Functions {
             return new RedirectResult("/.auth/logout");
         }
 
+		[FunctionName("GetUserInformation")]
+		[Authorize]
+		public static IActionResult RunGetUserInformation(
+			[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequest req,
+			ClaimsPrincipal user,
+			ILogger log) {
+			if (user.CheckIsSignedIn()) {
+				return new OkObjectResult(new { user.Identity.Name });
+			}
+			return new UnauthorizedResult();
+		}
+
         static IActionResult DoLogin(ClaimsPrincipal user, string provider, string redirectRoute) {
-            if (user.CheckIsSignedIn()) {
-                return new RedirectResult("/api/games");
+
+			redirectRoute = string.IsNullOrEmpty(redirectRoute) ? "/api/games" : redirectRoute;
+			if (user.CheckIsSignedIn()) {
+                return new RedirectResult(redirectRoute);
             }
-            redirectRoute = string.IsNullOrEmpty(redirectRoute) ? "/api/games" : redirectRoute;
             return new RedirectResult($"/.auth/login/{provider}?post_login_redirect_url={redirectRoute}");
 
         }

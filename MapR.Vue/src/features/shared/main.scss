@@ -1,0 +1,19 @@
+@import 'variables.scss';
+body {
+  margin:0px;
+  font-family: sans-serif;
+}
+.left {
+  float:left;
+}
+
+.right {
+  float:right;
+}
+
+.title {
+  padding: 15px;
+  display: inline-block;
+  height:$menu-height;
+  vertical-align: middle;
+}
