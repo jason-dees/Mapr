@@ -8,7 +8,7 @@ trigger:
 
 variables:
   functionsproject: '**/MapR.Functions.csproj'
-  vuefolder: '**/MapR.Vue'
+  vuefolder: '**/MapR.Vue/'
 
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
