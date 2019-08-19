@@ -1,0 +1,39 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+variables:
+  vuefolder: './MapR.Vue/'
+
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+stages:
+ - stage: Build
+   jobs:
+   - job: Build
+     steps:
+      - task: Npm@1
+        inputs:
+          command: 'install'
+          workingDir: '$(vuefolder)'
+      - task: Npm@1
+        inputs:
+          command: 'custom'
+          workingDir: '$(vuefolder)'
+          customCommand: 'run build'
+ - stage: Deploy
+   jobs:
+   - job: DeplyWebApp
+     steps: 
+        - task: AzureFileCopy@3
+          inputs:
+            SourcePath: '$(System.DefaultWorkingDirectory)/dist/'
+            azureSubscription: 'Visual Studio Enterprise (0791f80b-2fd9-4866-a5fa-f7563fa276de)'
+            Destination: 'AzureBlob'
+            storage: 'maprstorage'
+            ContainerName: '$web'
