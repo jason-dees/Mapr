@@ -48,24 +48,5 @@ namespace MapR.Functions {
 					Arguments = new[] { markers }
 				});
 		}
-
-		[FunctionName("SendAllMapMarkers")]
-		public static Task SendAllMapMarkers(
-			[HttpTrigger(AuthorizationLevel.Anonymous, "post")] string gameId,
-			ClaimsPrincipal user,
-			[SignalR(HubName = "mapr")]IAsyncCollector<SignalRMessage> signalRMessages) {
-			
-			var map = FunctionServices.MapStore.GetMaps(gameId).Result.FirstOrDefault(m => m.IsPrimary);
-			var markers = FunctionServices.MarkerStore.GetMarkers(map.Id).Result;
-
-			return signalRMessages.AddAsync(
-				new SignalRMessage {
-					UserId = user.GetUserName(),
-					Target = "SetAllMapMarkers",
-					Arguments = new[] {"o","b"}
-				});
-
-		}
 	}
 }
-
