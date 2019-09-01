@@ -33,7 +33,6 @@ export default {
   },
   methods:{
     connect: function(gameId){
-      let self = this;
       let connection;// = store.getSignalRConnection(); 
       mapRFunctions.negotiateSignalr().then(resp => {
         let con = resp.data;

@@ -5,12 +5,160 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.13.1" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SignalRService" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MapR.DataStores\MapR.DataStores.csproj" />
     <ProjectReference Include="..\MapR.Data\MapR.Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\host.json" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\linux-x64\native\Magick.NET-Q16-x64.Native.dll.so" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\win-x64\native\Magick.NET-Q16-x64.Native.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\win-x86\native\Magick.NET-Q16-x86.Native.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\osx-x64\native\Magick.NET-Q16-x64.Native.dll.dylib" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authorization.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Cryptography.Internal.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authorization.Policy.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authentication.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Hosting.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.Extensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.Features.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.JsonPatch.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.Net.Http.Formatting.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.Formatters.Json.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Routing.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.WebUtilities.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Extensions.Http.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Extensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Host.Storage.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Routing.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Host.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.DotNet.PlatformAbstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Build.Utilities.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Extensions.SignalRService.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.Binder.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Build.Framework.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.DependencyModel.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.FileProviders.Physical.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Hosting.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.FileSystemGlobbing.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Hosting.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Identity.Stores.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Identity.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Logging.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.FileExtensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Logging.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.ObjectPool.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Logging.Configuration.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.IdentityModel.Logging.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Options.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Primitives.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.IdentityModel.Tokens.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\NCrontab.Signed.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.Json.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Newtonsoft.Json.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Newtonsoft.Json.Bson.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Net.Http.Headers.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.IdentityModel.Tokens.Jwt.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.Runtime.CompilerServices.Unsafe.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\MapR.Data.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\win\lib\netstandard1.3\System.Text.Encoding.CodePages.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.WindowsAzure.Storage.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\unix\lib\netstandard1.3\System.Text.Encoding.CodePages.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\MapR.DataStores.pdb" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\MapR.DataStores.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\MapR.Data.pdb" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.DependencyInjection.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.Text.Encodings.Web.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\win-x86\native\Magick.NET-Q16-x86.Native.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\osx-x64\native\Magick.NET-Q16-x64.Native.dll.dylib" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.Net.Http.Formatting.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authorization.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\linux-x64\native\Magick.NET-Q16-x64.Native.dll.so" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\win-x64\native\Magick.NET-Q16-x64.Native.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Hosting.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Cryptography.Internal.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authentication.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.Extensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.Features.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.JsonPatch.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.Formatters.Json.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Routing.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.WebUtilities.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Host.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Extensions.SignalRService.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Host.Storage.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Build.Framework.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Extensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Build.Utilities.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Routing.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.DotNet.PlatformAbstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.Binder.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Http.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.FileExtensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.AspNetCore.Authorization.Policy.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.Json.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Configuration.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.DependencyInjection.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.DependencyModel.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.FileSystemGlobbing.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Hosting.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Identity.Core.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Identity.Stores.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Logging.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Azure.WebJobs.Extensions.Http.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Logging.Configuration.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Hosting.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Options.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.ObjectPool.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.IdentityModel.Logging.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Primitives.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Net.Http.Headers.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\NCrontab.Signed.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.FileProviders.Physical.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Newtonsoft.Json.Bson.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Newtonsoft.Json.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.IdentityModel.Tokens.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.Runtime.CompilerServices.Unsafe.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.IdentityModel.Tokens.Jwt.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.Extensions.Logging.Abstractions.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\System.Text.Encodings.Web.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\win\lib\netstandard1.3\System.Text.Encoding.CodePages.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\runtimes\unix\lib\netstandard1.3\System.Text.Encoding.CodePages.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\Microsoft.WindowsAzure.Storage.dll" />
+    <None Remove="obj\Release\netcoreapp2.2\PubTmp\Out\bin\MapR.DataStores.pdb" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
@@ -23,5 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Models\Messages\" />
   </ItemGroup>
 </Project>
