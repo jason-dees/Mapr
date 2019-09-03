@@ -1,5 +1,4 @@
 import mapRFunctions from '../../lib/MapRFunctions.js'
-import * as signalR from '@aspnet/signalr';
 
 var store = {
     state: {
@@ -7,7 +6,8 @@ var store = {
         user: '',
         loadedUserInfo: false,
         loadingUserInfo: true,
-        connection: null
+        connection: null,
+        markers: {}
     },
     setPageTitle  (newTitle){
         this.state.title = newTitle;
@@ -29,6 +29,10 @@ var store = {
     },
     addToGame(gameId){
         return mapRFunctions.addToGame(gameId);
+    },
+    addMarker(marker){
+        var self = this;
+        self.state.markers[marker.Id] = marker;
     }
 };
 export {store}

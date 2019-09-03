@@ -60,6 +60,9 @@ export default{
         position:fixed;
         width:100%;
         top:0px;
+        z-index:1000;
+        position:fixed;
+        width:100%;
         .nav-wrapper{
             padding-top: 0px;
             background-color:$papyrus;

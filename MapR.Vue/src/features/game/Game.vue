@@ -1,6 +1,13 @@
 <template>
   <div>
-    <img v-bind:src="imageUrl" />
+    <div class="mapContainer">
+      <img v-bind:src="imageUrl" class="map"/>
+    </div>
+    <Marker 
+        v-for="marker in store.state.markers"
+        v-bind:key="marker.id"
+        v-bind:marker="marker">
+    </Marker>
   </div>
 </template>
 
@@ -9,6 +16,7 @@ import * as signalR from '@aspnet/signalr';
 import mapRFunctions from '../../lib/MapRFunctions.js'
 import config from '../../../config.json';
 import { store } from '../shared/store.js'
+import * as panzoom from 'panzoom';
 
 export default {
   name: 'game',
@@ -16,6 +24,8 @@ export default {
     id: String
   },
   components: {
+  },
+  mounted: function() {
   },
   data: function(){
     let self = this;
@@ -26,42 +36,71 @@ export default {
       self.connect(self.game.id);
     });
     return {
+      store: store,
       game: null,
       imageUrl: '',
-      markers: []
+      mapZoom: null
     };
+  },
+  computed:{
+    map: function(){
+      return this.$el.querySelector('.map'); 
+    }
+  },
+  mounted: function(){
+    this.mapZoom = panzoom(this.getMap(),{
+          maxZoom: 1,
+          smoothScroll: false,
+          minZoom: .1
+      });
+      this.mapZoom.on('transform', function(){
+          //$('.marker').popover('hide');
+          //resetMapMarkers(self.markers, self.mapZoom, self.getMap());
+      });
   },
   methods:{
     connect: function(gameId){
+      let self = this;
+      
       let connection;// = store.getSignalRConnection(); 
+
       mapRFunctions.negotiateSignalr().then(resp => {
         let con = resp.data;
         const options = {
             accessTokenFactory: () => con.accessToken
         };
         connection = new signalR.HubConnectionBuilder()
-          // .withUrl(config.mapRFunctionsUrl +'api')
           .withUrl(con.url, options)
           .configureLogging(signalR.LogLevel.Debug)
           .build();
-        window.connection = connection;
+
         connection.on("SetAllMapMarkers", function(markers){
-            console.log(markers, markers.length);
+            for(var i = 0; i< markers.length; i++){
+              self.addMarker(markers[i]);
+            }
         });
 
         connection.start()
           .then(function () { 
-            store.addToGame(gameId)
+            self.store.addToGame(gameId)
         });
       });
-
     },
     addMarker: function(marker){
         var self = this;
-        this.$set(this.markers, marker.id, marker);
-        this.$nextTick(function () {
-            //setMarker(marker, self.mapZoom, self.getMap());
-        })
+        self.store.addMarker(marker, self.mapZoom, this.map);
+        //self.setMarker(marker, self.mapZoom, map);
+    },
+    setMarkerPosition: function(marker, mapZoom, mapElement) {
+        var mapTransform = mapZoom.getTransform();
+        var element = this.$el.querySelector('#' + marker.id);
+        var markerX = marker.x,
+            markerY = marker.y,
+            left = mapTransform.scale * markerX + mapTransform.x + mapElement.offsetLeft,
+            top = mapTransform.scale * markerY + mapTransform.y + mapElement.offsetTop;
+
+        var transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ left + ', ' + top + ')';
+        element.style.transform = transformValue;
     }
   },
   watch: {
