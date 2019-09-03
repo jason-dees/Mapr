@@ -4,12 +4,15 @@
 </template>
 
 <script>
+import config from '../../../config.json';
+
 export default {
-    name: 'marker',
+    name: 'map-marker',
     props: ['marker'],
     computed: {
         computedCss: function(){
-            var backgroundImage = 'background-image: url("' + this.marker.IconUrl + '?width=25");';
+            var url = `${config.mapRFunctionsUrl}api/games/${this.marker.GameId}/maps/${this.marker.MapId}/markers/${this.marker.Id}/image`;
+            var backgroundImage = 'background-image: url("' + url + '?width=25&height=25");';
             return backgroundImage + this.marker.customCSS;
         }
     },

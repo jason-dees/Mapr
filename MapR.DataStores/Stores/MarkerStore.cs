@@ -43,7 +43,13 @@ namespace MapR.DataStores.Stores {
         }
 
         public async Task<IList<Data.Models.MarkerModel>> GetMarkers(string mapId) {
-            return (await GetByPartitionKey(mapId)).Select(m => m as Data.Models.MarkerModel).ToList();
+            var markers = (await GetByPartitionKey(mapId)).Select(m => m as Data.Models.MarkerModel).ToList();
+            //We never want image bytes when getting ALL markers, so clearing out.
+            //This caused issues with signalr sending down all markers for a map
+            for(var i = 0; i< markers.Count; i++) {
+                markers[i].ImageBytes = new byte[0];
+            }
+            return markers;
 		}
 
 		public async Task UpdateMarker(Data.Models.MarkerModel marker) {

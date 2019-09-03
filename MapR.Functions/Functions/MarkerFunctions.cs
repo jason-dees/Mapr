@@ -49,7 +49,7 @@ namespace MapR.Functions.Functions
         {
             var marker = await FunctionServices.MarkerStore.GetMarker(markerId);
 
-            if (!int.TryParse(req.Query["width"], out int width) | !int.TryParse(req.Query["height"], out int height))
+            if (!int.TryParse(req.Query["width"], out int width) || !int.TryParse(req.Query["height"], out int height))
             {
                 return new FileContentResult(marker.ImageBytes, "image/jpeg");
             }

@@ -3,11 +3,10 @@
     <div class="mapContainer">
       <img v-bind:src="imageUrl" class="map"/>
     </div>
-    <Marker 
-        v-for="marker in store.state.markers"
-        v-bind:key="marker.id"
-        v-bind:marker="marker">
-    </Marker>
+    <map-marker 
+        v-for="marker in markers"
+        v-bind:key="marker.Id"
+        v-bind:marker="marker" />
   </div>
 </template>
 
@@ -17,15 +16,15 @@ import mapRFunctions from '../../lib/MapRFunctions.js'
 import config from '../../../config.json';
 import { store } from '../shared/store.js'
 import * as panzoom from 'panzoom';
+import MapMarker from './MapMarker.vue';
 
 export default {
-  name: 'game',
+  name: 'Game',
   props:{
     id: String
   },
   components: {
-  },
-  mounted: function() {
+    'map-marker': MapMarker
   },
   data: function(){
     let self = this;
@@ -45,18 +44,29 @@ export default {
   computed:{
     map: function(){
       return this.$el.querySelector('.map'); 
+    },
+    markers: function(){
+      return this.store.state.markers;
     }
   },
   mounted: function(){
-    this.mapZoom = panzoom(this.getMap(),{
-          maxZoom: 1,
-          smoothScroll: false,
-          minZoom: .1
-      });
-      this.mapZoom.on('transform', function(){
-          //$('.marker').popover('hide');
-          //resetMapMarkers(self.markers, self.mapZoom, self.getMap());
-      });
+    var self = this;
+    self.mapZoom = panzoom(self.map,{
+        maxZoom: 1,
+        smoothScroll: false,
+        minZoom: .1
+    });
+    self.mapZoom.on('transform', function(){
+        //$('.marker').popover('hide');
+        for (var marker in self.markers) {
+          self.setMarkerPosition(self.markers[marker], self.mapZoom, self.map);
+        }
+    });
+    self.$watch(function(){return self.store.state.markers;}, function(newValue){
+      console.log("marker", newValue);
+    }, {
+      deep: true
+    });
   },
   methods:{
     connect: function(gameId){
@@ -73,11 +83,12 @@ export default {
           .withUrl(con.url, options)
           .configureLogging(signalR.LogLevel.Debug)
           .build();
-
+        
         connection.on("SetAllMapMarkers", function(markers){
-            for(var i = 0; i< markers.length; i++){
-              self.addMarker(markers[i]);
-            }
+          self.store.clearMarkers();
+          for(var i = 0; i< markers.length; i++){
+            self.addMarker(markers[i]);
+          }
         });
 
         connection.start()
@@ -89,13 +100,15 @@ export default {
     addMarker: function(marker){
         var self = this;
         self.store.addMarker(marker, self.mapZoom, this.map);
-        //self.setMarker(marker, self.mapZoom, map);
+        this.$nextTick(function () {
+          self.setMarkerPosition(marker, self.mapZoom, self.map);
+        })
     },
     setMarkerPosition: function(marker, mapZoom, mapElement) {
         var mapTransform = mapZoom.getTransform();
-        var element = this.$el.querySelector('#' + marker.id);
-        var markerX = marker.x,
-            markerY = marker.y,
+        var element = this.$el.querySelector('#' + marker.Id);
+        var markerX = marker.X,
+            markerY = marker.Y,
             left = mapTransform.scale * markerX + mapTransform.x + mapElement.offsetLeft,
             top = mapTransform.scale * markerY + mapTransform.y + mapElement.offsetTop;
 

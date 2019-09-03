@@ -31,8 +31,11 @@ var store = {
         return mapRFunctions.addToGame(gameId);
     },
     addMarker(marker){
-        var self = this;
-        self.state.markers[marker.Id] = marker;
+        this.state.markers[marker.Id] = marker;
+        console.log(this.state.markers);
+    },
+    clearMarkers(){
+        this.state.markers = {};
     }
 };
 export {store}
