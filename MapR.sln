@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR", "MapR\MapR.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.Data", "MapR.Data\MapR.Data.csproj", "{B5D14C9B-159D-4640-BBD4-4E51C5662550}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.DataStores", "MapR.DataStores\MapR.DataStores.csproj", "{4D839236-EC2D-4154-802D-848316EB22B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapR.DataStores", "MapR.DataStores\MapR.DataStores.csproj", "{4D839236-EC2D-4154-802D-848316EB22B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17086C6F-C6C8-442F-9082-40063CF05860}"
 	ProjectSection(SolutionItems) = preProject

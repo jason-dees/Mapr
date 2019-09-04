@@ -48,8 +48,10 @@ namespace MapR.Functions.Functions
             ILogger log)
         {
             var marker = await FunctionServices.MarkerStore.GetMarker(markerId);
+            var hasWidth = int.TryParse(req.Query["width"], out int width);
+            var hasHeight = int.TryParse(req.Query["height"], out int height);
 
-            if (!int.TryParse(req.Query["width"], out int width) || !int.TryParse(req.Query["height"], out int height))
+            if (!hasWidth  && !hasHeight)
             {
                 return new FileContentResult(marker.ImageBytes, "image/jpeg");
             }

@@ -1,23 +1,28 @@
-﻿using System;
-using ImageMagick;
+﻿using System.IO;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace MapR.Functions.Extensions {
     public static class ByteArrayExtensions {
 
         public static byte[] ResizeImageBytes(this byte[] imageBytes, int width, int height) {
-            using (var image = new MagickImage(imageBytes)) {
-                width = width == 0 ? image.Width : width;
-                height = height == 0 ? image.Height : height;
-
-                var ratio = (double)image.Width / image.Height;
-                var scalePercentage = new Percentage(100);
-
-                scalePercentage = width / height > ratio
-                    ? new Percentage((double)height / image.Height * 100)
-                    : new Percentage((double)width / image.Width * 100);
-
-                image.Resize(scalePercentage);
-                return image.ToByteArray();
+            width = width == 0 ? height : width;
+            height = height == 0 ? width : height;
+            if (width == 0 && height == 0) {
+                return imageBytes;
+            }
+            using (var outStream = new MemoryStream()) {
+                using (var image = Image.Load(imageBytes, out IImageFormat format)) {
+                    var resizeOptions = new ResizeOptions() {
+                        Mode = ResizeMode.Max,
+                        Size = new SixLabors.Primitives.Size(width, height)
+                    };
+                    image.Mutate(i => i.Resize(resizeOptions));
+                    image.Save(outStream, format);
+                    return outStream.ToArray();
+                }
             }
         }
     }
