@@ -46,7 +46,7 @@ export default {
       return this.$el.querySelector('.map'); 
     },
     markers: function(){
-      return this.store.state.markers;
+      return this.store.state.game.markers;
     }
   },
   mounted: function(){
@@ -61,11 +61,6 @@ export default {
         for (var marker in self.markers) {
           self.setMarkerPosition(self.markers[marker], self.mapZoom, self.map);
         }
-    });
-    self.$watch(function(){return self.store.state.markers;}, function(newValue){
-      console.log("marker", newValue);
-    }, {
-      deep: true
     });
   },
   methods:{
@@ -84,11 +79,16 @@ export default {
           .configureLogging(signalR.LogLevel.Debug)
           .build();
         
-        connection.on("SetAllMapMarkers", function(markers){
-          self.store.clearMarkers();
+        connection.on("SetGameData", function(gameData){
+          var markers = gameData.markers;
+          self.store.resetGame();
+          self.store.setIsGameOwner(gameData.isGameOwner);
           for(var i = 0; i< markers.length; i++){
             self.addMarker(markers[i]);
           }
+        });
+        connection.on("SetGameAdmin", function(data){
+          console.log(data);
         });
 
         connection.start()

@@ -7,7 +7,10 @@ var store = {
         loadedUserInfo: false,
         loadingUserInfo: true,
         connection: null,
-        markers: {}
+        game:{
+            markers: {},
+            isOwner: false
+        }
     },
     setPageTitle  (newTitle){
         this.state.title = newTitle;
@@ -30,12 +33,21 @@ var store = {
     addToGame(gameId){
         return mapRFunctions.addToGame(gameId);
     },
+    setIsGameOwner(isGameOwner){
+        this.state.game.isOwner = isGameOwner;
+    },
     addMarker(marker){
-        this.state.markers[marker.Id] = marker;
-        console.log(this.state.markers);
+        this.state.game.markers[marker.Id] = marker;
+        console.log(this.state.game.markers);
+    },
+    resetGame(){
+        this.state.game = {
+            markers: {},
+            isOwner: false
+        };
     },
     clearMarkers(){
-        this.state.markers = {};
+        this.state.game.markers = {};
     }
 };
 export {store}

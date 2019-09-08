@@ -38,14 +38,17 @@ namespace MapR.Functions {
 					Action = GroupAction.Add
 				}).Wait();
 
+			var game = FunctionServices.GameStore.GetGame(addToGame.GameId).Result;
+			var isGameOwner = game.Owner == user.GetUserName();
+
 			var map = FunctionServices.MapStore.GetMaps(addToGame.GameId).Result;
 			var markers = FunctionServices.MarkerStore.GetMarkers(map.First(m => m.IsPrimary).Id).Result;
 
 			return signalRMessages.AddAsync(
 				new SignalRMessage {
 					UserId = user.GetUserName(),
-					Target = "SetAllMapMarkers",
-					Arguments = new[] { markers }
+					Target = "SetGameData",
+					Arguments = new[] { new { markers, isGameOwner } }
 				});
 		}
 	}
