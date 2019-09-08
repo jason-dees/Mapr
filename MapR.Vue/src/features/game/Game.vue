@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="mapVue">
     <div class="mapContainer">
       <img v-bind:src="imageUrl" class="map"/>
     </div>
@@ -62,6 +62,8 @@ export default {
           self.setMarkerPosition(self.markers[marker], self.mapZoom, self.map);
         }
     });
+
+    setUpMarkerDrag(document.querySelector("#mapVue"), self);
   },
   methods:{
     connect: function(gameId){
@@ -119,4 +121,79 @@ export default {
   watch: {
   }
 }
+function setUpMarkerDrag(container, mapRApp){
+        let dragItem;
+
+        let active = false;
+        let currentX;
+        let currentY;
+        let inElementX;
+        let inElementY;
+        container.addEventListener("touchstart", dragStart, false);
+        container.addEventListener("touchend", dragEnd, false);
+        container.addEventListener("touchmove", drag, false);
+
+        container.addEventListener("mousedown", dragStart, false);
+        container.addEventListener("mouseup", dragEnd, false);
+        container.addEventListener("mousemove", drag, false);
+
+        let mapTransform = null;
+        function dragStart(e) {
+            mapTransform = mapRApp.mapZoom.getTransform();
+
+            if (e.target.classList.contains('marker') ) {
+                if (e.type === "touchstart") {
+                    inElementX = 0;
+                    inElementY = 0;
+
+                } else {
+                    inElementX = e.layerX;
+                    inElementY = e.layerY;
+                }
+
+                dragItem = e.target;
+                active = true;
+            }
+        }
+
+        function dragEnd(e) {
+            if(active){
+                inElementX = currentX;
+                inElementY = currentY;
+
+                mapRApp.markers[dragItem.id].x = (inElementX - mapTransform.x - mapRApp.map.offsetLeft)/mapTransform.scale;
+                mapRApp.markers[dragItem.id].y = (inElementY - mapTransform.y - mapRApp.map.offsetTop)/mapTransform.scale;
+                //THIS NEEDS TO BE FIXED PROBABLY
+                mapRApp.connection.invoke("MoveMarker", 
+                  dragItem.id, 
+                  mapRApp.markers[dragItem.id].x, 
+                  mapRApp.markers[dragItem.id].y);
+
+                active = false;
+                
+            }
+        }
+
+        function drag(e) {
+            if (active) {
+                e.preventDefault();
+                if (e.type === "touchmove") {
+                    currentX = e.touches[0].clientX -inElementX;
+                    currentY = e.touches[0].clientY - inElementY;
+                } else {
+                    currentX = e.clientX - inElementX;
+                    currentY = e.clientY - inElementY;
+                }
+
+                setTranslate(currentX, currentY, dragItem);
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            //$(el).popover('update');
+            let transformValue = 'matrix(' + mapTransform.scale + ',0, 0, ' + mapTransform.scale + ', '+ xPos + ', ' + yPos + ')';
+            el.style.transform = transformValue;
+        }
+    }
+
 </script>

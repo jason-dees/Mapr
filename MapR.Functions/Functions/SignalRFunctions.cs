@@ -6,9 +6,8 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using System.Security.Claims;
 using MapR.Functions.Extensions;
 using System.Linq;
-using MapR.Functions.Models;
 using Newtonsoft.Json;
-using System.IO;
+using MapR.Functions.Models.Messages;
 
 namespace MapR.Functions {
 	public static class SignalRFunctions {
@@ -50,6 +49,18 @@ namespace MapR.Functions {
 					Target = "SetGameData",
 					Arguments = new[] { new { markers, isGameOwner } }
 				});
+		}
+
+		[FunctionName("MoveMarker")]
+		public static Task MoveMarker([HttpTrigger(AuthorizationLevel.Anonymous, "post")] string body,
+			HttpRequest req,
+			ClaimsPrincipal user,
+			[SignalR(HubName = "mapr")]IAsyncCollector<SignalRMessage> signalRMessages,
+			[SignalR(HubName = "mapr")] IAsyncCollector<SignalRGroupAction> signalRGroupActions) {
+
+			var moveMarker = JsonConvert.DeserializeObject<MoveMarker>(body);
+
+			return null;
 		}
 	}
 }
