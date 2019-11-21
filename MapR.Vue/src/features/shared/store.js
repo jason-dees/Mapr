@@ -38,7 +38,6 @@ var store = {
     },
     addMarker(marker){
         this.state.game.markers[marker.Id] = marker;
-        console.log(this.state.game.markers);
     },
     resetGame(){
         this.state.game = {
@@ -48,6 +47,9 @@ var store = {
     },
     clearMarkers(){
         this.state.game.markers = {};
+    },
+    isOnGamePage(){
+        //maybe this to check whether it's on the game page rather than set a variable a whole bunch
     }
 };
 export {store}

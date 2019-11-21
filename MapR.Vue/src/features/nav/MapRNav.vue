@@ -5,6 +5,12 @@
                 <li>
                     <router-link to="/">Home</router-link>
                 </li>
+                <li>
+                    <router-link to="/games">Games</router-link>
+                </li>
+            </ul>
+            <ul class="left" v-if="sharedState.game.isOwner">
+                <li>game menu stuff</li>
             </ul>
             <span class="title">
                 {{sharedState.title}}
