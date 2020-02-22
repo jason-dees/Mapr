@@ -22,10 +22,7 @@ namespace MapR.Functions {
 			IBinder binder){
 			var userId = req.Headers["{headers.x-ms-client-principal-name}"];//{} for unauthenticated person
 			if (userId == default(StringValues)){
-				userId = Guid.NewGuid().ToString();
-				var identity = new ClaimsIdentity();
-				identity.AddClaim(new Claim(ClaimTypes.Name, userId));
-				user.AddIdentity(identity);
+				userId = req.Cookies["anon-id"];
 			}
 			
 			// connectionInfo contains an access key token with a name identifier claim set to the authenticated user
@@ -46,23 +43,24 @@ namespace MapR.Functions {
 			[SignalR(HubName = "mapr")] IAsyncCollector<SignalRGroupAction> signalRGroupActions) {
 
 			var addToGame = JsonConvert.DeserializeObject<AddToGame>(body);
+			var userId = user.IsAnonymous() ? req.GetAnonId(): user.GetUserName();
 
 			signalRGroupActions.AddAsync(
 				new SignalRGroupAction {
-					UserId = user.GetUserName(),
+					UserId = userId,
 					GroupName = addToGame.GameId,
 					Action = GroupAction.Add
 				}).Wait();
 
 			var game = FunctionServices.GameStore.GetGame(addToGame.GameId).Result;
-			var isGameOwner = game.Owner == user.GetUserName();
+			var isGameOwner = game.Owner == userId;
 
 			var map = FunctionServices.MapStore.GetMaps(addToGame.GameId).Result;
 			var markers = FunctionServices.MarkerStore.GetMarkers(map.First(m => m.IsPrimary).Id).Result;
 
 			return signalRMessages.AddAsync(
 				new SignalRMessage {
-					UserId = user.GetUserName(),
+					UserId = userId,
 					Target = "SetGameData",
 					Arguments = new[] { new { markers, isGameOwner } }
 				});

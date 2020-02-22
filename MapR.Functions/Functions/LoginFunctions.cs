@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using MapR.Functions.Extensions;
+using System;
 
 namespace MapR.Functions.Functions {
     public static class LoginFunctions {
@@ -44,10 +45,16 @@ namespace MapR.Functions.Functions {
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequest req,
 			ClaimsPrincipal user,
 			ILogger log) {
-			if (user.CheckIsSignedIn()) {
+			if (user.CheckIsSignedIn() && !string.IsNullOrEmpty(user.Identity.Name)) {
 				return new OkObjectResult(new { user.Identity.Name });
 			}
-			return new UnauthorizedResult();
+            //var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            //identity.AddClaim(new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()));
+            //identity.AddClaim(new Claim(ClaimTypes.Anonymous, true.ToString()));
+            //user = new ClaimsPrincipal(identity);
+            //req.HttpContext.SignInAsync(user)
+            req.HttpContext.Response.Cookies.Append("anon-id", Guid.NewGuid().ToString());
+            return new UnauthorizedResult();
 		}
 
         static IActionResult DoLogin(ClaimsPrincipal user, string provider, string redirectRoute) {

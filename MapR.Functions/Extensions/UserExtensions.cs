@@ -11,5 +11,9 @@ namespace MapR.Functions.Extensions {
         public static string GetUserName(this ClaimsPrincipal user) {
             return user.Identity.Name;
         }
+
+		public static bool IsAnonymous(this ClaimsPrincipal user) {
+            return string.IsNullOrEmpty(user.Identity.Name);
+		}
     }
 }
