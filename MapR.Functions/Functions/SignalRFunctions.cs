@@ -1,8 +1,3 @@
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using MapR.Functions.Extensions;
 using MapR.Functions.Models.Messages;
 using Microsoft.AspNetCore.Http;
@@ -10,21 +5,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace MapR.Functions {
-	
+namespace MapR.Functions
+{
+
 	public static class SignalRFunctions {
 		[FunctionName("negotiate")]
 		//[AnonAuthFunction]
 		public static SignalRConnectionInfo Negotiate(
 					[HttpTrigger(AuthorizationLevel.Anonymous)]
 					HttpRequest req,
-			ClaimsPrincipal user,
+					ClaimsPrincipal user,
 					IBinder binder) {
-			var userId = "";
+			string userId;
 			if (string.IsNullOrEmpty(userId = user.GetUserName())) {
 				userId = req.GetAnonId();
 			}
@@ -37,9 +34,17 @@ namespace MapR.Functions {
 			SignalRConnectionInfo connection = binder.BindAsync<SignalRConnectionInfo>(attribute).Result;
 			return connection;
 		}
+		//public static SignalRConnectionInfo Negotiate(
+		//	[HttpTrigger(AuthorizationLevel.Anonymous)]HttpRequest req,
+		//	[SignalRConnectionInfo(HubName = "mapr", UserId = "{headers.x-ms-client-principal-name}")]
+		//	SignalRConnectionInfo connectionInfo)
+		//{
+		//	// connectionInfo contains an access key token with a name identifier claim set to the authenticated user
+		//	return connectionInfo;
+		//}
 
 		[FunctionName("AddToGame")]
-		public static async Task<IActionResult> AddToGame(
+		public static async Task AddToGame(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "post")] string body,
 			HttpRequest req,
 			ClaimsPrincipal user,
@@ -61,14 +66,14 @@ namespace MapR.Functions {
 
 			var maps = await FunctionServices.MapStore.GetMaps(addToGame.GameId);
 			var markers = await FunctionServices.MarkerStore.GetMarkers(maps.First(m => m.IsPrimary).Id);
+			var message = new SignalRMessage {
+				UserId = userId,
+				Target = "SetGameData",
+				Arguments = new[] { new { markers, isGameOwner } },
 
-			await signalRMessages.AddAsync(
-				new SignalRMessage {
-					UserId = userId,
-					Target = "SetGameData",
-					Arguments = new[] { new { markers, isGameOwner, maps } },
-				});
-			return new OkObjectResult(userId);
+			};
+			await signalRMessages.AddAsync(message);
+			await signalRMessages.FlushAsync();
 		}
 
 		[FunctionName("MoveMarker")]
