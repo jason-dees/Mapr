@@ -1,20 +1,17 @@
 using System;
-using System.IO;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using MapR.Functions.Extensions;
+using MapR.Functions.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using MapR.Functions.Extensions;
-using System.Linq;
-using MapR.Functions.Models;
 
-namespace MapR.Functions
-{
-    public static class GameFunctions
+namespace MapR.Functions {
+	public static class GameFunctions
     {
         [FunctionName("GetUserGames")]
         public static async Task<IActionResult> RunGetUserGames(

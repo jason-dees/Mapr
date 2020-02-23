@@ -1,16 +1,15 @@
-using System.Threading.Tasks;
+using System;
+using System.Security.Claims;
+using MapR.Functions.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using MapR.Functions.Extensions;
-using System;
 
 namespace MapR.Functions.Functions {
-    public static class LoginFunctions {
+	public static class LoginFunctions {
 
         [FunctionName("GoogleLogin")]
         [Authorize]
@@ -40,15 +39,15 @@ namespace MapR.Functions.Functions {
         }
 
 		[FunctionName("GetUserInformation")]
-		[Authorize]
+		[Authorize]	
 		public static IActionResult RunGetUserInformation(
 			[HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequest req,
 			ClaimsPrincipal user,
 			ILogger log) {
-			if (user.CheckIsSignedIn() && !string.IsNullOrEmpty(user.Identity.Name)) {
-				return new OkObjectResult(new { user.Identity.Name });
+			if (!string.IsNullOrEmpty(user.GetUserName())) {
+				return new OkObjectResult(new { name = user.GetUserName()});
 			}
-            req.HttpContext.Response.Cookies.Append("anon-id", Guid.NewGuid().ToString());
+            req.SetAnonId(Guid.NewGuid().ToString());
             return new UnauthorizedResult();
 		}
 
