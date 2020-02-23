@@ -48,11 +48,6 @@ namespace MapR.Functions.Functions {
 			if (user.CheckIsSignedIn() && !string.IsNullOrEmpty(user.Identity.Name)) {
 				return new OkObjectResult(new { user.Identity.Name });
 			}
-            //var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            //identity.AddClaim(new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()));
-            //identity.AddClaim(new Claim(ClaimTypes.Anonymous, true.ToString()));
-            //user = new ClaimsPrincipal(identity);
-            //req.HttpContext.SignInAsync(user)
             req.HttpContext.Response.Cookies.Append("anon-id", Guid.NewGuid().ToString());
             return new UnauthorizedResult();
 		}
