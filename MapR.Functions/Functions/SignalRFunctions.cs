@@ -24,8 +24,8 @@ namespace MapR.Functions {
 					HttpRequest req,
 			ClaimsPrincipal user,
 					IBinder binder) {
-			var userId = user.GetUserName();//{} for unauthenticated person
-			if (string.IsNullOrEmpty(userId)) {
+			var userId = "";
+			if (string.IsNullOrEmpty(userId = user.GetUserName())) {
 				userId = req.GetAnonId();
 			}
 			// connectionInfo contains an access key token with a name identifier claim set to the authenticated user

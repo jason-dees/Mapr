@@ -47,7 +47,9 @@ namespace MapR.Functions.Functions {
 			if (!string.IsNullOrEmpty(user.GetUserName())) {
 				return new OkObjectResult(new { name = user.GetUserName()});
 			}
-            req.SetAnonId(Guid.NewGuid().ToString());
+            if (string.IsNullOrEmpty(req.GetAnonId())) {
+                req.SetAnonId(Guid.NewGuid().ToString());
+            }
             return new UnauthorizedResult();
 		}
 
