@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using MapR.Data.Stores;
 using MapR.Data.Models;
-using MapR.Api.Extensions;
 
 namespace MapR.Api.Controllers {
-    [Route("game/")]
-    public class GameController: Controller {
+    [Route("games/")]
+    public class GamesController: Controller {
 
         readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreGames _gameStore;
@@ -17,7 +15,7 @@ namespace MapR.Api.Controllers {
 
         private const string Owner = "string";
 
-        public GameController(IStoreGames gameStore) {
+        public GamesController(IStoreGames gameStore) {
             _gameStore = gameStore;
         }
 
