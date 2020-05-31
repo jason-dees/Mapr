@@ -13,7 +13,7 @@ namespace MapR.Api.Controllers {
         readonly IStoreMaps _mapStore;
         readonly IStoreMarkers _markerStore;
 
-        private const string Owner = "string";
+        private const string _owner = "string";
 
         public GamesController(IStoreGames gameStore) {
             _gameStore = gameStore;
@@ -22,14 +22,14 @@ namespace MapR.Api.Controllers {
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetGames() =>
-            new OkObjectResult(await _gameStore.GetGames(Owner));
+            new OkObjectResult(await _gameStore.GetGames(_owner));
 
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> AddGame([FromBody] AddGame game) {
             var newGame = new Models.GameModel {
                 //Owner = User.GetUserName(),
-                Owner = Owner,
+                Owner = _owner,
                 Name = game.Name,
                 IsPrivate = game.IsPrivate
             };
@@ -44,14 +44,18 @@ namespace MapR.Api.Controllers {
 
         [HttpPut]
         [Route("{gameId}")]
-        public async Task<IActionResult> UpdateMap(string gameId) {
-            return NotFound();
+        public async Task<IActionResult> UpdateMap(string gameId, [FromBody] EditGame game) {
+            var currentGame = await _gameStore.GetGame(_owner, gameId);
+            currentGame.IsPrivate = game.IsPrivate;
+            currentGame.Name = game.Name;
+            await _gameStore.UpdateGame(_owner, gameId, currentGame);
+            return Ok("Game updated");
         }
 
         [HttpGet]
         [Route("{gameId}")]
         public async Task<IActionResult> GetMap(string gameId) {
-            var game = await _gameStore.GetGame(Owner, gameId);
+            var game = await _gameStore.GetGame(_owner, gameId);
 
             return new OkObjectResult(game);
         }
@@ -61,11 +65,15 @@ namespace MapR.Api.Controllers {
         public async Task<IActionResult> DeleteMap(string gameId) {
             return NotFound();
         }
-
     }
 }
 
 public class AddGame {
+    public string Name { get; set; }
+    public bool IsPrivate { get; set; }
+}
+
+public class EditGame {
     public string Name { get; set; }
     public bool IsPrivate { get; set; }
 }

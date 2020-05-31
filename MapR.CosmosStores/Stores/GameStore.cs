@@ -66,5 +66,15 @@ namespace MapR.CosmosStores.Stores {
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        public async Task UpdateGame(string owner, string gameId, GameModel game) {
+            var editedGame = _mapper.Map<Game>(game);
+            try {
+                await _container.UpsertItemAsync<Game>(editedGame);
+            }
+            catch (CosmosException ex) {
+                
+            }
+        }
     }
 }

@@ -1,8 +1,13 @@
 ﻿using MapR.CosmosStores.Stores;
+using MapR.Data.Extensions;
 using MapR.Data.Stores;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MapR.CosmosStores {
@@ -29,6 +34,52 @@ namespace MapR.CosmosStores {
             services.AddSingleton<IStoreGames>(_ =>
                new GameStore(_.GetService<Container>(),
                    mapper));
+            AddAzureBlobStorage(services, configuration);
+            services.AddSingleton<IStoreMaps>(_ => 
+                new MapStore(_.GetService<IStoreGames>(),
+                _.GetService<CloudBlobContainer>())
+            );
+
+        }
+
+        static void AddAzureBlobStorage(IServiceCollection services, IConfiguration configuration) {
+            var connectionString = configuration["MapR:BlobStorageConnectionString"];
+            var account = CloudStorageAccount.Parse(connectionString);
+            var cloudBlobClient = account.CreateCloudBlobClient();
+            
+            services.AddSingleton(_ => account);
+            services.AddSingleton(_ => cloudBlobClient);
+            services.AddSingleton(_ => cloudBlobClient.GetContainerReference("mapimagestorage"));
+            services.AddSingleton(_ => cloudBlobClient.GetContainerReference("markericonstorage"));
+
+            services.AddStartupTask<CloudInitialize>();
+            
+        }
+    }
+
+    class CloudInitialize : IStartupTask {
+
+        readonly string[] _blobContainers;
+        readonly CloudBlobClient _blobClient;
+
+        public CloudInitialize(CloudStorageAccount account) {
+            _blobClient = account.CreateCloudBlobClient();
+            _blobContainers = new string[] {
+                "mapimagestorage",
+                "markericonstorage"
+            };
+        }
+
+        public async Task ExecuteAsync(CancellationToken cancellationToken = default) {
+            foreach (var container in _blobContainers) {
+                var storage = _blobClient.GetContainerReference(container);
+                try {
+                    var c = await storage.CreateIfNotExistsAsync();
+                }
+                catch(Exception e) {
+
+                }
+            }
         }
     }
 }
