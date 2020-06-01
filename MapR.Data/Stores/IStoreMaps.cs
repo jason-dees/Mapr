@@ -5,7 +5,7 @@ using MapR.Data.Models;
 
 namespace MapR.Data.Stores {
     public interface IStoreMaps {
-        Task<bool> AddMap(string owner, string gameId, MapModel map);
+        Task<bool> AddMap(string owner, string gameId, MapModel map, byte[] imageBytes);
         Task<MapModel> GetMap(string owner, string gameId, string mapId);
         Task<MapModel> GetActiveMap(string owner, string gameId);
         Task<IList<MapModel>> GetMaps(string owner, string gameId);

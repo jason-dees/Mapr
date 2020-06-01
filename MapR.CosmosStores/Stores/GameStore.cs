@@ -55,6 +55,15 @@ namespace MapR.CosmosStores.Stores {
             return games.ToList<GameModel>();
         }
 
+        public async Task UpdateGame(string owner, string gameId, GameModel game) {
+            var editedGame = _mapper.Map<Game>(game);
+            try {
+                await _container.UpsertItemAsync<Game>(editedGame);
+            }
+            catch (CosmosException ex) {
+
+            }
+        }
 
         public static string GenerateRandomId() {
             return RandomString(6);
@@ -65,16 +74,6 @@ namespace MapR.CosmosStores.Stores {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        public async Task UpdateGame(string owner, string gameId, GameModel game) {
-            var editedGame = _mapper.Map<Game>(game);
-            try {
-                await _container.UpsertItemAsync<Game>(editedGame);
-            }
-            catch (CosmosException ex) {
-                
-            }
         }
     }
 }

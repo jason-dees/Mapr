@@ -11,7 +11,6 @@ namespace MapR.Data.Models {
 		string Description { get; set; }
 		string CustomCss { get; set; }
 		string ImageUri { get; set; }
-		byte[] ImageBytes { get; set; }
 
 	}
 }
