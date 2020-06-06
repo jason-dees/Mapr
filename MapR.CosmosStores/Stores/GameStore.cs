@@ -7,34 +7,27 @@ using Microsoft.Azure.Cosmos;
 using MapR.CosmosStores.Models;
 using AutoMapper;
 using System.Linq;
+using MapR.CosmosStores.Stores.Internal;
 
 namespace MapR.CosmosStores.Stores {
     public class GameStore : IStoreGames {
 
-        readonly Container _container;
+        readonly IStoreContainers _internalStore;
         readonly IMapper _mapper;
 
-        public GameStore(Container container, IMapper mapper) {
-            _container = container;
+        public GameStore(IStoreContainers internalStore, IMapper mapper) {
+            _internalStore = internalStore;
             _mapper = mapper;
         }
 
         public async Task<bool> AddGame(GameModel game) {
             var newGame = _mapper.Map<Game>(game);
-            newGame.Id = GenerateRandomId();
-            ItemResponse<Game> response = await _container.CreateItemAsync<Game>(newGame);
 
-            return response.StatusCode == System.Net.HttpStatusCode.Created;
+            return await _internalStore.AddGame(newGame) != null;
         }
 
         public async Task<GameModel> GetGame(string owner, string gameId) {
-            try {
-                ItemResponse<Game> response = await _container.ReadItemAsync<Game>(id: gameId, new PartitionKey(owner));
-                return response.Resource;
-            }
-            catch(CosmosException ex) {
-                return null;
-            }
+            return _mapper.Map<GameModel>(await _internalStore.GetGame(owner, gameId));
         }
 
         public Task<GameModel> GetGame(string gameId) {
@@ -42,38 +35,13 @@ namespace MapR.CosmosStores.Stores {
         }
 
         public async Task<IList<GameModel>> GetGames(string owner) {
-            var sql = $"SELECT * from games as g where g.Owner = \"{owner}\"";
-            var queryDefinition = new QueryDefinition(sql);
-            var games = new List<Game>();
-            var feedIterator = _container.GetItemQueryIterator<Game>(queryDefinition);
-
-            while(feedIterator.HasMoreResults) {
-                var gameResponse = await feedIterator.ReadNextAsync();
-                games.AddRange(gameResponse);
-            }
-
-            return games.ToList<GameModel>();
+            var games = await _internalStore.GetGames(owner);
+            return games.Select(_mapper.Map<GameModel>).ToList();
         }
 
         public async Task UpdateGame(string owner, string gameId, GameModel game) {
             var editedGame = _mapper.Map<Game>(game);
-            try {
-                await _container.UpsertItemAsync<Game>(editedGame);
-            }
-            catch (CosmosException ex) {
-
-            }
-        }
-
-        public static string GenerateRandomId() {
-            return RandomString(6);
-        }
-
-        private static readonly Random random = new Random();
-        private static string RandomString(int length) {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
+            await _internalStore.UpdateGame(owner, gameId, editedGame);
         }
     }
 }

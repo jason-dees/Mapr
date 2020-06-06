@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MapR.CosmosStores.Stores {
     public interface IStoreImages {
-        Task<string> Upload(string name, byte[] bytes);
+        Task<string> UploadAndGetUri(string name, byte[] bytes);
         Task Delete(string name);
         Task<byte[]> GetImageBytes(string imageUri);
     }
@@ -32,7 +32,7 @@ namespace MapR.CosmosStores.Stores {
 
         }
 
-        public async Task<string> Upload(string name, byte[] bytes) {
+        public async Task<string> UploadAndGetUri(string name, byte[] bytes) {
             CloudBlockBlob cloudBlockBlob = _container.GetBlockBlobReference(name);
             await cloudBlockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
             return cloudBlockBlob.Name;

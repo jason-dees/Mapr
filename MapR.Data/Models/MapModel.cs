@@ -1,12 +1,16 @@
-﻿namespace MapR.Data.Models {
-    public interface MapModel { 
+﻿using System.Collections;
+using System.Collections.Generic;
 
-        string Id { get; set; }
-        string GameId { get; set; }
-		string ImageUri { get; set; }
-        string Name { get; set; }
-        bool IsActive { get; set; }
-        bool IsPrimary { get; set; }
+namespace MapR.Data.Models {
+    public class MapModel { 
 
+        public string Id { get; set; }
+        public string GameId { get; set; }
+        public string ImageUri { get; set; }
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsPrimary { get; set; }
+
+        public IList<MarkerModel> Markers { get; set; }
     }
 }

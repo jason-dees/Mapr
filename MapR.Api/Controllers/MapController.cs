@@ -3,6 +3,8 @@ using MapR.Data.Stores;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MapR.Api.Controllers {
@@ -23,14 +25,26 @@ namespace MapR.Api.Controllers {
         }
 
         [HttpGet]
+        [Route("")]
         public async Task<IActionResult> GetMaps(string gameId) {
             throw new NotImplementedException();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddMap(string gameId, AddMap map) {
+        [Route("")]
+        public async Task<IActionResult> AddMap(string gameId, [FromBody] AddMap map) {
 
-            throw new NotImplementedException();
+            var newMap = new MapModel {
+                Name = map.Name,
+                IsActive = map.IsActive,
+                IsPrimary = map.IsPrimary
+            };
+            var newId = await _mapStore.AddMap(_owner, gameId, newMap, map.ImageBytes);
+            if (newId != "") {
+                return Created(newId, new { });
+            }
+
+            return BadRequest();
         }
 
         [HttpGet]
@@ -42,9 +56,8 @@ namespace MapR.Api.Controllers {
 }
 
 public class AddMap { 
-    public string MapId { get; set; }
-    public string ImageUri { get; set; }
+    public byte[] ImageBytes { get; set; }
     public string Name { get; set; }
-    public string IsActive { get; set; }
-    public string IsPrimary { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsPrimary { get; set; }
 }

@@ -1,7 +1,5 @@
-﻿
-namespace MapR.Data.Models {
-	public class MarkerModel {
-
+﻿namespace MapR.CosmosStores.Models {
+    public class Marker {
 		public string Id { get; set; }
 		public string GameId { get; set; }
 		public string MapId { get; set; }
@@ -11,6 +9,5 @@ namespace MapR.Data.Models {
 		public string Description { get; set; }
 		public string CustomCss { get; set; }
 		public string ImageUri { get; set; }
-
 	}
 }

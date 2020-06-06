@@ -1,7 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores.Models {
-    public class MapModel : TableEntity, Data.Models.MapModel, IHaveImageData {
+    public class MapModel : TableEntity, IHaveImageData {
 
         [IgnoreProperty]
 		public string Id { get => RowKey; set { RowKey = value; } }

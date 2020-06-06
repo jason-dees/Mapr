@@ -2,7 +2,7 @@
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores.Models {
-    public class GameModel : TableEntity, Data.Models.GameModel {
+    public class GameModel : TableEntity {
         [IgnoreProperty]
         public string Id { get => RowKey; set { RowKey = value; } }
 

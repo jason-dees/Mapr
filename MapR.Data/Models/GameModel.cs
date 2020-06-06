@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MapR.Data.Models {
-    public interface GameModel {
-		string Id { get; set; }
-        string Owner { get; set; }
-		string Name { get; set; }
-		bool IsPrivate { get; set; }
-        DateTimeOffset LastPlayed { get; set; }
+    public class GameModel {
+		public string Id { get; set; }
+        public string Owner { get; set; }
+		public string Name { get; set; }
+		public bool IsPrivate { get; set; }
+        public DateTimeOffset LastPlayed { get; set; }
+
+		public IList<MapModel> Maps { get; set; }
 	}
 }

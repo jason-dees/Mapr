@@ -1,4 +1,5 @@
 ﻿using MapR.CosmosStores.Stores;
+using MapR.CosmosStores.Stores.Internal;
 using MapR.Data.Extensions;
 using MapR.Data.Stores;
 using Microsoft.Azure.Cosmos;
@@ -30,13 +31,14 @@ namespace MapR.CosmosStores {
             services.AddSingleton(_ => container);
 
             var mapper = AutoMapperConfiguration.MapperConfiguration(services);
+            services.AddSingleton<IStoreContainers>(_ => new Stores.Internal.ContainerStore(_.GetService<Container>()));
 
-            services.AddSingleton<IStoreGames>(_ =>
-               new GameStore(_.GetService<Container>(),
-                   mapper));
+            services.AddSingleton<IStoreGames, GameStore>();
+
             AddAzureBlobStorage(services, configuration);
+
             services.AddSingleton<IStoreMaps>(_ => 
-                new MapStore(_.GetService<IStoreGames>(),
+                new MapStore(_.GetService<IStoreContainers>(),
                     new ImageStore(_.GetService<CloudBlobClient>().GetContainerReference("mapimagestorage")),
                     mapper)
             );
