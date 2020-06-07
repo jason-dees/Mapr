@@ -36,7 +36,7 @@ namespace MapR.CosmosStores.Stores.Internal {
                 ItemResponse<Game> response = await _container.ReadItemAsync<Game>(id: gameId, new PartitionKey(owner));
                 return response.Resource;
             }
-            catch (CosmosException ex) {
+            catch (CosmosException) {
                 return null;
             }
         }
@@ -58,7 +58,7 @@ namespace MapR.CosmosStores.Stores.Internal {
             try {
                 await _container.UpsertItemAsync<Game>(game);
             }
-            catch (CosmosException ex) {
+            catch (CosmosException) {
 
             }
         }

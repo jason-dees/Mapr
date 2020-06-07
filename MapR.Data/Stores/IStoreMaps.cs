@@ -11,6 +11,7 @@ namespace MapR.Data.Stores {
         Task<IList<MapModel>> GetMaps(string owner, string gameId);
         Task DeleteMap(string owner, string gameId, string mapId);
 		Task<bool> UpdateMap(string owner, string gameId, string mapId, MapModel map);
+        Task<byte[]> GetMapImage(string owner, string gameId, string mapId);
 		Task<bool> ReplaceMapImage(string owner, string gameId, string mapId, byte[] imageBytes);
 	}
 }

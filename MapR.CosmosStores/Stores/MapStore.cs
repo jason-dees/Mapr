@@ -66,8 +66,21 @@ namespace MapR.CosmosStores.Stores {
             return game.Maps.Select(_mapper.Map<MapModel>).ToList();
         }
 
-        public Task<bool> ReplaceMapImage(string owner, string gameId, string mapId, byte[] imageBytes) {
-            throw new NotImplementedException();
+        public async Task<bool> ReplaceMapImage(string owner, string gameId, string mapId, byte[] imageBytes) {
+            var map = await GetMap(owner, gameId, mapId);
+            if (!string.IsNullOrEmpty(map.ImageUri)) {
+                await _imageStore.Delete(map.Id);
+            }
+
+            var uri = await _imageStore.UploadAndGetUri(mapId, imageBytes);
+            map.ImageUri = uri;
+            await UpdateMap(owner, gameId, mapId, map);
+
+            return true;
+        }
+
+        public async Task<byte[]> GetMapImage(string owner, string gameId, string mapId) {
+            return await _imageStore.GetImageBytes(mapId);
         }
 
         public async Task<bool> UpdateMap(string owner, string gameId, string mapId, MapModel map) {
