@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace MapR.CosmosStores.Stores.Internal {
-    public interface IStoreContainers {
+    public interface IAmAGameContainerHelper {
 
         Task<Game> AddGame(Game game);
         Task<Game> GetGame(string owner, string gameId);
@@ -14,11 +14,11 @@ namespace MapR.CosmosStores.Stores.Internal {
         Task UpdateGame(string owner, string gameId, Game game);
 
     }
-    internal class ContainerStore : IStoreContainers {
+    internal class GameContainerHelper : IAmAGameContainerHelper {
 
         readonly Container _container;
 
-        public ContainerStore(Container container) {
+        public GameContainerHelper(Container container) {
             _container = container;
         }
 

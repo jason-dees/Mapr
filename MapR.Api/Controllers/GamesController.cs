@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using MapR.Data.Stores;
 using MapR.Data.Models;
+using Microsoft.Azure.Cosmos;
+using MapR.Api.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MapR.Api.Controllers {
     [Route("games/")]
@@ -10,10 +13,8 @@ namespace MapR.Api.Controllers {
 
         readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreGames _gameStore;
-        readonly IStoreMaps _mapStore;
-        readonly IStoreMarkers _markerStore;
 
-        private const string _owner = "string";
+        private string _owner => User.GetUserName();
 
         public GamesController(IStoreGames gameStore) {
             _gameStore = gameStore;
@@ -54,6 +55,7 @@ namespace MapR.Api.Controllers {
 
         [HttpGet]
         [Route("{gameId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetMap(string gameId) {
             var game = await _gameStore.GetGame(_owner, gameId);
 

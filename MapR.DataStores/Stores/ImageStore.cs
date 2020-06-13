@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using System.Threading.Tasks;
 using MapR.DataStores.Extensions;
 using MapR.DataStores.Models;
 using Microsoft.WindowsAzure.Storage.Blob;

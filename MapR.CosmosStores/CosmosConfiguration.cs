@@ -1,6 +1,7 @@
 ﻿using MapR.CosmosStores.Stores;
 using MapR.CosmosStores.Stores.Internal;
 using MapR.Data.Extensions;
+using MapR.Data.Models;
 using MapR.Data.Stores;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Storage;
@@ -10,35 +11,47 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace MapR.CosmosStores {
     public static class CosmosConfiguration {
         public static void Register(IServiceCollection services, IConfiguration configuration) {
+            services.AddIdentity<MapRUser, MapRRole>()
+                .AddUserStore<UserStore>()
+                .AddRoleStore<RoleStore>()
+                .AddDefaultTokenProviders();
+
             var connectionString = configuration["MapR:ConnectionString"];
             var databaseId = configuration["MapR:DatabaseId"];
-            var containerId = configuration["MapR:ContainerId"];
-            var paritionKey = configuration["MapR:ParitionKey"];
+            var gameContainerId = configuration["MapR:GameContainerId"];
+            var userContainerId = configuration["MapR:UserContainerId"];
+            var gameParitionKey = configuration["MapR:GamePartitionKey"];
+            var userParitionKey = configuration["MapR:UserPartitionKey"];
 
             CosmosClient client = new CosmosClient(connectionString: connectionString);
             var cosmosTask = client.CreateDatabaseIfNotExistsAsync(databaseId);
             cosmosTask.Wait();
 
-            var containerTask = client.GetDatabase(databaseId).CreateContainerIfNotExistsAsync(containerId, $"/{paritionKey}");
-            containerTask.Wait();
-            Container container = containerTask.Result;
+            var gameContainerTask = client.GetDatabase(databaseId).CreateContainerIfNotExistsAsync(gameContainerId, $"/{gameParitionKey}");
+            gameContainerTask.Wait();
+            Container gameContainer = gameContainerTask.Result;
+
+            var userContainerTask = client.GetDatabase(databaseId).CreateContainerIfNotExistsAsync(userContainerId, $"/{userParitionKey}");
+            userContainerTask.Wait();
+            Container userContainer = userContainerTask.Result;
 
             services.AddSingleton(_ => client);
-            services.AddSingleton(_ => container);
+            services.AddSingleton(_ => userContainer);
 
             var mapper = AutoMapperConfiguration.MapperConfiguration(services);
-            services.AddSingleton<IStoreContainers>(_ => new Stores.Internal.ContainerStore(_.GetService<Container>()));
+            services.AddSingleton<IAmAGameContainerHelper>(_ => new GameContainerHelper(_.GetService<Container>()));
 
             services.AddSingleton<IStoreGames, GameStore>();
 
             AddAzureBlobStorage(services, configuration);
 
             services.AddSingleton<IStoreMaps>(_ => 
-                new MapStore(_.GetService<IStoreContainers>(),
+                new MapStore(_.GetService<IAmAGameContainerHelper>(),
                     new ImageStore(_.GetService<CloudBlobClient>().GetContainerReference("mapimagestorage")),
                     mapper)
             );

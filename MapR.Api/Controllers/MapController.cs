@@ -3,9 +3,7 @@ using MapR.Data.Stores;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using MapR.Api.Extensions;
 
@@ -84,6 +82,13 @@ namespace MapR.Api.Controllers {
                 return File(bytes, "image/jpeg");
             }
             return File(bytes.Resize(width, height), "image/jpeg");
+        }
+
+        [HttpDelete]
+        [Route("{mapId}")]
+        public async Task<IActionResult> DeleteMap(string gameId, string mapId) {
+            await _mapStore.DeleteMap(_owner, gameId, mapId);
+            return Ok();
         }
     }
 }

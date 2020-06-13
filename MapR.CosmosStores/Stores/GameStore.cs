@@ -12,10 +12,10 @@ using MapR.CosmosStores.Stores.Internal;
 namespace MapR.CosmosStores.Stores {
     public class GameStore : IStoreGames {
 
-        readonly IStoreContainers _internalStore;
+        readonly IAmAGameContainerHelper _internalStore;
         readonly IMapper _mapper;
 
-        public GameStore(IStoreContainers internalStore, IMapper mapper) {
+        public GameStore(IAmAGameContainerHelper internalStore, IMapper mapper) {
             _internalStore = internalStore;
             _mapper = mapper;
         }

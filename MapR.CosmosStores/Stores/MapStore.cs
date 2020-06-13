@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 namespace MapR.CosmosStores.Stores {
     public class MapStore : IStoreMaps {
 
-        readonly IStoreContainers _containerStore;
+        readonly IAmAGameContainerHelper _containerStore;
         readonly IStoreImages _imageStore;
         readonly IMapper _mapper;
 
-        public MapStore(IStoreContainers containerStore, //Maybe a different wrapper for this?
+        public MapStore(IAmAGameContainerHelper containerStore, //Maybe a different wrapper for this?
             IStoreImages imageStore,
             IMapper mapper) {
 
@@ -28,7 +28,7 @@ namespace MapR.CosmosStores.Stores {
             var game = await GetGame(owner, gameId);
             //This is too abstracted and i don't have access to the maps attribute i need
             //Upload Map image
-            map.Id = ContainerStore.GenerateRandomId();
+            map.Id = GameContainerHelper.GenerateRandomId();
             map.GameId = gameId;
             if (imageBytes != null && imageBytes.Length > 0) {
                 map.ImageUri = await _imageStore.UploadAndGetUri(map.Id, imageBytes);
