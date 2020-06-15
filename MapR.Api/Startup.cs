@@ -28,6 +28,17 @@ namespace MapR.Api {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            var corsOrigins = Configuration["CORS"].Split(";");
+            services.AddCors(options => options.AddDefaultPolicy(
+                builder => {
+                    builder
+                        .WithOrigins(corsOrigins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                })
+            );
+
             services.AddMvc(options =>
             {
                 options.Filters.Add(new MapRExceptionFilter());
@@ -56,7 +67,8 @@ namespace MapR.Api {
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MapR Api", Version = "v1" });
             });
-        }
+
+    }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -65,6 +77,7 @@ namespace MapR.Api {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors();
 
             app.UseHttpsRedirection();
             app.UseRouting();
@@ -77,7 +90,6 @@ namespace MapR.Api {
                 endpoints.MapControllers();
 
             });
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

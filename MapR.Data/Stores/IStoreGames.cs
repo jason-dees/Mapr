@@ -8,7 +8,7 @@ namespace MapR.Data.Stores {
         Task<GameModel> GetGame(string owner, string gameId);
         Task<GameModel> GetGame(string gameId);
         Task<IList<GameModel>> GetGames(string owner);
-        Task<bool> AddGame(GameModel game);
+        Task<GameModel> AddGame(GameModel game);
         Task UpdateGame(string owner, string gameId, GameModel game);
     }
 }

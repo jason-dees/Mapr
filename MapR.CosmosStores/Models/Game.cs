@@ -12,6 +12,7 @@ namespace MapR.CosmosStores.Models {
         public string Owner { get; set; }
         public string Name { get; set; }
         public bool IsPrivate { get; set; }
+        public DateTimeOffset Created { get; set; }
         public DateTimeOffset LastPlayed { get; set; }
         public IList<Map> Maps { get; set; } = new List<Map>();
 

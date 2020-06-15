@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MapR.Api.Controllers {
 	[Authorize]
-	[Route("[controller]/[action]")]
-	public class AccountController : Controller {
+	//[Route("[controller]/[action]")]
+    [Route("account/")]
+    public class AccountController : Controller {
 
         [TempData]
         public string ErrorMessage { get; set; }
@@ -34,9 +35,8 @@ namespace MapR.Api.Controllers {
             return Challenge(properties, provider);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null) {
+        //NOT USED, KEEPING AROUND FOR POSTERITY
+        async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null) {
             if (remoteError != null) {
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return BadRequest(ErrorMessage);
@@ -75,13 +75,7 @@ namespace MapR.Api.Controllers {
             return Ok();
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> ExternalLogin() {
-            return await ExternalLoginCallback();
-        }
-
-        [HttpGet]
+        [HttpGet("googlelogin")]
         [AllowAnonymous]
         public IActionResult GoogleLogin([FromQuery] string redirect = "") {
             redirect = string.IsNullOrEmpty(redirect) ? "/games" : redirect;
@@ -115,6 +109,16 @@ namespace MapR.Api.Controllers {
         [Route(nameof(AccessDenied))]
         public IActionResult AccessDenied() {
             return View();
+        }
+
+        [HttpGet("user")]
+        public IActionResult GetUser() {
+            if (User.CheckIsSignedIn()) {
+                return new OkObjectResult(new {
+                    Name = User.GetUserName()
+                });
+            }
+            return NotFound("No user is logged in");
         }
 
         private void AddErrors(IdentityResult result) {

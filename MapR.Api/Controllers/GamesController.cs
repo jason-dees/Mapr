@@ -6,12 +6,12 @@ using MapR.Data.Models;
 using Microsoft.Azure.Cosmos;
 using MapR.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace MapR.Api.Controllers {
     [Route("games/")]
     public class GamesController: Controller {
 
-        readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreGames _gameStore;
 
         private string _owner => User.GetUserName();
@@ -28,16 +28,17 @@ namespace MapR.Api.Controllers {
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> AddGame([FromBody] AddGame game) {
-            var newGame = new Models.GameModel {
-                //Owner = User.GetUserName(),
+            var newGame = new GameModel {
                 Owner = _owner,
-                Name = game.Name,
-                IsPrivate = game.IsPrivate
+                Name = game.Name,   
+                IsPrivate = game.IsPrivate,
+                LastPlayed = DateTime.Now
             };
 
-            if (await _gameStore.AddGame(newGame)) {
+            var createdGame = await _gameStore.AddGame(newGame);
+            if (createdGame != null) {
                 return Ok(new {
-                    newGame.Id
+                    createdGame.Id
                 });
             }
             return BadRequest("There was an issue with creating your game. Blame the dev");
@@ -56,7 +57,7 @@ namespace MapR.Api.Controllers {
         [HttpGet]
         [Route("{gameId}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetMap(string gameId) {
+        public async Task<IActionResult> GetGame(string gameId) {
             var game = await _gameStore.GetGame(_owner, gameId);
 
             return new OkObjectResult(game);
@@ -64,7 +65,7 @@ namespace MapR.Api.Controllers {
 
         [HttpDelete]
         [Route("{gameId}")]
-        public async Task<IActionResult> DeleteMap(string gameId) {
+        public async Task<IActionResult> DeleteGame(string gameId) {
             return NotFound();
         }
     }

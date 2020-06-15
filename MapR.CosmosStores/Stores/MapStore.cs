@@ -99,5 +99,13 @@ namespace MapR.CosmosStores.Stores {
         async Task<Game> GetGame(string owner, string gameId) => await _containerStore.GetGame(owner, gameId);
 
         async Task SaveGame(string owner, string gameId, Game game) => await _containerStore.UpdateGame(owner, gameId, game);
+
+        public async Task<IList<MapModel>> GetMaps(string gameId) {
+            return (await _containerStore.GetGame(gameId)).Maps.Select(_mapper.Map<MapModel>).ToList();
+        }
+
+        public Task<MapModel> GetMap(string mapId) {
+            throw new NotImplementedException();
+        }
     }
 }

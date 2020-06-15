@@ -13,5 +13,10 @@ namespace MapR.Data.Stores {
 		Task<bool> UpdateMap(string owner, string gameId, string mapId, MapModel map);
         Task<byte[]> GetMapImage(string owner, string gameId, string mapId);
 		Task<bool> ReplaceMapImage(string owner, string gameId, string mapId, byte[] imageBytes);
-	}
+
+        #region SignalR Hub
+        Task<IList<MapModel>> GetMaps(string gameId);
+        Task<MapModel> GetMap(string mapId);
+        #endregion
+    }
 }

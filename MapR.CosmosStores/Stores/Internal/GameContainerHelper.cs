@@ -13,6 +13,8 @@ namespace MapR.CosmosStores.Stores.Internal {
         Task<IList<Game>> GetGames(string owner);
         Task UpdateGame(string owner, string gameId, Game game);
 
+        Task<Game> GetGame(string gameId);
+
     }
     internal class GameContainerHelper : IAmAGameContainerHelper {
 
@@ -25,8 +27,8 @@ namespace MapR.CosmosStores.Stores.Internal {
         public async Task<Game> AddGame(Game newGame) {
             newGame.Id = GenerateRandomId();
             ItemResponse<Game> response = await _container.CreateItemAsync<Game>(newGame);
-            if (response.StatusCode == System.Net.HttpStatusCode.Created) {
-                return await GetGame(newGame.Owner, newGame.Id);
+            if(response.StatusCode == System.Net.HttpStatusCode.Created) {
+                return response.Resource;
             }
             return null;
         }
@@ -36,7 +38,7 @@ namespace MapR.CosmosStores.Stores.Internal {
                 ItemResponse<Game> response = await _container.ReadItemAsync<Game>(id: gameId, new PartitionKey(owner));
                 return response.Resource;
             }
-            catch (CosmosException) {
+            catch (CosmosException e) {
                 return null;
             }
         }
@@ -67,11 +69,25 @@ namespace MapR.CosmosStores.Stores.Internal {
             return RandomString(6);
         }
 
+        public async Task<Game> GetGame(string gameId) {
+            var sql = $"SELECT * from games as g where g.id = \"{gameId}\"";
+            var queryDefinition = new QueryDefinition(sql);
+            var games = new List<Game>();
+            var feedIterator = _container.GetItemQueryIterator<Game>(queryDefinition);
+
+            while (feedIterator.HasMoreResults) {
+                var gameResponse = await feedIterator.ReadNextAsync();
+                games.AddRange(gameResponse);
+            }
+            return games.FirstOrDefault();
+        }
+
         private static readonly Random random = new Random();
         private static string RandomString(int length) {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
     }
 }

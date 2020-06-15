@@ -14,5 +14,12 @@ namespace MapR.Api.Extensions {
             }
             return user.FindFirstValue(ClaimTypes.Name);
         }
+
+        public static string GetEmail(this ClaimsPrincipal user) {
+            if (!user.CheckIsSignedIn()) {
+                return "";
+            }
+            return user.FindFirstValue(ClaimTypes.Email);
+        }
     }
 }

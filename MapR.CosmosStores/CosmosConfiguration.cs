@@ -44,7 +44,7 @@ namespace MapR.CosmosStores {
             services.AddSingleton(_ => userContainer);
 
             var mapper = AutoMapperConfiguration.MapperConfiguration(services);
-            services.AddSingleton<IAmAGameContainerHelper>(_ => new GameContainerHelper(_.GetService<Container>()));
+            services.AddSingleton<IAmAGameContainerHelper>(_ => new GameContainerHelper(gameContainer));
 
             services.AddSingleton<IStoreGames, GameStore>();
 
