@@ -3,22 +3,19 @@ using MapR.Api.Extensions;
 using MapR.Data.Models;
 using MapR.Data.Stores;
 using Microsoft.AspNetCore.SignalR;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MapR.Hubs {
+namespace MapR.Api.Hubs {
 
 	public class MapHub : Hub {
 
-		readonly IStoreMarkers _markerStore;
 		readonly IStoreGames _gameStore;
 		readonly IStoreMaps _mapStore;
-		public MapHub(IStoreMarkers markerStore,
+		public MapHub(
 			IStoreGames gameStore,
 			IStoreMaps mapStore) {
-
-			_markerStore = markerStore;
 			_mapStore = mapStore;
 			_gameStore = gameStore;
 		}
@@ -28,20 +25,19 @@ namespace MapR.Hubs {
         }
 
         async Task SendAllMarkers(string mapId) {
-			var mapMarkers = (await _markerStore.GetMarkers(mapId))
-				.Select(MapToModel);
+			var mapMarkers = await GetMapMarkers(mapId);
 
 			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
 
-        public async Task MoveMarker(string markerId, int x, int y) {
-            var marker = await _markerStore.GetMarker(markerId);
+        public async Task MoveMarker(string mapId, string markerId, int x, int y) {
+            var marker = (await GetMapMarkers(mapId)).FirstOrDefault(_ => _.Id == markerId);
             if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
 
             marker.X = x;
             marker.Y = y;
             await Task.Factory.StartNew(async () => {
-                await _markerStore.UpdateMarker(marker);
+                //await _markerStore.UpdateMarker(marker);
             });
             await SendMarker(MapToModel(marker));
         }
@@ -83,6 +79,10 @@ namespace MapR.Hubs {
                 Y = marker.Y
             };
         }
+
+		async Task<IEnumerable<MarkerModel>> GetMapMarkers(string mapId) =>
+			(await _mapStore.GetMap(mapId)).Markers
+				.Select(MapToModel);
 	}
 
 	public class MapMarkerPosition {

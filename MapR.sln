@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.deployment = .deployment
 		deploy.cmd = deploy.cmd
 		Readme.md = Readme.md
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR", "MapR\MapR.csproj", "{6E89A755-505D-4DFF-9FC9-38F06A0DE7FC}"
@@ -20,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.Functions", "MapR.Func
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.Api", "MapR.Api\MapR.Api.csproj", "{4989DCA0-067D-4B18-8CEC-9B93EBD770C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapR.CosmosStores", "MapR.CosmosStores\MapR.CosmosStores.csproj", "{CF828C83-CEDB-4CD6-9868-C3D6E4616E1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.CosmosStores", "MapR.CosmosStores\MapR.CosmosStores.csproj", "{CF828C83-CEDB-4CD6-9868-C3D6E4616E1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

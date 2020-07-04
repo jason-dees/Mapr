@@ -15,7 +15,7 @@ namespace MapR.Api.Controllers {
         readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreMaps _mapStore;
 
-        private const string _owner = "string";
+        private string _owner => User.GetUserName();
 
         public MapController(IStoreMaps mapStore) {
             _mapStore = mapStore;
@@ -36,7 +36,7 @@ namespace MapR.Api.Controllers {
                 IsActive = map.IsActive,
                 IsPrimary = map.IsPrimary
             };
-            var newId = await _mapStore.AddMap(_owner, gameId, newMap, map.ImageBytes);
+            var newId = await _mapStore.AddMap(_owner, gameId, newMap, new byte[0]);
             if (newId != "") {
                 return Created(newId, new { });
             }
@@ -94,14 +94,12 @@ namespace MapR.Api.Controllers {
 }
 
 public class AddMap { 
-    public byte[] ImageBytes { get; set; }
     public string Name { get; set; }
     public bool IsActive { get; set; }
     public bool IsPrimary { get; set; }
 }
 
 public class UpdateMap {
-    public byte[] ImageBytes { get; set; }
     public string Name { get; set; }
     public bool IsActive { get; set; }
     public bool IsPrimary { get; set; }

@@ -10,6 +10,7 @@ using MapR.Api.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MapR.Api.Hubs;
 
 namespace MapR.Api {
     public class Startup {
@@ -88,6 +89,7 @@ namespace MapR.Api {
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<MapHub>("/maphub");
 
             });
             app.UseSwagger();
