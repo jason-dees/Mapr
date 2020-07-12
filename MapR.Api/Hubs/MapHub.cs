@@ -24,14 +24,14 @@ namespace MapR.Api.Hubs {
             await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
         }
 
-        async Task SendAllMarkers(string mapId) {
-			var mapMarkers = await GetMapMarkers(mapId);
+        async Task SendAllMarkers(string gameId, string mapId) {
+			var mapMarkers = await GetMapMarkers(gameId, mapId);
 
 			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
         }
 
-        public async Task MoveMarker(string mapId, string markerId, int x, int y) {
-            var marker = (await GetMapMarkers(mapId)).FirstOrDefault(_ => _.Id == markerId);
+        public async Task MoveMarker(string gameId, string mapId, string markerId, int x, int y) {
+            var marker = (await GetMapMarkers(gameId, mapId)).FirstOrDefault(_ => _.Id == markerId);
             if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
 
             marker.X = x;
@@ -49,7 +49,7 @@ namespace MapR.Api.Hubs {
 			var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
 
 			await Clients.Caller.SendAsync("SetMap", primaryMap.Id);
-			await SendAllMarkers(primaryMap.Id);
+			await SendAllMarkers(gameId, primaryMap.Id);
 		}
 
 		public async Task RemoveFromGame(string gameId) {
@@ -61,7 +61,7 @@ namespace MapR.Api.Hubs {
 			var game = await _gameStore.GetGame(gameId);
 			if (game.Owner != Context.User.GetUserName()) { return false; }
 
-			var map = await _mapStore.GetMap(mapId);
+			var map = await _mapStore.GetMap(gameId, mapId);
 			if (map.GameId != game.Id) { return false; }
 
 			return true;
@@ -79,9 +79,9 @@ namespace MapR.Api.Hubs {
                 Y = marker.Y
             };
         }
-
-		async Task<IEnumerable<MarkerModel>> GetMapMarkers(string mapId) =>
-			(await _mapStore.GetMap(mapId)).Markers
+        
+		async Task<IEnumerable<MarkerModel>> GetMapMarkers(string gameId, string mapId) =>
+			(await _mapStore.GetMap(gameId, mapId)).Markers
 				.Select(MapToModel);
 	}
 

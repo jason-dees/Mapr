@@ -16,7 +16,7 @@ namespace MapR.Data.Stores {
 
         #region SignalR Hub
         Task<IList<MapModel>> GetMaps(string gameId);
-        Task<MapModel> GetMap(string mapId);
+        Task<MapModel> GetMap(string gameId, string mapId);
         #endregion
     }
 }

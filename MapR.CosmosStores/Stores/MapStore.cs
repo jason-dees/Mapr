@@ -104,8 +104,8 @@ namespace MapR.CosmosStores.Stores {
             return (await _containerStore.GetGame(gameId)).Maps.Select(_mapper.Map<MapModel>).ToList();
         }
 
-        public Task<MapModel> GetMap(string mapId) {
-            throw new NotImplementedException();
+        public async Task<MapModel> GetMap(string gameId, string mapId) {
+            return _mapper.Map<MapModel>((await _containerStore.GetGame(gameId)).Maps.First(_ => _.Id == mapId));
         }
     }
 }
