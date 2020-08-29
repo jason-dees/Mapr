@@ -2,6 +2,7 @@
 using MapR.Api.Extensions;
 using MapR.Data.Models;
 using MapR.Data.Stores;
+using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,59 +14,86 @@ namespace MapR.Api.Hubs {
 
 		readonly IStoreGames _gameStore;
 		readonly IStoreMaps _mapStore;
-		public MapHub(
+
+        const string UPDATE_MAP_MARKERS = "UpdateMapMarkers";
+        const string UPDATE_MARKER = "UpdateMarker";
+        const string UPDATE_MAP = "UpdateMap";
+
+        public MapHub(
 			IStoreGames gameStore,
 			IStoreMaps mapStore) {
 			_mapStore = mapStore;
 			_gameStore = gameStore;
 		}
 
-        public async Task SendMarker(MarkerModel marker) {
-            await Clients.Group(marker.GameId).SendAsync("SetMarker", marker);
+        public async Task AddClientToGame(string gameId) {
+            //everything is public now. Information wants to be free
+            await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
+            var maps = await _mapStore.GetMaps(gameId);
+            var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+
+            await Clients.Caller.SendAsync("UpdateMap", primaryMap.Id);
+            var mapMarkers = await GetMapMarkers(gameId, primaryMap.Id);
+
+            await Clients.Caller.SendAsync("UpdateMapMarkers", mapMarkers);
         }
 
-        async Task SendAllMarkers(string gameId, string mapId) {
-			var mapMarkers = await GetMapMarkers(gameId, mapId);
-
-			await Clients.Caller.SendAsync("SetAllMapMarkers", mapMarkers);
+        public async Task RemoveFromGame(string gameId) {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
         }
 
-        public async Task MoveMarker(string gameId, string mapId, string markerId, int x, int y) {
-            var marker = (await GetMapMarkers(gameId, mapId)).FirstOrDefault(_ => _.Id == markerId);
-            if(!await CheckGameAndMapOwnership(marker.GameId, marker.MapId)) { return; }
-
-            marker.X = x;
-            marker.Y = y;
-            await Task.Factory.StartNew(async () => {
-                //await _markerStore.UpdateMarker(marker);
-            });
-            await SendMarker(MapToModel(marker));
+        public async Task SendUpdateClientsMarkers(string gameId) {
+            var maps = await _mapStore.GetMaps(gameId);
+            var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+            var mapMarkers = await GetMapMarkers(gameId, primaryMap.Id);
+            await Clients.Groups(gameId).SendAsync(UPDATE_MAP_MARKERS, mapMarkers);
         }
 
-		public async Task AddToGame(string gameId) {
-			//everything is public now. Information wants to be free
-			await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
-			var maps = await _mapStore.GetMaps(gameId);
-			var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+        public async Task SendUpdateClientMarkers(string gameId) {
+            var maps = await _mapStore.GetMaps(gameId);
+            var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+            var mapMarkers = await GetMapMarkers(gameId, primaryMap.Id);
+            await Clients.Caller.SendAsync(UPDATE_MAP_MARKERS, mapMarkers);
+        }
 
-			await Clients.Caller.SendAsync("SetMap", primaryMap.Id);
-			await SendAllMarkers(gameId, primaryMap.Id);
-		}
+        public async Task SendUpdateClientsMap(string gameId) {
+            var maps = await _mapStore.GetMaps(gameId);
+            var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+            await Clients.Groups(gameId).SendAsync(UPDATE_MAP, primaryMap);
+        }
 
-		public async Task RemoveFromGame(string gameId) {
-			await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
-		}
+        public async Task SendUpdateClientMap(string gameId) {
+            var maps = await _mapStore.GetMaps(gameId);
+            var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+            await Clients.Caller.SendAsync(UPDATE_MAP, primaryMap);
+        }
+        
+        public async Task SendUpdateClientsMarker(string gameId, string markerId) {
+            var maps = await _mapStore.GetMaps(gameId);
+            var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+            var mapMarkers = await GetMapMarkers(gameId, primaryMap.Id);
+            var marker = mapMarkers.FirstOrDefault(_ => _.Id == markerId);
+            await Clients.Groups(gameId).SendAsync(UPDATE_MARKER, marker);
+        }
 
-		async Task<bool> CheckGameAndMapOwnership(string gameId, string mapId) {
+        public async Task SendUpdateClientMarker(string gameId, string markerId) {
+            var maps = await _mapStore.GetMaps(gameId);
+            var primaryMap = maps.FirstOrDefault(m => m.IsPrimary);
+            var mapMarkers = await GetMapMarkers(gameId, primaryMap.Id);
+            var marker = mapMarkers.FirstOrDefault(_ => _.Id == markerId);
+            await Clients.Caller.SendAsync(UPDATE_MARKER, marker);
+        }
 
-			var game = await _gameStore.GetGame(gameId);
-			if (game.Owner != Context.User.GetUserName()) { return false; }
+        //	async Task<bool> CheckGameAndMapOwnership(string gameId, string mapId) {
 
-			var map = await _mapStore.GetMap(gameId, mapId);
-			if (map.GameId != game.Id) { return false; }
+        //		var game = await _gameStore.GetGame(gameId);
+        //		if (game.Owner != Context.User.GetUserName()) { return false; }
 
-			return true;
-		}
+        //		var map = await _mapStore.GetMap(gameId, mapId);
+        //		if (map.GameId != game.Id) { return false; }
+
+        //		return true;
+        //	}
 
         MarkerModel MapToModel(Data.Models.MarkerModel marker) {
             return new MarkerModel {
@@ -79,17 +107,17 @@ namespace MapR.Api.Hubs {
                 Y = marker.Y
             };
         }
-        
-		async Task<IEnumerable<MarkerModel>> GetMapMarkers(string gameId, string mapId) =>
-			(await _mapStore.GetMap(gameId, mapId)).Markers
-				.Select(MapToModel);
-	}
 
-	public class MapMarkerPosition {
+        async Task<IEnumerable<MarkerModel>> GetMapMarkers(string gameId, string mapId) =>
+            (await _mapStore.GetMap(gameId, mapId)).Markers
+                .Select(MapToModel);
+        }
+
+    public class MapMarkerPosition {
 		public string Id { get; set; }
 		public string MapId { get; set; }
 		public string GameId { get; set; }
 		public int X { get; set; }
 		public int Y { get; set; }
 	}
-}
+ }
