@@ -1,6 +1,6 @@
 ﻿
 namespace MapR.Data.Models {
-	public class MarkerModel {
+	public interface IAmAMarkerModel {
 
 		public string Id { get; set; }
 		public string GameId { get; set; }

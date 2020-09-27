@@ -14,11 +14,11 @@ namespace MapR.DataStores.Configuration {
         public static IMapper MapperConfiguration()
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Data.Models.GameModel, GameModel>().ReverseMap();
-                cfg.CreateMap<Data.Models.MapModel, MapModel>().ReverseMap();
+                cfg.CreateMap<Data.Models.IAmAGameModel, GameModel>().ReverseMap();
+                cfg.CreateMap<Data.Models.IAmAMapModel, MapModel>().ReverseMap();
                 cfg.CreateMap<Data.Models.MapRRole, MapRRole>().ReverseMap();
                 cfg.CreateMap<Data.Models.MapRUser, MapRUser>().ReverseMap();
-                cfg.CreateMap<Data.Models.MarkerModel, MarkerModel>().ReverseMap();
+                cfg.CreateMap<Data.Models.IAmAMarkerModel, MarkerModel>().ReverseMap();
             });
             return config.CreateMapper();
         }

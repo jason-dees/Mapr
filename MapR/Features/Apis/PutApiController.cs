@@ -28,7 +28,7 @@ namespace MapR.Features.Apis {
 
         [HttpPut]
         [Route("")]
-        public async Task<IActionResult> CreateGame([FromBody] GameModel newGame) {
+        public async Task<IActionResult> CreateGame([FromBody] IAmAGameModel newGame) {
             newGame.Owner = User.GetUserName();
             if (await _gameStore.AddGame(newGame)) {
 
@@ -39,31 +39,31 @@ namespace MapR.Features.Apis {
 
         [HttpPut]
         [Route("{gameId}")]
-        public IActionResult UpdateGame(string gameId, [FromBody] GameModel game) {
+        public IActionResult UpdateGame(string gameId, [FromBody] IAmAGameModel game) {
             return BadRequest("Can't edit games at this time");
         }
 
         [HttpPut]
         [Route("{gameId}/maps")]
-        public async Task<IActionResult> CreateGameMap(string gameId, [FromBody] MapModel newMap) {
+        public async Task<IActionResult> CreateGameMap(string gameId, [FromBody] IAmAMapModel newMap) {
             throw new NotImplementedException();
         }
 
         [HttpPut]
         [Route("{gameId}/maps/{mapId}")]
-        public async Task<IActionResult> UpdateGameMap(string gameId, string mapId, [FromBody] MapModel map) {
+        public async Task<IActionResult> UpdateGameMap(string gameId, string mapId, [FromBody] IAmAMapModel map) {
             throw new NotImplementedException();
         }
 
         [HttpPut]
         [Route("{gameId}/maps/{mapId}/markers")]
-        public async Task<IActionResult> CreateMapMarker(string gameId, string mapId, [FromBody] MarkerModel marker) {
+        public async Task<IActionResult> CreateMapMarker(string gameId, string mapId, [FromBody] IAmAMarkerModel marker) {
             throw new NotImplementedException();
         }
 
         [HttpPut]
         [Route("{gameId}/maps/{mapId}/markers/{markerId}")]
-        public async Task<IActionResult> UpdateMapMarker(string gameId, string mapId, string markerId, [FromBody] MarkerModel marker) {
+        public async Task<IActionResult> UpdateMapMarker(string gameId, string mapId, string markerId, [FromBody] IAmAMarkerModel marker) {
             throw new NotImplementedException();
         }
 

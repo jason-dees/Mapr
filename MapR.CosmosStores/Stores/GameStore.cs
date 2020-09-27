@@ -20,25 +20,25 @@ namespace MapR.CosmosStores.Stores {
             _mapper = mapper;
         }
 
-        public async Task<GameModel> AddGame(GameModel game) {
+        public async Task<IAmAGameModel> AddGame(IAmAGameModel game) {
             var newGame = _mapper.Map<Game>(game);
-            return _mapper.Map<GameModel>(await _containerHelper.AddGame(newGame));
+            return _mapper.Map<IAmAGameModel>(await _containerHelper.AddGame(newGame));
         }
 
-        public async Task<GameModel> GetGame(string owner, string gameId) {
-            return _mapper.Map<GameModel>(await _containerHelper.GetGame(owner, gameId));
+        public async Task<IAmAGameModel> GetGame(string owner, string gameId) {
+            return _mapper.Map<IAmAGameModel>(await _containerHelper.GetGame(owner, gameId));
         }
 
-        public Task<GameModel> GetGame(string gameId) {
+        public Task<IAmAGameModel> GetGame(string gameId) {
             throw new NotImplementedException();
         }
 
-        public async Task<IList<GameModel>> GetGames(string owner) {
+        public async Task<IList<IAmAGameModel>> GetGames(string owner) {
             var games = await _containerHelper.GetGames(owner);
-            return games.Select(_mapper.Map<GameModel>).ToList();
+            return games.Select(_mapper.Map<IAmAGameModel>).ToList();
         }
 
-        public async Task UpdateGame(string owner, string gameId, GameModel game) {
+        public async Task UpdateGame(string owner, string gameId, IAmAGameModel game) {
             var editedGame = _mapper.Map<Game>(game);
             await _containerHelper.UpdateGame(owner, gameId, editedGame);
         }

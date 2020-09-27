@@ -25,5 +25,12 @@ namespace MapR.DataStores.Extensions {
 
             await blob.DownloadToByteArrayAsync(obj.ImageBytes, 0);
         }
+
+        public static async Task<byte[]> GetImageBytes(this IHaveImageData obj, CloudBlobContainer blobContainer) {
+            var blob = blobContainer.GetBlobReference(obj.ImageUri);
+            var bytes = new byte[blob.StreamMinimumReadSizeInBytes];
+            await blob.DownloadToByteArrayAsync(bytes, 0);
+            return bytes;
+        }
     }
 }

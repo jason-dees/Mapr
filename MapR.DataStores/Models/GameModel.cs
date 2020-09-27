@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores.Models {
-    public class GameModel : TableEntity {
+    public class GameModel : TableEntity, Data.Models.IAmAGameModel {
         [IgnoreProperty]
         public string Id { get => RowKey; set { RowKey = value; } }
 

@@ -24,7 +24,7 @@ namespace MapR.CosmosStores.Stores {
             _mapper = mapper;
         }
 
-        public async Task<string> AddMap(string owner, string gameId, MapModel map, byte[] imageBytes) {
+        public async Task<string> AddMap(string owner, string gameId, IAmAMapModel map, byte[] imageBytes) {
             var game = await GetGame(owner, gameId);
             //This is too abstracted and i don't have access to the maps attribute i need
             //Upload Map image
@@ -49,21 +49,21 @@ namespace MapR.CosmosStores.Stores {
             await SaveGame(owner, gameId, game);
         }
 
-        public async Task<MapModel> GetActiveMap(string owner, string gameId) {
+        public async Task<IAmAMapModel> GetActiveMap(string owner, string gameId) {
             var game = await GetGame(owner, gameId);
             var map = game.Maps.FirstOrDefault(_ => _.IsActive);
-            return _mapper.Map<MapModel>(map);
+            return _mapper.Map<IAmAMapModel>(map);
         }
 
-        public async Task<MapModel> GetMap(string owner, string gameId, string mapId) {
+        public async Task<IAmAMapModel> GetMap(string owner, string gameId, string mapId) {
             var game = await GetGame(owner, gameId);
             var map = game.Maps.FirstOrDefault(_ => _.Id == mapId);
-            return _mapper.Map<MapModel>(map);
+            return _mapper.Map<IAmAMapModel>(map);
         }
 
-        public async Task<IList<MapModel>> GetMaps(string owner, string gameId) {
+        public async Task<IList<IAmAMapModel>> GetMaps(string owner, string gameId) {
             var game = await GetGame(owner, gameId);
-            return game.Maps.Select(_mapper.Map<MapModel>).ToList();
+            return game.Maps.Select(_mapper.Map<IAmAMapModel>).ToList();
         }
 
         public async Task<bool> ReplaceMapImage(string owner, string gameId, string mapId, byte[] imageBytes) {
@@ -83,7 +83,7 @@ namespace MapR.CosmosStores.Stores {
             return await _imageStore.GetImageBytes(mapId);
         }
 
-        public async Task<bool> UpdateMap(string owner, string gameId, string mapId, MapModel map) {
+        public async Task<bool> UpdateMap(string owner, string gameId, string mapId, IAmAMapModel map) {
             var game = await GetGame(owner, gameId);
             var oldMap = game.Maps.SingleOrDefault(_ => _.Id == mapId);
             
@@ -100,12 +100,12 @@ namespace MapR.CosmosStores.Stores {
 
         async Task SaveGame(string owner, string gameId, Game game) => await _containerStore.UpdateGame(owner, gameId, game);
 
-        public async Task<IList<MapModel>> GetMaps(string gameId) {
-            return (await _containerStore.GetGame(gameId)).Maps.Select(_mapper.Map<MapModel>).ToList();
+        public async Task<IList<IAmAMapModel>> GetMaps(string gameId) {
+            return (await _containerStore.GetGame(gameId)).Maps.Select(_mapper.Map<IAmAMapModel>).ToList();
         }
 
-        public async Task<MapModel> GetMap(string gameId, string mapId) {
-            return _mapper.Map<MapModel>((await _containerStore.GetGame(gameId)).Maps.First(_ => _.Id == mapId));
+        public async Task<IAmAMapModel> GetMap(string gameId, string mapId) {
+            return _mapper.Map<IAmAMapModel>((await _containerStore.GetGame(gameId)).Maps.First(_ => _.Id == mapId));
         }
     }
 }

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using MapR.Data.Stores;
 using MapR.Data.Models;
-using Microsoft.Azure.Cosmos;
 using MapR.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using MapR.Api.Models;
 
 namespace MapR.Api.Controllers {
     [Route("games/")]

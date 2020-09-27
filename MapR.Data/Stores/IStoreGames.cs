@@ -5,10 +5,10 @@ using MapR.Data.Models;
 
 namespace MapR.Data.Stores {
     public interface IStoreGames {
-        Task<GameModel> GetGame(string owner, string gameId);
-        Task<GameModel> GetGame(string gameId);
-        Task<IList<GameModel>> GetGames(string owner);
-        Task<GameModel> AddGame(GameModel game);
-        Task UpdateGame(string owner, string gameId, GameModel game);
+        Task<IAmAGameModel> GetGame(string owner, string gameId);
+        Task<IAmAGameModel> GetGame(string gameId);
+        Task<IList<IAmAGameModel>> GetGames(string owner);
+        Task<IAmAGameModel> AddGame(IAmAGameModel game);
+        Task UpdateGame(string owner, string gameId, IAmAGameModel game);
     }
 }

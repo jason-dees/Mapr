@@ -1,5 +1,6 @@
 ﻿
 using MapR.Api.Extensions;
+using MapR.Api.Models;
 using MapR.Data.Models;
 using MapR.Data.Stores;
 using Microsoft.AspNetCore.Server.HttpSys;
@@ -14,6 +15,7 @@ namespace MapR.Api.Hubs {
 
 		readonly IStoreGames _gameStore;
 		readonly IStoreMaps _mapStore;
+        readonly IStoreMarkers _markerStore;
 
         const string UPDATE_MAP_MARKERS = "UpdateMapMarkers";
         const string UPDATE_MARKER = "UpdateMarker";
@@ -21,10 +23,12 @@ namespace MapR.Api.Hubs {
 
         public MapHub(
 			IStoreGames gameStore,
-			IStoreMaps mapStore) {
+			IStoreMaps mapStore,
+            IStoreMarkers markerStore) {
 			_mapStore = mapStore;
 			_gameStore = gameStore;
-		}
+            _markerStore = markerStore;
+        }
 
         public async Task AddClientToGame(string gameId) {
             //everything is public now. Information wants to be free
@@ -95,7 +99,7 @@ namespace MapR.Api.Hubs {
         //		return true;
         //	}
 
-        MarkerModel MapToModel(Data.Models.MarkerModel marker) {
+        IAmAMarkerModel MapToModel(Data.Models.IAmAMarkerModel marker) {
             return new MarkerModel {
                 Id = marker.Id,
                 MapId = marker.MapId,
@@ -108,9 +112,8 @@ namespace MapR.Api.Hubs {
             };
         }
 
-        async Task<IEnumerable<MarkerModel>> GetMapMarkers(string gameId, string mapId) =>
-            (await _mapStore.GetMap(gameId, mapId)).Markers
-                .Select(MapToModel);
+        async Task<IEnumerable<IAmAMarkerModel>> GetMapMarkers(string gameId, string mapId) =>
+            (await _markerStore.GetMarkers(mapId)).Select(MapToModel);
         }
 
     public class MapMarkerPosition {

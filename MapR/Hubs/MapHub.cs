@@ -89,7 +89,7 @@ namespace MapR.Hubs {
 			return true;
 		}
 
-        MarkerModel MapToModel(Data.Models.MarkerModel marker) {
+        MarkerModel MapToModel(Data.Models.IAmAMarkerModel marker) {
             return new MarkerModel {
                 Id = marker.Id,
                 MapId = marker.MapId,

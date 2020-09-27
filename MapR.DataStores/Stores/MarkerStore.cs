@@ -21,7 +21,7 @@ namespace MapR.DataStores.Stores {
             _mapper = mapper;
         }
 
-        public async Task<Data.Models.MarkerModel> AddMarker(Data.Models.MarkerModel newMarker) {
+        public async Task<Data.Models.IAmAMarkerModel> AddMarker(Data.Models.IAmAMarkerModel newMarker) {
             var marker = _mapper.Map<MarkerModel>(newMarker);
             marker.GenerateRandomId();
             marker.Id = "M" + marker.Id;
@@ -38,21 +38,21 @@ namespace MapR.DataStores.Stores {
             await Delete(markerId);
         }
 
-        public async Task<Data.Models.MarkerModel> GetMarker(string markerId) {
+        public async Task<Data.Models.IAmAMarkerModel> GetMarker(string markerId) {
             return await GetByRowKey(markerId);
         }
 
-        public async Task<IList<Data.Models.MarkerModel>> GetMarkers(string mapId) {
-            var markers = (await GetByPartitionKey(mapId)).Select(m => m as Data.Models.MarkerModel).ToList();
+        public async Task<IList<Data.Models.IAmAMarkerModel>> GetMarkers(string mapId) {
+            var markers = (await GetByPartitionKey(mapId)).Select(m => m as Data.Models.IAmAMarkerModel).ToList();
             //We never want image bytes when getting ALL markers, so clearing out.
             //This caused issues with signalr sending down all markers for a map
             for(var i = 0; i< markers.Count; i++) {
-                markers[i].ImageBytes = new byte[0];
+                (markers[i] as MarkerModel).ImageBytes = new byte[0];
             }
             return markers;
 		}
 
-		public async Task UpdateMarker(Data.Models.MarkerModel marker) {
+		public async Task UpdateMarker(Data.Models.IAmAMarkerModel marker) {
             var currentMarker = await GetByRowKey(marker.Id);
 			currentMarker.CustomCss = marker.CustomCss;
 			currentMarker.Description = marker.Description;

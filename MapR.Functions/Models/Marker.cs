@@ -1,9 +1,9 @@
 ﻿using MapR.Data.Models;
 
 namespace MapR.Functions.Models {
-    public class Marker : MarkerModel {
+    public class Marker : IAmAMarkerModel {
 
-        public Marker(MarkerModel model) {
+        public Marker(IAmAMarkerModel model) {
             Id = model.Id;
             GameId = model.GameId;
             MapId = model.MapId;

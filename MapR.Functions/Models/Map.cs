@@ -2,8 +2,8 @@
 using MapR.Data.Models;
 
 namespace MapR.Functions.Models {
-    public class Map : MapModel {
-        public Map(MapModel model) {
+    public class Map : IAmAMapModel {
+        public Map(IAmAMapModel model) {
             Id = model.Id;
             GameId = model.GameId;
             Name = model.Name;

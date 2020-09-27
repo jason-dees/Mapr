@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace MapR.Data.Stores {
     public interface IStoreMarkers {
-        Task<MarkerModel> AddMarker(MarkerModel marker);
-        Task UpdateMarker(MarkerModel marker);
+        Task<IAmAMarkerModel> AddMarker(IAmAMarkerModel marker);
+        Task UpdateMarker(IAmAMarkerModel marker);
         Task DeleteMarker(string markerId);
-        Task<MarkerModel> GetMarker(string markerId);
-        Task<IList<MarkerModel>> GetMarkers(string mapId);
+        Task<IAmAMarkerModel> GetMarker(string markerId);
+        Task<IList<IAmAMarkerModel>> GetMarkers(string mapId);
     }
 }

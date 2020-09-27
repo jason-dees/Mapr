@@ -17,18 +17,18 @@ namespace MapR.DataStores.Stores {
             _mapper = mapper;
         }
 
-        public async Task<Data.Models.GameModel> GetGame(string owner, string gameId) {
+        public async Task<Data.Models.IAmAGameModel> GetGame(string owner, string gameId) {
             var game = await GetByRowKey(gameId);
             if(game.Owner != owner) { return null; }
             return game;
         }
 
-        public async Task<Data.Models.GameModel> GetGame(string gameId) {
+        public async Task<Data.Models.IAmAGameModel> GetGame(string gameId) {
             return await GetByRowKey(gameId);
         }
 
-        public async Task<IList<Data.Models.GameModel>> GetGames(string owner) {
-            return (await GetByPartitionKey(owner)).Select(g => g as Data.Models.GameModel).ToList();
+        public async Task<IList<Data.Models.IAmAGameModel>> GetGames(string owner) {
+            return (await GetByPartitionKey(owner)).Select(g => g as Data.Models.IAmAGameModel).ToList();
         }
 
         async Task<bool> IsUniqueId(string gameId) {
@@ -40,14 +40,18 @@ namespace MapR.DataStores.Stores {
             return !(await _table.ExecuteQuerySegmentedAsync(query, null)).Results.Any();
         }
 
-        public async Task<bool> AddGame(Data.Models.GameModel gameModel) {
+        public async Task<Data.Models.IAmAGameModel> AddGame(Data.Models.IAmAGameModel gameModel) {
 			var game = _mapper.Map<GameModel>(gameModel);
             game.GenerateRandomId();
 
             TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(game);
 
             await _table.ExecuteAsync(insertOrMergeOperation);
-            return true;
-        } 
+            return await GetGame(game.Id);
+        }
+
+        public Task UpdateGame(string owner, string gameId, Data.Models.IAmAGameModel game) {
+            throw new System.NotImplementedException();
+        }
     }
 }

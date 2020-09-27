@@ -4,8 +4,8 @@ using System.Linq;
 using MapR.Data.Models;
 
 namespace MapR.Functions.Models {
-    public class Game : GameModel {
-        public Game(GameModel model) {
+    public class Game : IAmAGameModel {
+        public Game(IAmAGameModel model) {
             Id = model.Id;
             Owner = model.Owner;
             Name = model.Name;

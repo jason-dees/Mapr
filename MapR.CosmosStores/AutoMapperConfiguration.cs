@@ -14,9 +14,9 @@ namespace MapR.CosmosStores {
         public static IMapper MapperConfiguration()
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Data.Models.GameModel, Game>().ReverseMap();
-                cfg.CreateMap<Data.Models.MapModel, Map>().ReverseMap();
-                cfg.CreateMap<Data.Models.MarkerModel, Marker>().ReverseMap();
+                cfg.CreateMap<Data.Models.IAmAGameModel, Game>().ReverseMap();
+                cfg.CreateMap<Data.Models.IAmAMapModel, Map>().ReverseMap();
+                cfg.CreateMap<Data.Models.IAmAMarkerModel, Marker>().ReverseMap();
                 /*cfg.CreateMap<Data.Models.MapRRole, MapRRole>().ReverseMap();
                 cfg.CreateMap<Data.Models.MapRUser, MapRUser>().ReverseMap();*/
             });

@@ -83,7 +83,7 @@ namespace MapR.Features.PlayGame {
             return View("GamePlayer", model);
         }
 
-        async Task<IActionResult> GameAdmin(GameModel game) {
+        async Task<IActionResult> GameAdmin(IAmAGameModel game) {
             var maps = (await _mapStore.GetMaps(game.Id)).Select(m => new GameMap { 
                 Id = m.Id,
                 Name = m.Name,

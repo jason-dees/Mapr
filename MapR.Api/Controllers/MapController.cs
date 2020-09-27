@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Threading.Tasks;
 using MapR.Api.Extensions;
+using MapR.Api.Models;
 
 namespace MapR.Api.Controllers {
 

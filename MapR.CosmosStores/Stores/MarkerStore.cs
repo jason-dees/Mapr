@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MapR.CosmosStores.Stores {
     public class MarkerStore : IStoreMarkers {
-        public Task<MarkerModel> AddMarker(MarkerModel marker) {
+        public Task<IAmAMarkerModel> AddMarker(IAmAMarkerModel marker) {
             throw new NotImplementedException();
         }
 
@@ -15,15 +15,15 @@ namespace MapR.CosmosStores.Stores {
             throw new NotImplementedException();
         }
 
-        public Task<MarkerModel> GetMarker(string markerId) {
+        public Task<IAmAMarkerModel> GetMarker(string markerId) {
             throw new NotImplementedException();
         }
 
-        public Task<IList<MarkerModel>> GetMarkers(string mapId) {
+        public Task<IList<IAmAMarkerModel>> GetMarkers(string mapId) {
             throw new NotImplementedException();
         }
 
-        public Task UpdateMarker(MarkerModel marker) {
+        public Task UpdateMarker(IAmAMarkerModel marker) {
             throw new NotImplementedException();
         }
     }
