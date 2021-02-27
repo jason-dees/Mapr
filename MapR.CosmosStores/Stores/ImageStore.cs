@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Storage.Blob;
+﻿using Azure.Storage.Blobs;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace MapR.CosmosStores.Stores {
@@ -10,32 +11,35 @@ namespace MapR.CosmosStores.Stores {
 
     public class ImageStore: IStoreImages {
 
-        readonly CloudBlobContainer _container;
+        readonly BlobContainerClient _container;
 
-        public ImageStore(CloudBlobContainer container) {
+        public ImageStore(BlobContainerClient container) {
             _container = container;
         }
 
         public async Task Delete(string imageUri) {
-            var blob = _container.GetBlobReference(imageUri);
+            var blob = _container.GetBlobClient(imageUri);
             await blob.DeleteAsync();
         }
 
         public async Task<byte[]> GetImageBytes(string imageUri) {
-            var blob = _container.GetBlobReference(imageUri);
+            var client = _container.GetBlobClient(imageUri);
+            using (var stream = new MemoryStream())
+            {
+                var blob = await client.DownloadToAsync(stream);
 
-            var bytes = new byte[blob.StreamMinimumReadSizeInBytes];
-
-            await blob.DownloadToByteArrayAsync(bytes, 0);
-
-            return bytes;
-
+                return stream.ToArray();
+            }
         }
 
         public async Task<string> UploadAndGetUri(string name, byte[] bytes) {
-            CloudBlockBlob cloudBlockBlob = _container.GetBlockBlobReference(name);
-            await cloudBlockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
-            return cloudBlockBlob.Name;
+            var client = _container.GetBlobClient(name);
+            using(var stream = new MemoryStream())
+            {
+                stream.Write(bytes);
+                await client.UploadAsync(stream);
+            }
+            return name;
         }
     }
 }

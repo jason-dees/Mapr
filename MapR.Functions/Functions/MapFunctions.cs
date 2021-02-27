@@ -31,7 +31,7 @@ namespace MapR.Functions
         string mapId,
         ILogger log) {
 
-            var map = await FunctionServices.MapStore.GetMap(mapId);
+            var map = await FunctionServices.MapStore.GetMap(gameId, mapId);
 
             return new OkObjectResult(map);
         }
@@ -44,7 +44,7 @@ namespace MapR.Functions
             ILogger log,
             ClaimsPrincipal claimsPrincipal)
         {
-            var map = await FunctionServices.MapStore.GetMap(mapId);
+            var map = await FunctionServices.MapStore.GetMap(gameId, mapId);
 
             if (!int.TryParse(req.Query["width"], out int width) | !int.TryParse(req.Query["height"], out int height))
             {

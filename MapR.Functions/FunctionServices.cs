@@ -13,7 +13,7 @@ namespace MapR.Functions
     public static class FunctionServices
     {
 
-        static string MapConnectionString => Environment.GetEnvironmentVariable("MapR:ConnectionString");
+        static string MapConnectionString => Environment.GetEnvironmentVariable("MapR:CosmosConnectionString");
 
         private static CloudStorageAccount _account;
         static CloudStorageAccount Account {

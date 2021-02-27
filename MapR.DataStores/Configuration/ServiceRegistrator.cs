@@ -10,7 +10,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores.Configuration {
     public static class ServiceRegistrator {
-        public static void AddAzureCloudStuff(IServiceCollection services, string connectionString) {
+        public static void AddAzureTableAndBlobStorage(IServiceCollection services, string connectionString) {
 			var mapper = AutoMapperConfiguration.MapperConfiguration(services);
 			var account = CloudStorageAccount.Parse(connectionString);
             var cloudTableClient = account.CreateCloudTableClient();

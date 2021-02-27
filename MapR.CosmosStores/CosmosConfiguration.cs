@@ -4,14 +4,13 @@ using MapR.Data.Extensions;
 using MapR.Data.Models;
 using MapR.Data.Stores;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Azure.Storage;
+using Azure.Storage.Blobs;
 
 namespace MapR.CosmosStores {
     public static class CosmosConfiguration {
@@ -21,7 +20,7 @@ namespace MapR.CosmosStores {
                 .AddRoleStore<RoleStore>()
                 .AddDefaultTokenProviders();
 
-            var connectionString = configuration["MapR:ConnectionString"];
+            var connectionString = configuration["MapR:CosmosConnectionString"];
             var databaseId = configuration["MapR:DatabaseId"];
             var gameContainerId = configuration["MapR:GameContainerId"];
             var userContainerId = configuration["MapR:UserContainerId"];
@@ -49,10 +48,9 @@ namespace MapR.CosmosStores {
             services.AddSingleton<IStoreGames, GameStore>();
 
             AddAzureBlobStorage(services, configuration);
-
             services.AddSingleton<IStoreMaps>(_ => 
                 new MapStore(_.GetService<IAmAGameContainerHelper>(),
-                    new ImageStore(_.GetService<CloudBlobClient>().GetContainerReference("mapimagestorage")),
+                    new ImageStore(_.GetService<BlobContainerClient>()),
                     mapper)
             );
 
@@ -60,12 +58,8 @@ namespace MapR.CosmosStores {
 
         static void AddAzureBlobStorage(IServiceCollection services, IConfiguration configuration) {
             var connectionString = configuration["MapR:BlobStorageConnectionString"];
-            var account = CloudStorageAccount.Parse(connectionString);
-            var cloudBlobClient = account.CreateCloudBlobClient();
-            
-            services.AddSingleton(_ => account);
+            var cloudBlobClient = new BlobContainerClient(connectionString, "mapimagestorage");
             services.AddSingleton(_ => cloudBlobClient);
-            services.AddSingleton(_ => cloudBlobClient.GetContainerReference("markericonstorage"));
 
             services.AddStartupTask<CloudInitialize>();
         }
@@ -74,10 +68,11 @@ namespace MapR.CosmosStores {
     class CloudInitialize : IStartupTask {
 
         readonly string[] _blobContainers;
-        readonly CloudBlobClient _blobClient;
+        readonly BlobContainerClient _blobClient;
+        readonly string _connectionString;
 
-        public CloudInitialize(CloudStorageAccount account) {
-            _blobClient = account.CreateCloudBlobClient();
+        public CloudInitialize(string connectionString) {
+            _connectionString = connectionString;
             _blobContainers = new string[] {
                 "mapimagestorage",
                 "markericonstorage"
@@ -86,8 +81,8 @@ namespace MapR.CosmosStores {
 
         public async Task ExecuteAsync(CancellationToken cancellationToken = default) {
             foreach (var container in _blobContainers) {
-                var storage = _blobClient.GetContainerReference(container);
-                var c = await storage.CreateIfNotExistsAsync();
+                var cloudBlobClient = new BlobContainerClient(_connectionString, container);
+                _ = await cloudBlobClient.CreateIfNotExistsAsync(cancellationToken: CancellationToken.None);
             }
         }
     }

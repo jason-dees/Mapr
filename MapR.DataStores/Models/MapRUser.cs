@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
+
 namespace MapR.DataStores.Models {
 	public class MapRUser : Data.Models.MapRUser, ITableEntity {
 

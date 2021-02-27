@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 namespace MapR.Functions.Extensions {
@@ -17,7 +16,7 @@ namespace MapR.Functions.Extensions {
                 using (var image = Image.Load(imageBytes, out IImageFormat format)) {
                     var resizeOptions = new ResizeOptions() {
                         Mode = ResizeMode.Max,
-                        Size = new SixLabors.Primitives.Size(width, height)
+                        Size = new Size(width, height)
                     };
                     image.Mutate(i => i.Resize(resizeOptions));
                     image.Save(outStream, format);

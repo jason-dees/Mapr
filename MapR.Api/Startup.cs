@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MapR.Api.Hubs;
-using MapR.DataStores.Configuration;
+using MapR.CosmosStores;
 
 namespace MapR.Api {
     public class Startup {
@@ -47,7 +47,8 @@ namespace MapR.Api {
             
             services.AddSignalR();
 
-            ServiceRegistrator.AddAzureCloudStuff(services, Configuration["MapR:StorageConnectionString"]);
+            //ServiceRegistrator.AddAzureTableAndBlobStorage(services, Configuration["MapR:StorageConnectionString"]);
+            CosmosConfiguration.Register(services, Configuration);
 
             services.AddAuthentication(options =>
                 {

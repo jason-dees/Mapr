@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.0.0" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.0" />
+    <PackageReference Include="Azure.Storage.Common" Version="12.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.12.0" />
-    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.2.0" />
-    <PackageReference Include="Microsoft.Azure.Storage.Common" Version="11.2.0" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.16.0" />
   </ItemGroup>
 
   <ItemGroup>
