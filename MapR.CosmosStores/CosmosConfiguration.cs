@@ -8,17 +8,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Azure.Storage;
 using Azure.Storage.Blobs;
 
 namespace MapR.CosmosStores {
     public static class CosmosConfiguration {
         public static void Register(IServiceCollection services, IConfiguration configuration) {
-            services.AddIdentity<MapRUser, MapRRole>()
+            services.AddIdentityCore<MapRUser>()
+                .AddRoles<MapRRole>()
                 .AddUserStore<UserStore>()
-                .AddRoleStore<RoleStore>()
-                .AddDefaultTokenProviders();
+                .AddRoleStore<RoleStore>();
 
             var connectionString = configuration["MapR:CosmosConnectionString"];
             var databaseId = configuration["MapR:DatabaseId"];

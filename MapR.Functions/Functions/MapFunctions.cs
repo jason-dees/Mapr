@@ -36,49 +36,15 @@ namespace MapR.Functions
             return new OkObjectResult(map);
         }
 
-        [FunctionName("GetMapImage")]
-        public static async Task<IActionResult> RunGetMapImage(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/maps/{mapId}/image")] HttpRequest req,
-            string gameId,
-            string mapId,
-            ILogger log,
-            ClaimsPrincipal claimsPrincipal)
-        {
-            var map = await FunctionServices.MapStore.GetMap(gameId, mapId);
-
-            if (!int.TryParse(req.Query["width"], out int width) | !int.TryParse(req.Query["height"], out int height))
-            {
-                return new FileContentResult(map.ImageBytes, "image/jpeg");
-            }
-
-            return new FileContentResult(map.ImageBytes.ResizeImageBytes(width, height), "image/jpeg");
-        }
-
         [FunctionName("GetActiveMap")]
         public static async Task<IActionResult> RunGetActiveMap(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/activemap")] HttpRequest req,
             string gameId,
             ILogger log,
             ClaimsPrincipal claimsPrincipal) {
-            var map = (await FunctionServices.MapStore.GetActiveMap(gameId));
+            var map = (await FunctionServices.MapStore.GetActiveMap("", gameId));
 
             return new OkObjectResult(map);
-        }
-
-        [FunctionName("GetActiveMapImage")]
-        public static async Task<IActionResult> RunGetActiveMapImage(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/activemap/image")] HttpRequest req,
-            string gameId,
-            ILogger log,
-            ClaimsPrincipal claimsPrincipal) {
-
-            var map = (await FunctionServices.MapStore.GetActiveMap(gameId));
-
-            if (!int.TryParse(req.Query["width"], out int width) | !int.TryParse(req.Query["height"], out int height)) {
-                return new FileContentResult(map.ImageBytes, "image/jpeg");
-            }
-
-            return new FileContentResult(map.ImageBytes.ResizeImageBytes(width, height), "image/jpeg");
         }
     }
 }

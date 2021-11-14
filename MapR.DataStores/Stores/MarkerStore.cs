@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MapR.Data.Stores;
 using MapR.DataStores.Extensions;
 using MapR.DataStores.Models;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores.Stores {
 
-	public class MarkerStore : ImageStore<MarkerModel>, IStoreMarkers {
+	public class MarkerStore :  IStoreMarkers {
         readonly IMapper _mapper;
+        readonly IAccessCloudTableData<MarkerModel> _cloudTableAccess;
+        readonly IAccessCloudBlobData _cloudBlobAccess;
 
-        public MarkerStore(CloudTable markerTable,
-            CloudBlobContainer iconContainer, 
-            IMapper mapper) 
-            : base(markerTable, iconContainer) {
+        public MarkerStore(IAccessCloudTableData<MarkerModel> cloudTableAccess, 
+            IAccessCloudBlobData  cloudBlobData,
+			IMapper mapper) {
+
+            _cloudTableAccess = cloudTableAccess;
+            _cloudBlobAccess = cloudBlobData;
             _mapper = mapper;
         }
 
@@ -27,23 +28,23 @@ namespace MapR.DataStores.Stores {
             marker.Id = "M" + marker.Id;
 
             if (marker.ImageBytes.Any()) {
-                marker.ImageUri = await UploadImage(marker.ImageBlobName, marker.ImageBytes);
+                marker.ImageUri = await _cloudBlobAccess.UploadBlob(marker.ImageBlobName, marker.ImageBytes);
             }
-            await InsertOrMerge(marker);
+            await _cloudTableAccess.InsertOrMerge(marker);
 
             return marker;
 		}
 
 		public async Task DeleteMarker(string markerId) {
-            await Delete(markerId);
+            await _cloudTableAccess.Delete(markerId);
         }
 
         public async Task<Data.Models.IAmAMarkerModel> GetMarker(string markerId) {
-            return await GetByRowKey(markerId);
+            return await _cloudTableAccess.GetByRowKey(markerId);
         }
 
         public async Task<IList<Data.Models.IAmAMarkerModel>> GetMarkers(string mapId) {
-            var markers = (await GetByPartitionKey(mapId)).Select(m => m as Data.Models.IAmAMarkerModel).ToList();
+            var markers = (await _cloudTableAccess.GetByPartitionKey(mapId)).Select(m => m as Data.Models.IAmAMarkerModel).ToList();
             //We never want image bytes when getting ALL markers, so clearing out.
             //This caused issues with signalr sending down all markers for a map
             for(var i = 0; i< markers.Count; i++) {
@@ -53,19 +54,13 @@ namespace MapR.DataStores.Stores {
 		}
 
 		public async Task UpdateMarker(Data.Models.IAmAMarkerModel marker) {
-            var currentMarker = await GetByRowKey(marker.Id);
+            var currentMarker = await _cloudTableAccess.GetByRowKey(marker.Id);
 			currentMarker.CustomCss = marker.CustomCss;
 			currentMarker.Description = marker.Description;
 			currentMarker.X = marker.X;
 			currentMarker.Y = marker.Y;
 
-            var cacheMarker = _cache.FirstOrDefault(m => m.Id == marker.Id);
-            cacheMarker.CustomCss = marker.CustomCss;
-            cacheMarker.Description = marker.Description;
-            cacheMarker.X = marker.X;
-            cacheMarker.Y = marker.Y;
-
-            await InsertOrMerge(currentMarker);
+            await _cloudTableAccess.InsertOrMerge(currentMarker);
         }
 	}
 }

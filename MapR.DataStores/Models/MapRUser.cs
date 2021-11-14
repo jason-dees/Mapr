@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
-
+using Microsoft.Azure.Cosmos.Table;
 
 namespace MapR.DataStores.Models {
 	public class MapRUser : Data.Models.MapRUser, ITableEntity {

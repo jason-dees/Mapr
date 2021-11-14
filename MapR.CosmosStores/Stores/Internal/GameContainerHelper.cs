@@ -38,7 +38,7 @@ namespace MapR.CosmosStores.Stores.Internal {
                 ItemResponse<Game> response = await _container.ReadItemAsync<Game>(id: gameId, new PartitionKey(owner));
                 return response.Resource;
             }
-            catch (CosmosException e) {
+            catch (CosmosException) {
                 return null;
             }
         }
@@ -82,7 +82,7 @@ namespace MapR.CosmosStores.Stores.Internal {
             return games.FirstOrDefault();
         }
 
-        private static readonly Random random = new Random();
+        private static readonly Random random = new();
         private static string RandomString(int length) {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)

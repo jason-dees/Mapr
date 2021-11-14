@@ -1,52 +1,71 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using Azure.Storage.Blobs;
 using MapR.Data.Extensions;
 using MapR.Data.Stores;
+using MapR.DataStores.Models;
 using MapR.DataStores.Stores;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Table;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace MapR.DataStores.Configuration {
-    public static class ServiceRegistrator {
-        public static void AddAzureTableAndBlobStorage(IServiceCollection services, string connectionString) {
-			var mapper = AutoMapperConfiguration.MapperConfiguration(services);
-			var account = CloudStorageAccount.Parse(connectionString);
+namespace MapR.DataStores.Configuration
+{
+    public static class ServiceRegistrator
+    {
+        public static async void AddAzureTableAndBlobStorage(IServiceCollection services, string tableConnectionString, string blobConnectionSting)
+        {
+            var mapper = AutoMapperConfiguration.MapperConfiguration(services);
+            var account = CloudStorageAccount.Parse(tableConnectionString);
             var cloudTableClient = account.CreateCloudTableClient();
-            var cloudBlobClient = account.CreateCloudBlobClient();
+            var cloudBlobClient = new BlobServiceClient(blobConnectionSting);
 
-            services.AddSingleton((sp) => account);
             services.AddSingleton((sp) => cloudTableClient);
             services.AddSingleton((sp) => cloudBlobClient);
             services.AddStartupTask<CloudInitialize>();
 
-            services.AddSingleton<IStoreGames>((serviceProvider) => 
-                new GameStore(cloudTableClient.GetTableReference("games"), 
-                    mapper));
+            services.AddSingleton<IStoreGames>((serviceProvider) =>
+            {
+                var tableClient = cloudTableClient.GetTableReference("games");
+                var tableAccess = new CloudTableAccess<GameModel>(tableClient);
+                return new GameStore(tableAccess, mapper);
+            });
 
-            services.AddSingleton<IStoreMaps>((serviceProvider) => 
-                new MapStore(cloudTableClient.GetTableReference("gamemaps"),
-                    cloudBlobClient.GetContainerReference("mapimagestorage"),
-					mapper));
+            var mapBlobAccess = await cloudBlobClient.CreateBlobContainerAsync("mapimagestorage");
+            services.AddSingleton<IStoreMaps>((serviceProvider) =>
+            {
+                var tableClient = cloudTableClient.GetTableReference("gamemaps");
+                var tableAccess = new CloudTableAccess<MapModel>(tableClient);
+                var blobAccces = new CloudBlobAccess(mapBlobAccess);
+                return new MapStore(tableAccess,
+                    blobAccces,
+                    mapper);
+            });
 
-            services.AddSingleton<IStoreMarkers>((sp) => 
-                new MarkerStore(cloudTableClient.GetTableReference("mapmarkers"),
-                    cloudBlobClient.GetContainerReference("markericonstorage"), 
-                    mapper));
+            var markerBlobAccess = await cloudBlobClient.CreateBlobContainerAsync("markericonstorage");
+            services.AddSingleton<IStoreMarkers>((sp) =>
+            {
+                var tableClient = cloudTableClient.GetTableReference("mapmarkers");
+                var tableAccess = new CloudTableAccess<MarkerModel>(tableClient);
+                var blobAccces = new CloudBlobAccess(markerBlobAccess);
+                return new MarkerStore(tableAccess,
+                    blobAccces,
+                    mapper);
+            });
         }
     }
 
-    class CloudInitialize : IStartupTask {
+    class CloudInitialize : IStartupTask
+    {
 
         readonly string[] _tables;
         readonly string[] _blobContainers;
         readonly CloudTableClient _tableClient;
-        readonly CloudBlobClient _blobClient;
+        readonly BlobServiceClient _blobClient;
 
-        public CloudInitialize(CloudStorageAccount account) {
-            _tableClient = account.CreateCloudTableClient();
-            _blobClient = account.CreateCloudBlobClient();
+        public CloudInitialize(CloudTableClient tableClient, BlobServiceClient blobClient)
+        {
+            _tableClient = tableClient;
+            _blobClient = blobClient;
             _tables = new string[] {
                 "users",
                 "roles",
@@ -62,13 +81,16 @@ namespace MapR.DataStores.Configuration {
             };
         }
 
-        public async Task ExecuteAsync(CancellationToken cancellationToken = default) {
-            foreach (var table in _tables) {
+        public async Task ExecuteAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var table in _tables)
+            {
                 CloudTable cloudTable = _tableClient.GetTableReference(table);
                 await cloudTable.CreateIfNotExistsAsync();
             }
-            foreach (var container in _blobContainers) {
-                var storage = _blobClient.GetContainerReference(container);
+            foreach (var container in _blobContainers)
+            {
+                var storage = _blobClient.GetBlobContainerClient(container);
                 await storage.CreateIfNotExistsAsync();
             }
         }

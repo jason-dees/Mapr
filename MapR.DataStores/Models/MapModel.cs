@@ -1,5 +1,5 @@
 ﻿using MapR.Data.Models;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace MapR.DataStores.Models {
     public class MapModel : TableEntity, IHaveImageData, IAmAMapModel {

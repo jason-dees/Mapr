@@ -1,7 +1,7 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
+﻿using Microsoft.Azure.Cosmos.Table;
 
 namespace MapR.DataStores.Models {
-	public class MarkerModel : TableEntity, Data.Models.IAmAMarkerModel, IHaveImageData {
+	public class MarkerModel : TableEntity, Data.Models.IAmAMarkerModel, IHaveImageData, ITableEntity {
 
 		[IgnoreProperty]
 		public string Id { get => RowKey; set { RowKey = value; } }

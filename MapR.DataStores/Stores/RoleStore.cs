@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MapR.DataStores.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace MapR.DataStores.Stores {
 	public class RoleStore : IRoleStore<Data.Models.MapRRole> {
 		const string _partition = "MapR";
-		readonly CloudTable _roleTable;
+        readonly IAccessCloudTableData<MapRRole> _cloudTableAccess;
 		readonly IMapper _mapper;
-		public RoleStore(CloudTableClient tableClient, IMapper mapper) {
-			_roleTable = tableClient.GetTableReference("roles");
+		public RoleStore(IAccessCloudTableData<MapRRole> cloudTableAccess, IMapper mapper) {
+			//_roleTable = tableClient.GetTableReference("roles");
+			_cloudTableAccess = cloudTableAccess;
 			_mapper = mapper;
 		}
 
@@ -20,9 +20,7 @@ namespace MapR.DataStores.Stores {
 			var role = _mapper.Map<MapRRole>(roleModel);
 			role.PartitionKey = _partition;
 			role.RowKey = role.Id;
-			TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(role);
-
-			await _roleTable.ExecuteAsync(insertOrMergeOperation);
+			await _cloudTableAccess.InsertOrMerge(role);
 
 			return new MapRIdentityResult();
 		}
@@ -36,8 +34,8 @@ namespace MapR.DataStores.Stores {
 		}
 
 		public async Task<Data.Models.MapRRole> FindByIdAsync(string roleId, CancellationToken cancellationToken) {
-			TableOperation operation = TableOperation.Retrieve<MapRRole>(_partition, roleId);
-			var result = await _roleTable.ExecuteAsync(operation);
+			var result = await _cloudTableAccess.Retrieve(_partition, roleId);
+			
 			return result.Result as MapRRole;
 		}
 
@@ -67,9 +65,7 @@ namespace MapR.DataStores.Stores {
 
 		public async Task<IdentityResult> UpdateAsync(Data.Models.MapRRole roleModel, CancellationToken cancellationToken) {
 			var role = _mapper.Map<MapRRole>(roleModel);
-			TableOperation operation = TableOperation.Replace(role);
-
-			await _roleTable.ExecuteAsync(operation);
+			await _cloudTableAccess.Replace(role);
 
 			return new MapRIdentityResult();
 		}

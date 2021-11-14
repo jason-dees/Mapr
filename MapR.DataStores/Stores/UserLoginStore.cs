@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MapR.DataStores.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace MapR.DataStores.Stores {
     public partial class UserStore : IUserLoginStore<Data.Models.MapRUser> {

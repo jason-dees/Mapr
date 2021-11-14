@@ -5,14 +5,17 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MapR.DataStores.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace MapR.DataStores.Stores {
 	public partial class UserStore : IUserStore<Data.Models.MapRUser> {
 		const string _partition = "MapR";
 		readonly CloudTable _userTable;
+		readonly IAccessCloudTableData<MapRUser> _cloudTableAccess;
 		readonly IMapper _mapper;
-		public UserStore(CloudTableClient tableClient, IMapper mapper) {
+
+		public UserStore(IAccessCloudTableData<MapRUser> cloudTableAccess, CloudTableClient tableClient, IMapper mapper) {
+			_cloudTableAccess = cloudTableAccess;
 			_userTable = tableClient.GetTableReference("users");
 			_mapper = mapper;
 		}
@@ -21,9 +24,8 @@ namespace MapR.DataStores.Stores {
 			var user = _mapper.Map<MapRUser>(userModel);
 			user.PartitionKey = _partition;
             user.RowKey = user.NameIdentifier;
-			TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(user);
 
-			await _userTable.ExecuteAsync(insertOrMergeOperation);
+			await _cloudTableAccess.InsertOrMerge(user);
 
 			return new MapRIdentityResult();
 		}
@@ -50,32 +52,31 @@ namespace MapR.DataStores.Stores {
             return (await _userTable.ExecuteQuerySegmentedAsync(query, null)).Results.FirstOrDefault();
         }
 
-		public async Task<string> GetNormalizedUserNameAsync(Data.Models.MapRUser user, CancellationToken cancellationToken) {
-			return user.Email;
+		public Task<string> GetNormalizedUserNameAsync(Data.Models.MapRUser user, CancellationToken cancellationToken) {
+			return Task.FromResult(user.Email);
 		}
 
-		public async Task<string> GetUserIdAsync(Data.Models.MapRUser user, CancellationToken cancellationToken) {
-			return user.Email;
+		public Task<string> GetUserIdAsync(Data.Models.MapRUser user, CancellationToken cancellationToken) {
+			return Task.FromResult(user.Email);
 		}
 
-		public async Task<string> GetUserNameAsync(Data.Models.MapRUser user, CancellationToken cancellationToken) {
-			return user.UserName;
+		public Task<string> GetUserNameAsync(Data.Models.MapRUser user, CancellationToken cancellationToken) {
+			return Task.FromResult(user.UserName);
 		}
 
-		public async Task SetNormalizedUserNameAsync(Data.Models.MapRUser user, string normalizedName, CancellationToken cancellationToken) {
-			
-		}
+		public Task SetNormalizedUserNameAsync(Data.Models.MapRUser user, string normalizedName, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
 
-		public async Task SetUserNameAsync(Data.Models.MapRUser user, string userName, CancellationToken cancellationToken) {
-			
-		}
+        public Task SetUserNameAsync(Data.Models.MapRUser user, string userName, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
 
-		public async Task<IdentityResult> UpdateAsync(Data.Models.MapRUser userModel, CancellationToken cancellationToken) {
+        public async Task<IdentityResult> UpdateAsync(Data.Models.MapRUser userModel, CancellationToken cancellationToken) {
 			var user = _mapper.Map<MapRUser>(userModel);
-			TableOperation operation = TableOperation.Replace(user);
-
-			await _userTable.ExecuteAsync(operation);
-
+			await _cloudTableAccess.Replace(user);
 			return new MapRIdentityResult();
 		}
 	}

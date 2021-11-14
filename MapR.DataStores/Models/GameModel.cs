@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace MapR.DataStores.Models {
-    public class GameModel : TableEntity, Data.Models.IAmAGameModel {
+    public class GameModel : TableEntity, Data.Models.IAmAGameModel, ITableEntity {
         [IgnoreProperty]
         public string Id { get => RowKey; set { RowKey = value; } }
 

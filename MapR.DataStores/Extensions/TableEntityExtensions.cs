@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using MapR.DataStores.Models;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace MapR.DataStores.Extensions {
     public static class TableEntityExtensions {
@@ -16,21 +13,6 @@ namespace MapR.DataStores.Extensions {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        public static async Task LoadImageBytes(this IHaveImageData obj, CloudBlobContainer blobContainer) {
-            var blob = blobContainer.GetBlobReference(obj.ImageUri);
-
-            obj.ImageBytes = new byte[blob.StreamMinimumReadSizeInBytes];
-
-            await blob.DownloadToByteArrayAsync(obj.ImageBytes, 0);
-        }
-
-        public static async Task<byte[]> GetImageBytes(this IHaveImageData obj, CloudBlobContainer blobContainer) {
-            var blob = blobContainer.GetBlobReference(obj.ImageUri);
-            var bytes = new byte[blob.StreamMinimumReadSizeInBytes];
-            await blob.DownloadToByteArrayAsync(bytes, 0);
-            return bytes;
         }
     }
 }

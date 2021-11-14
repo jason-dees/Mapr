@@ -39,26 +39,6 @@ namespace MapR.Functions.Functions
             return new OkObjectResult(marker);
         }
 
-        [FunctionName("GetMarkerImage")]
-        public static async Task<IActionResult> RunGetMarkerImage(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/maps/{mapId}/markers/{markerId}/image")] HttpRequest req,
-            string gameId,
-            string mapId,
-            string markerId,
-            ILogger log)
-        {
-            var marker = await FunctionServices.MarkerStore.GetMarker(markerId);
-            var hasWidth = int.TryParse(req.Query["width"], out int width);
-            var hasHeight = int.TryParse(req.Query["height"], out int height);
-
-            if (!hasWidth  && !hasHeight)
-            {
-                return new FileContentResult(marker.ImageBytes, "image/jpeg");
-            }
-
-            return new FileContentResult(marker.ImageBytes.ResizeImageBytes(width, height), "image/jpeg");
-        }
-
         [FunctionName("GetActiveMapMarkers")]
         public static async Task<IActionResult> RunGetActiveMapMarkers(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/activemap/markers")] HttpRequest req,
