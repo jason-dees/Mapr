@@ -1,10 +1,10 @@
-﻿using MapR.CosmosStores.Models;
+﻿using MapR.DataStores.Models;
 using MapR.Data.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace MapR.CosmosStores.Models {
+namespace MapR.DataStores.Models {
     public class Game {
 
         [JsonProperty(PropertyName = "id")]

@@ -1,4 +1,4 @@
-﻿using MapR.CosmosStores.Stores.Internal;
+﻿using MapR.DataStores.Stores.Internal;
 using MapR.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Cosmos;
@@ -6,9 +6,9 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StoreMapRUser = MapR.CosmosStores.Models.MapRUser;
+using StoreMapRUser = MapR.DataStores.Models.MapRUser;
 
-namespace MapR.CosmosStores.Stores {
+namespace MapR.DataStores.Stores {
     public class UserStore : IUserStore<Data.Models.MapRUser> {
         readonly Container _userContainer;
 

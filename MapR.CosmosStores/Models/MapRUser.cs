@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MapR.CosmosStores.Models {
+namespace MapR.DataStores.Models {
     public class MapRUser : IdentityUser {
         public string LoginProvider { get; set; }
         public string ProviderKey { get; set; }

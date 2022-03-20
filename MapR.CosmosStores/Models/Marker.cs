@@ -1,4 +1,4 @@
-﻿namespace MapR.CosmosStores.Models {
+﻿namespace MapR.DataStores.Models {
     public class Marker {
 		public string Id { get; set; }
 		public string GameId { get; set; }

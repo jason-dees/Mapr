@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MapR.CosmosStores.Models;
-using MapR.CosmosStores.Stores.Internal;
+using MapR.DataStores.Models;
+using MapR.DataStores.Stores.Internal;
 using MapR.Data.Models;
 using MapR.Data.Stores;
 using System;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MapR.CosmosStores.Stores {
+namespace MapR.DataStores.Stores {
     public class MapStore : IStoreMaps {
 
         readonly IAmAGameContainerHelper _containerStore;

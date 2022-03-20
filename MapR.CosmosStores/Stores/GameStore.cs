@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
-using MapR.CosmosStores.Models;
+using MapR.DataStores.Models;
 using AutoMapper;
 using System.Linq;
-using MapR.CosmosStores.Stores.Internal;
+using MapR.DataStores.Stores.Internal;
 
-namespace MapR.CosmosStores.Stores {
+namespace MapR.DataStores.Stores {
     public class GameStore : IStoreGames {
 
         readonly IAmAGameContainerHelper _containerHelper;

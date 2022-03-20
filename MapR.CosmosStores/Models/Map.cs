@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace MapR.CosmosStores.Models {
+namespace MapR.DataStores.Models {
     public class Map {
         public string Id { get; set; }
         public string GameId { get; set; }

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace MapR.CosmosStores.Stores {
+namespace MapR.DataStores.Stores {
     public interface IStoreImages {
         Task<string> UploadAndGetUri(string name, byte[] bytes);
         Task Delete(string name);

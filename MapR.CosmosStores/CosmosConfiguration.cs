@@ -1,5 +1,5 @@
-﻿using MapR.CosmosStores.Stores;
-using MapR.CosmosStores.Stores.Internal;
+﻿using MapR.DataStores.Stores;
+using MapR.DataStores.Stores.Internal;
 using MapR.Data.Extensions;
 using MapR.Data.Models;
 using MapR.Data.Stores;
@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 
-namespace MapR.CosmosStores {
+namespace MapR.DataStores {
     public static class CosmosConfiguration {
         public static void Register(IServiceCollection services, IConfiguration configuration) {
             services.AddIdentityCore<MapRUser>()

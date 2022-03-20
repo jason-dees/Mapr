@@ -1,11 +1,11 @@
-﻿using MapR.CosmosStores.Models;
+﻿using MapR.DataStores.Models;
 using Microsoft.Azure.Cosmos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MapR.CosmosStores.Stores.Internal {
+namespace MapR.DataStores.Stores.Internal {
     public interface IAmAGameContainerHelper {
 
         Task<Game> AddGame(Game game);

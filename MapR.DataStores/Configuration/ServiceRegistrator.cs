@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using AutoMapper;
+using Azure.Storage.Blobs;
 using MapR.Data.Extensions;
 using MapR.Data.Stores;
 using MapR.DataStores.Models;
@@ -12,9 +13,10 @@ namespace MapR.DataStores.Configuration
 {
     public static class ServiceRegistrator
     {
+        private static IMapper _mapper;
         public static async void AddAzureTableAndBlobStorage(IServiceCollection services, string tableConnectionString, string blobConnectionSting)
         {
-            var mapper = AutoMapperConfiguration.MapperConfiguration(services);
+            _mapper = AutoMapperConfiguration.MapperConfiguration(services);
             var account = CloudStorageAccount.Parse(tableConnectionString);
             var cloudTableClient = account.CreateCloudTableClient();
             var cloudBlobClient = new BlobServiceClient(blobConnectionSting);
@@ -27,7 +29,7 @@ namespace MapR.DataStores.Configuration
             {
                 var tableClient = cloudTableClient.GetTableReference("games");
                 var tableAccess = new CloudTableAccess<GameModel>(tableClient);
-                return new GameStore(tableAccess, mapper);
+                return new GameStore(tableAccess, _mapper);
             });
 
             var mapBlobAccess = await cloudBlobClient.CreateBlobContainerAsync("mapimagestorage");
@@ -38,7 +40,7 @@ namespace MapR.DataStores.Configuration
                 var blobAccces = new CloudBlobAccess(mapBlobAccess);
                 return new MapStore(tableAccess,
                     blobAccces,
-                    mapper);
+                    _mapper);
             });
 
             var markerBlobAccess = await cloudBlobClient.CreateBlobContainerAsync("markericonstorage");
@@ -49,7 +51,7 @@ namespace MapR.DataStores.Configuration
                 var blobAccces = new CloudBlobAccess(markerBlobAccess);
                 return new MarkerStore(tableAccess,
                     blobAccces,
-                    mapper);
+                    _mapper);
             });
         }
     }
@@ -93,6 +95,10 @@ namespace MapR.DataStores.Configuration
                 var storage = _blobClient.GetBlobContainerClient(container);
                 await storage.CreateIfNotExistsAsync();
             }
+        }
+
+        public void Execute() {
+            ExecuteAsync().Wait();
         }
     }
 }

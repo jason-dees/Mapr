@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapR.CosmosStores.Stores {
+namespace MapR.DataStores.Stores {
     public class MarkerStore : IStoreMarkers {
         public Task<IAmAMarkerModel> AddMarker(IAmAMarkerModel marker) {
             throw new NotImplementedException();

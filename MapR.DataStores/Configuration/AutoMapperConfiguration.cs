@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MapR.DataStores.Configuration {
 	public class AutoMapperConfiguration {
-		public static IMapper  MapperConfiguration(IServiceCollection services) {
+		public static IMapper MapperConfiguration(IServiceCollection services) {
             var mapper = MapperConfiguration();
             
             services.AddSingleton<IMapper>((x) => mapper);

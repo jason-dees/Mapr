@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MapR.CosmosStores.Models;
+using MapR.DataStores.Models;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MapR.CosmosStores {
+namespace MapR.DataStores {
 	public class AutoMapperConfiguration {
 		public static IMapper  MapperConfiguration(IServiceCollection services) {
             var mapper = MapperConfiguration();

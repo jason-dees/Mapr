@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MapR.CosmosStores.Stores {
+namespace MapR.DataStores.Stores {
     public class RoleStore : IRoleStore<Data.Models.MapRRole> {
         const string _role = "User";
         public Task<IdentityResult> CreateAsync(MapRRole role, CancellationToken cancellationToken) {
