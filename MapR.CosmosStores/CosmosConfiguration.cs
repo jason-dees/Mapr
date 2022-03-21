@@ -66,7 +66,6 @@ namespace MapR.DataStores {
     class CloudInitialize : IStartupTask {
 
         readonly string[] _blobContainers;
-        readonly BlobContainerClient _blobClient;
         readonly string _connectionString;
 
         public CloudInitialize(string connectionString) {

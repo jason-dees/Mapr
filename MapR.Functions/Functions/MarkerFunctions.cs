@@ -1,52 +1,56 @@
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using MapR.Functions.Extensions;
 using System.Linq;
+using MapR.Data.Stores;
 
 namespace MapR.Functions.Functions
 {
-    public static class MarkerFunctions
-    {
+    public class MarkerFunctions {
+
+        private readonly IStoreMaps _mapsStore;
+        private readonly IStoreMarkers _markersStore;
+        public MarkerFunctions(IStoreMaps mapsStore, IStoreMarkers markersStore) {
+            _mapsStore = mapsStore;
+            _markersStore = markersStore;
+        }
+
         [FunctionName("GetMarkers")]
-        public static async Task<IActionResult> RunGetMarkers(
+        public async Task<IActionResult> RunGetMarkers(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/maps/{mapId}/markers")] HttpRequest req,
             string gameId,
             string mapId,
-            ILogger log)
-        {
+            ILogger log) {
 
-            var markers = await FunctionServices.MarkerStore.GetMarkers(mapId);
+            var markers = await _markersStore.GetMarkers(mapId);
 
             return new OkObjectResult(markers);
         }
 
         [FunctionName("GetMarker")]
-        public static async Task<IActionResult> RunGetMarker(
+        public async Task<IActionResult> RunGetMarker(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/maps/{mapId}/markers/{markerId}")] HttpRequest req,
             string gameId,
             string mapId,
             string markerId,
-            ILogger log)
-        {
+            ILogger log) {
 
-            var marker = await FunctionServices.MarkerStore.GetMarker(markerId);
+            var marker = await _markersStore.GetMarker(markerId);
 
             return new OkObjectResult(marker);
         }
 
         [FunctionName("GetActiveMapMarkers")]
-        public static async Task<IActionResult> RunGetActiveMapMarkers(
+        public async Task<IActionResult> RunGetActiveMapMarkers(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/activemap/markers")] HttpRequest req,
             string gameId,
             ILogger log) {
 
-            var map = (await FunctionServices.MapStore.GetMaps(gameId)).FirstOrDefault(m => m.IsPrimary);
-            var markers = await FunctionServices.MarkerStore.GetMarkers(map.Id);
+            var map = (await _mapsStore.GetMaps(gameId)).FirstOrDefault(m => m.IsPrimary);
+            var markers = await _markersStore.GetMarkers(map.Id);
 
             return new OkObjectResult(markers);
         }

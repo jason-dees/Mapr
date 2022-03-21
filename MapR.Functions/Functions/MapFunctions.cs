@@ -5,44 +5,47 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using MapR.Functions.Extensions;
 using System.Security.Claims;
-using System.Linq;
+using MapR.Data.Stores;
 
-namespace MapR.Functions
-{
-    public static class MapFunctions
-    {
+namespace MapR.Functions {
+    public class MapFunctions {
+
+        private readonly IStoreMaps _mapsStore;
+        public MapFunctions(IStoreMaps mapsStore) {
+            _mapsStore = mapsStore;
+        }
+
         [FunctionName("GetMaps")]
-        public static async Task<IActionResult> RunGetMaps(
+        public async Task<IActionResult> RunGetMaps(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/maps")] HttpRequest req,
             string gameId,
             ILogger log,
             ClaimsPrincipal claimsPrincipal) {
-            var maps = await FunctionServices.MapStore.GetMaps(gameId);
+            var maps = await _mapsStore.GetMaps(gameId);
 
             return new OkObjectResult(maps);
         }
 
         [FunctionName("GetMap")]
-        public static async Task<IActionResult> RunGetMap(
+        public async Task<IActionResult> RunGetMap(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/maps/{mapId}")] HttpRequest req,
         string gameId,
         string mapId,
         ILogger log) {
 
-            var map = await FunctionServices.MapStore.GetMap(gameId, mapId);
+            var map = await _mapsStore.GetMap(gameId, mapId);
 
             return new OkObjectResult(map);
         }
 
         [FunctionName("GetActiveMap")]
-        public static async Task<IActionResult> RunGetActiveMap(
+        public async Task<IActionResult> RunGetActiveMap(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "games/{gameId}/activemap")] HttpRequest req,
             string gameId,
             ILogger log,
             ClaimsPrincipal claimsPrincipal) {
-            var map = (await FunctionServices.MapStore.GetActiveMap("", gameId));
+            var map = (await _mapsStore.GetActiveMap("", gameId));
 
             return new OkObjectResult(map);
         }

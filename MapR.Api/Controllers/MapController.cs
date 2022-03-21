@@ -13,7 +13,6 @@ namespace MapR.Api.Controllers {
     [Route("games/{gameId}/maps")]
     public class MapController : Controller {
 
-        readonly SignInManager<MapRUser> _signInManager;
         readonly IStoreMaps _mapStore;
 
         private string _owner => User.GetUserName();
