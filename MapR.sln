@@ -15,13 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TODO.md = TODO.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR", "MapR\MapR.csproj", "{6E89A755-505D-4DFF-9FC9-38F06A0DE7FC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.Functions", "MapR.Functions\MapR.Functions.csproj", "{E4E5935F-D7AF-460B-9622-4BDBFC5F02BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapR.Functions", "MapR.Functions\MapR.Functions.csproj", "{E4E5935F-D7AF-460B-9622-4BDBFC5F02BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.Api", "MapR.Api\MapR.Api.csproj", "{4989DCA0-067D-4B18-8CEC-9B93EBD770C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapR.CosmosStores", "MapR.CosmosStores\MapR.CosmosStores.csproj", "{CF828C83-CEDB-4CD6-9868-C3D6E4616E1B}"
+EndProject
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "MapR", "MapR\MapR.csproj", "{B66ECE7E-91B2-49CF-B5D0-BF4D21403ADA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,9 +37,6 @@ Global
 		{4D839236-EC2D-4154-802D-848316EB22B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D839236-EC2D-4154-802D-848316EB22B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D839236-EC2D-4154-802D-848316EB22B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E89A755-505D-4DFF-9FC9-38F06A0DE7FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E89A755-505D-4DFF-9FC9-38F06A0DE7FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E89A755-505D-4DFF-9FC9-38F06A0DE7FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4E5935F-D7AF-460B-9622-4BDBFC5F02BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E4E5935F-D7AF-460B-9622-4BDBFC5F02BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4E5935F-D7AF-460B-9622-4BDBFC5F02BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -52,6 +49,9 @@ Global
 		{CF828C83-CEDB-4CD6-9868-C3D6E4616E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF828C83-CEDB-4CD6-9868-C3D6E4616E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF828C83-CEDB-4CD6-9868-C3D6E4616E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B66ECE7E-91B2-49CF-B5D0-BF4D21403ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B66ECE7E-91B2-49CF-B5D0-BF4D21403ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B66ECE7E-91B2-49CF-B5D0-BF4D21403ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,10 +13,9 @@ namespace MapR.DataStores.Configuration
 {
     public static class ServiceRegistrator
     {
-        private static IMapper _mapper;
         public static async void AddAzureTableAndBlobStorage(IServiceCollection services, string tableConnectionString, string blobConnectionSting)
         {
-            _mapper = AutoMapperConfiguration.MapperConfiguration(services);
+            var _mapper = AutoMapperConfiguration.MapperConfiguration(services);
             var account = CloudStorageAccount.Parse(tableConnectionString);
             var cloudTableClient = account.CreateCloudTableClient();
             var cloudBlobClient = new BlobServiceClient(blobConnectionSting);

@@ -1,18 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.2" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.12" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.0" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SignalRService" Version="1.7.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.31" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MapR.DataStores\MapR.DataStores.csproj" />
@@ -21,6 +18,11 @@
   <ItemGroup>
     <None Remove="Microsoft.Azure.Functions.Extensions" />
     <None Remove="Microsoft.Extensions.DependencyInjection" />
+    <None Remove="Microsoft.Azure.WebJobs" />
+    <None Remove="Microsoft.Azure.WebJobs.Extensions.CosmosDB" />
+    <None Remove="Microsoft.Azure.WebJobs.Extensions.Storage" />
+    <None Remove="Microsoft.Azure.WebJobs.Extensions.Storage.Blobs" />
+    <None Remove="appsettings.json" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
@@ -34,5 +36,11 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Models\Messages\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'=='true'">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>
