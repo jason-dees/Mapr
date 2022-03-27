@@ -269,3 +269,9 @@ MapR/wwwroot/js/
 MapR\.Functions/local\.settings\.json
 
 *.pubxml
+MapR.Functions/__azurite_db_blob__.json
+MapR.Functions/__azurite_db_blob_extent__.json
+MapR.Functions/__azurite_db_queue__.json
+MapR.Functions/__azurite_db_queue_extent__.json
+MapR.Functions/__azurite_db_table__.json
+MapR.Functions/__blobstorage__/

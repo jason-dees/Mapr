@@ -31,7 +31,7 @@ namespace MapR.DataStores.Configuration
                 return new GameStore(tableAccess, _mapper);
             });
 
-            var mapBlobAccess = await cloudBlobClient.CreateBlobContainerAsync("mapimagestorage");
+            var mapBlobAccess = cloudBlobClient.GetBlobContainerClient("mapimagestorage");
             services.AddSingleton<IStoreMaps>((serviceProvider) =>
             {
                 var tableClient = cloudTableClient.GetTableReference("gamemaps");
@@ -42,7 +42,7 @@ namespace MapR.DataStores.Configuration
                     _mapper);
             });
 
-            var markerBlobAccess = await cloudBlobClient.CreateBlobContainerAsync("markericonstorage");
+            var markerBlobAccess = cloudBlobClient.GetBlobContainerClient("markericonstorage");
             services.AddSingleton<IStoreMarkers>((sp) =>
             {
                 var tableClient = cloudTableClient.GetTableReference("mapmarkers");
